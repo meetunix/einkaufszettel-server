@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Einkaufszettel",
+    "description": "JSON representation of a Einkaufszettel",
+    "type": "object",
+    "required": ["eid", "created", "modified", "name", "version","items"],
+    "additionalProperties": false,
+    "properties": {
+        "eid" : {   "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "created":  {   "type":     "integer",
+                        "minimum":  1591606149464,
+                        "maximum":  2095884000000
+        },
+        "modified": {    "type":    "integer",
+                        "minimum":  1591606149464,
+                        "maximum":  2095884000000
+        },
+        "name":     {   "type":     "string",
+                        "pattern":  "^.{2,32}$"
+        },
+        "version":  {   "type":     "integer",
+                        "minimum":  1
+        },
+        "items":    {   "type": "array",
+                        "minItems": 2,
+                        "maxItems": 128,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["iid", "itemName", "ordinal", "amount", "size", "unit", "cid", "catDescription", "catColor"],
+                                "properties": {
+
+                                    "iid" :             {   "type":     "string",
+                                                            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                                    },
+                                    "itemName" :        {   "type":     "string",
+                                                            "pattern":  "^.{2,48}$"
+                                    },
+                                    "ordinal" :         {   "type":     "integer",
+                                                            "minimum":  1,
+                                                            "maximum":  128
+                                    },
+                                    "amount" :          {   "type":     "integer",
+                                                            "minimum":  1,
+                                                            "maximum":  2147483647
+                                    },
+                                    "size" :            {   "type":     "number",
+                                                            "minimum":  0,
+                                                            "maximum":  32768
+                                    },
+                                    "unit" :            {   "type":     "string",
+                                                            "pattern":  "^.{1,12}$"
+                                    },
+                                    "cid" :             {   "type":     "string",
+                                                            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                                    },
+                                    "catDescription" :  {   "type":     "string",
+                                                            "pattern":   "^.{2,64}$"
+                                    },
+                                    "catColor" :        {   "type":     "string",
+                                                            "pattern":  "^[a-fA-f0-9]{6}$"
+                                    }
+
+                            }
+                    }
+            }
+
+    }
+}

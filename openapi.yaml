@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: Einkaufzettel API
+  description: First Version of the RESTFul API for the EZ-Service
+  version: 0.0.1
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: 'https://ez.nachtsieb.de:/r0/'
+paths:
+  '/ez/{eid}':
+    get:
+      summary: Get the full EZ (Einkaufszettel) with the given eid (einkaufszettel id)
+      description: UUID needed for access the EZ
+      parameters:
+        - name: eid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The whole EZ will be returned
+          content:
+            application/json:
+              schema:
+                $ref: 'https://nachtsieb.de/ez-schema.json'
+        '404':
+          description: There is no EZ with this eid
+        default:
+          description: unexpected error (500)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-message"
+    put:
+      summary: Create or update an Einkaufszettel
+      description: some description
+      parameters: 
+        - name : eid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: EZ to add or update to the Server
+        content:
+          'application/json':
+            schema: 
+              $ref: 'https://nachtsieb.de/ez-schema.json'
+      responses:
+        '200':
+          description: EZ properly created or updated
+        '304':
+          description: EZ versions are the same
+        '400':
+          description: Bad Request - invalid EZ was sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-message"
+        '404':
+          description: There is no EZ with this eid
+        '409':
+          description: Conflict - There is already a newer Version on the server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/conflict-message"
+        default:
+          description: unexpected error (500)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-message"
+                
+    delete:
+      summary: Delete an existing EZ
+      description: The EZ with the eid will be deletet from the server
+      parameters: 
+        - name : eid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: EZ was successfully deleted from server
+        '404':
+          description: There is no EZ with this eid
+        '409':
+          description: Conflict - There is already a newer Version on the server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/conflict-message"
+        default:
+          description: unexpected error (500)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-message"
+
+components:
+  schemas:
+    error-message:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    conflict-message:
+      type: object
+      required:
+        - message
+        - local_version
+        - server_version
+      properties:
+        message:
+          type: string
+        local_version:
+          type: integer
+          format: int32
+        server_version:
+          type: integer
+          format: int32

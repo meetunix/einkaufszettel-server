@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="EinkauszettelServer" monitorInterval="10">
+	<Appenders>
+
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} %msg%n
+				</Pattern>
+			</PatternLayout>
+		</Console>
+
+		<File name="file_out" fileName="ezserver.log" append="true">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %m%n</Pattern>
+			</PatternLayout>
+		</File>
+
+	</Appenders>
+	<Loggers>
+		<Logger name="de.nachtsieb" level="debug" additivity="false">
+			<AppenderRef ref="file_out"/>
+		</Logger>
+		<Root level="warn">
+			<AppenderRef ref="Console" />
+		</Root>
+	</Loggers>
+</Configuration>
