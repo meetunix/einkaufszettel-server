@@ -48,8 +48,10 @@ Die Konfiguration ist in zwei Teile aufgeteilt:
 
 1. Konfiguration des servers: `/etc/ez-server/server.propoerties`
 
-    BASE_URI=http://HOSTNAME:PORT/r0/
-    LOG_LEVEL=LEVEL
+```
+BASE_URI=http://HOSTNAME:PORT/r0/
+LOG_LEVEL=LEVEL
+```
 
 Der Server verwendet die Adresse und den port aus `BASE_URI` um auf eingehende Anfragen zu
 lauschen.
@@ -59,12 +61,14 @@ Das `LOG_LEVEL` kann `WARN`, `INFO` oder `DEBUG` sein.
 
 2. Konfiguration der Datenbankverbindung: `/etc/ez-server/db.propoerties`
 
-    jdbcUrl=jdbc:postgresql://HOSTNAME:PORT/DB-NAME
-    dataSource.user=DB-USER
-    dataSource.password=PASSWORD
-    dataSource.cachePrepStmts=true
-    dataSource.prepStmtCacheSize=250
-    dataSource.prepStmtCacheSqlLimit=2048
+```
+jdbcUrl=jdbc:postgresql://HOSTNAME:PORT/DB-NAME
+dataSource.user=DB-USER
+dataSource.password=PASSWORD
+dataSource.cachePrepStmts=true
+dataSource.prepStmtCacheSize=250
+dataSource.prepStmtCacheSqlLimit=2048
+```
 
 
 ### Konfiguration testen
