@@ -22,6 +22,7 @@ import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
 import de.nachtsieb.einkaufszettelServer.entities.Category;
 import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
 import de.nachtsieb.einkaufszettelServer.entities.Item;
+import de.nachtsieb.einkaufszettelServer.entities.Limits;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -30,8 +31,16 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Main test cases for testing the RESTful API endpoints. 
@@ -81,7 +90,7 @@ public class EZResourceTest {
         server.shutdownNow();
     }
     
-    private void deleteEZ(Einkaufszettel ez, int expectedReturnCode) {
+    private Einkaufszettel deleteEZ(Einkaufszettel ez, int expectedReturnCode) {
 
     	// create url
     	String requestURL = config.getBaseURI() + "ez/" + ez.getEid();
@@ -94,9 +103,11 @@ public class EZResourceTest {
         assertThat(response.getStatus() == expectedReturnCode, is(true));
         response.close();
 
+        return ez; 
+
     }
 
-    private void sendEZ(Einkaufszettel ez, int expectedReturnCode) {
+    private Einkaufszettel sendEZ(Einkaufszettel ez, int expectedReturnCode) {
 
     	// create url
     	String requestURL = config.getBaseURI() + "ez/" + ez.getEid();
@@ -110,14 +121,12 @@ public class EZResourceTest {
 
         assertThat(response.getStatus() == expectedReturnCode, is(true));
         
-       // String returnMessage = response.getEntity().toString();
         response.close();
-
-        //logger.debug("TEST: while sending EZ {} get error from server {}:",
-        //		ez.getEid(),returnMessage);
+        
+        return ez; 
     }
     
-    private Einkaufszettel retrieveEZ(Einkaufszettel ez) {
+    private Einkaufszettel retrieveEZ(Einkaufszettel ez, int expectedReturnCode) {
     	
     	// create url
     	String requestURL = config.getBaseURI() + "ez/" + ez.getEid();
@@ -128,7 +137,7 @@ public class EZResourceTest {
         logger.debug("RESPONSE: {} ({}) for EZ {}", response.getStatus(),
         		response.getStatusInfo().getReasonPhrase(), ez.getEid() );
 
-        assertThat(response.getStatus() == 200, is(true));
+        assertThat(response.getStatus() == expectedReturnCode, is(true));
         
         return response.readEntity(Einkaufszettel.class);
     	
@@ -192,7 +201,7 @@ public class EZResourceTest {
     	DBWriter.writeEZ(ez);
     
     	// retrieve EZ from server via http and compare
-        Einkaufszettel respondedEZ = retrieveEZ(ez);
+        Einkaufszettel respondedEZ = retrieveEZ(ez, 200);
         assertThat(ez.equals(respondedEZ), is(true));
         
     	logger.debug("TEST: END api testcase 01");
@@ -242,7 +251,7 @@ public class EZResourceTest {
     	sendEZ(ez, 200);
     
     	// retrieve EZ via http from server
-    	Einkaufszettel serverEZ = retrieveEZ(ez);
+    	Einkaufszettel serverEZ = retrieveEZ(ez, 200);
         
         // compare them
         assertThat(ez.equals(serverEZ), is(true));
@@ -272,14 +281,14 @@ public class EZResourceTest {
     	ez.addItem(TestUtils.genRandomItem());
     	sendEZ(ez, 304); // 304 not modified
 
-    	Einkaufszettel oldEZ = retrieveEZ(ez);
+    	Einkaufszettel oldEZ = retrieveEZ(ez, 200);
         assertThat(ez.equals(oldEZ), is(false));
        
         // increment version to force updating, send, retrieve and compare
         ez.incrementVersion();
     	sendEZ(ez, 200);
 
-    	Einkaufszettel serverEZ = retrieveEZ(ez);
+    	Einkaufszettel serverEZ = retrieveEZ(ez, 200);
         assertThat(ez.equals(serverEZ), is(true));
 
     	logger.debug("TEST: END api testcase 04");
@@ -307,14 +316,14 @@ public class EZResourceTest {
         ez.getItems().remove(1);
     	sendEZ(ez, 304); // 304 not modified
 
-    	Einkaufszettel oldEZ = retrieveEZ(ez);
+    	Einkaufszettel oldEZ = retrieveEZ(ez, 200);
         assertThat(ez.equals(oldEZ), is(false));
        
         // increment version to force updating, send, retrieve and compare
         ez.incrementVersion();
     	sendEZ(ez, 200);
 
-    	Einkaufszettel serverEZ = retrieveEZ(ez);
+    	Einkaufszettel serverEZ = retrieveEZ(ez, 200);
         assertThat(ez.equals(serverEZ), is(true));
 
     	logger.debug("TEST: END api testcase 05");
@@ -351,7 +360,7 @@ public class EZResourceTest {
         ez.incrementVersion();
     	sendEZ(ez, 200);
 
-    	Einkaufszettel serverEZ = retrieveEZ(ez);
+    	Einkaufszettel serverEZ = retrieveEZ(ez, 200);
         assertThat(ez.equals(serverEZ), is(true));
         
         // compare items directly  from database
@@ -399,7 +408,7 @@ public class EZResourceTest {
         ez.incrementVersion();
     	sendEZ(ez, 200);
 
-    	Einkaufszettel serverEZ = retrieveEZ(ez);
+    	Einkaufszettel serverEZ = retrieveEZ(ez, 200);
         assertThat(ez.equals(serverEZ), is(true));
         
         // compare categories directly from database
@@ -440,7 +449,7 @@ public class EZResourceTest {
         ez.incrementVersion();
     	sendEZ(ez, 200);
 
-    	Einkaufszettel serverEZ = retrieveEZ(ez);
+    	Einkaufszettel serverEZ = retrieveEZ(ez, 200);
         assertThat(ez.equals(serverEZ), is(true));
 
     	logger.debug("TEST: END api testcase 08 (substitue all categories)");
@@ -466,7 +475,7 @@ public class EZResourceTest {
     	sendEZ(A, 200);
         
         // create B by receiving A from server
-        Einkaufszettel B = retrieveEZ(A);
+        Einkaufszettel B = retrieveEZ(A, 200);
         
         // alter B and send it to server
         List<Item> newItems = TestUtils.genItemList(3);
@@ -478,7 +487,7 @@ public class EZResourceTest {
     	sendEZ(B, 200);
        
         // retrieve A and compare with B
-        A = retrieveEZ(A);
+        A = retrieveEZ(A, 200);
         assertThat(B.equals(A), is(true));
         
     	logger.debug("TEST: END api testcase 09 (simple work case)");
@@ -545,7 +554,7 @@ public class EZResourceTest {
     		ezsAsync.add(TestUtils.genRandomEZ());
     	}
     	
-    	long start, end;
+    	long start, end, sum;
     
     	// sync write
     	start = System.currentTimeMillis();
@@ -563,4 +572,116 @@ public class EZResourceTest {
     	
     	logger.debug("TEST: END asyncIO testcase 40");
     }
+    
+    @Test
+    public void api41() {
+    	
+    	int numberOfWorker = 50;
+    	int numberOfOperations = 200;
+    	long start, end;
+    	long sum = 0;
+
+    	logger.debug("TEST: START asyncIO testcase 41 ({} operations of {} parallel clients)", 
+    			numberOfOperations * 4,numberOfWorker);
+    	
+    	// test behaviour oon a full database
+    	/*
+    	sendAsyncEZs(Stream.generate(TestUtils::genRandomEZ)
+    			.limit(500)
+    			.collect(Collectors.toList()));
+    	 */
+    	List<Einkaufszettel> ezList = Stream.generate(TestUtils::genRandomEZ)
+    			.limit(numberOfOperations)
+    			.collect(Collectors.toList());
+    
+		ExecutorService executor = Executors.newFixedThreadPool(numberOfWorker);
+		CompletionService<Einkaufszettel> cse = new ExecutorCompletionService<>(executor);
+
+		CrudOperation[] operationsList = {create, update, read, delete};
+		
+		for (CrudOperation crudOp : operationsList) {
+
+			List<OperationCallable> tasks = new ArrayList<>(numberOfOperations);
+
+			for (Einkaufszettel ez : ezList) {
+				
+				if (crudOp == update ) {
+					ez.setItems(TestUtils.genItemList(Limits.MAX_ITEMS / 2)); // 64 items
+					ez.incrementVersion();
+				}
+				
+				OperationCallable task = new OperationCallable(crudOp, ez, 200);
+				tasks.add(task);
+			}
+
+			// submit all tasks for the current operation to the executor service
+			start = System.currentTimeMillis();
+			tasks.forEach(t -> cse.submit(t));
+			
+			// wait for all tasks of the current operation to be ready and count them
+			tasks.forEach(t -> {
+
+				try {
+					cse.take().isDone();
+				} catch (InterruptedException e) {
+					logger.error("TEST: api41 test (simple async benchmark) failed");
+
+			}});
+			
+			end = System.currentTimeMillis();
+
+			String debugMessage;
+			if (crudOp == create)
+				debugMessage = "TEST: creation of {} EZ takes {} sec";
+			else if (crudOp == update)
+				debugMessage = "TEST: updating of {} EZ takes {} sec";
+			else if (crudOp == read)
+				debugMessage = "TEST: reading of {} EZ takes {} sec";
+			else
+				debugMessage = "TEST: deletion of {} EZ takes {} sec";
+
+			logger.debug(debugMessage, numberOfOperations,  (end - start) / 1000);
+			// sum up all times for each operations
+			sum += end - start;
+		}
+
+		end = System.currentTimeMillis();
+    	logger.debug("TEST: simple benchmark of {} CRUD operations: {} seconds",
+    			numberOfOperations * 4, sum / 1000);
+
+		executor.shutdown();
+    	logger.debug("TEST: END asyncIO testcase 41 ({} operations of {} parallel clients)", 
+    			numberOfOperations * 4,numberOfWorker);
+    }
+    
+    // lambdas
+    CrudOperation  create = (a, b) -> sendEZ(a, b);
+    CrudOperation  update = (a, b) -> sendEZ(a, b);
+    CrudOperation  delete = (a, b) -> deleteEZ(a, b);
+    CrudOperation  read = (a, b) -> retrieveEZ(a, b);
+
+    // the interface the lamdbas use
+    interface CrudOperation {
+    	Einkaufszettel operate(Einkaufszettel a, int b);
+    }
+
+    // Callable for use as a task in CompletionService
+	class OperationCallable implements Callable<Einkaufszettel> {
+
+		private CrudOperation crudOperation;
+		private Einkaufszettel ez;
+		private int expectedReturnCode;
+		
+		OperationCallable(CrudOperation crudOperation, Einkaufszettel ez , int expReturnCode) {
+			this.crudOperation = crudOperation;
+			this.ez = ez;
+			this.expectedReturnCode = expReturnCode;
+		}
+		
+		@Override
+		public Einkaufszettel call() throws Exception {
+			
+			return  crudOperation.operate(ez, expectedReturnCode); 
+		}
+	}
 }
