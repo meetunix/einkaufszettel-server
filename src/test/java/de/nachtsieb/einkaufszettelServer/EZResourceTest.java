@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
 import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
+import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
 import de.nachtsieb.einkaufszettelServer.entities.Category;
 import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
 import de.nachtsieb.einkaufszettelServer.entities.Item;
@@ -693,5 +694,40 @@ public class EZResourceTest {
 			
 			return  crudOperation.operate(ez, expectedReturnCode); 
 		}
+	}
+
+	@Test
+	public void cleaner01() {
+		
+    	logger.debug("TEST: START testing the database cleaner thread");
+    	
+		int numberOfEZs = 1000;
+		
+		List<Einkaufszettel> ezList = Stream.generate(TestUtils::genRandomEZ)
+				.limit(numberOfEZs)
+				.collect(Collectors.toList());
+
+		sendAsyncEZs(ezList);
+		
+		int catsBeforeClean = DBReader.getCIDs(conn).size();
+	
+		ezList.stream().limit(50).forEach(e -> deleteEZ(e, 200));
+		
+		Thread cleaner = new Thread(new DatabaseCleanerThread(), "TEST-DB-CLEANER");
+		cleaner.start();
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		int catsAfterClean = DBReader.getCIDs(conn).size();
+		
+		assertThat(catsBeforeClean > catsAfterClean, is(true));
+		
+		
+    	logger.debug("TEST: END testing the database cleaner thread");
 	}
 }
