@@ -30,6 +30,16 @@ create table if not exists items (
     foreign key(cid) references category(cid)
 );
 
+create table if not exists ez_cleanup (
+    category_cleanup_time   timestamp   NOT NULL
+);
+
+create table if not exists ez_schmea_version (
+    update_time     timestamp   NOT NULL,
+    schema_version  int         NOT NULL
+);
+
+/*
 CREATE OR REPLACE FUNCTION delete_orphaned_categories() RETURNS TRIGGER AS
     $$
     BEGIN
@@ -44,3 +54,4 @@ CREATE TRIGGER delete_orphaned_categories_on_ez_delete
     AFTER DELETE on einkaufszettel
     FOR EACH STATEMENT
     EXECUTE FUNCTION delete_orphaned_categories();
+*/

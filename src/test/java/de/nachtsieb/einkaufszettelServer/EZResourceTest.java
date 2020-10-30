@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
@@ -423,7 +422,7 @@ public class EZResourceTest {
     * API CASE 08 (substitute all categories)
     * 
     * - create an random EZ from model and send it via http to the server
-    * - change the category from alle item to the catagory from the first item 
+    * - change the category from all item to the category from the first item 
     * - send EZ to server via http (update required)
     * - read it via http and compare them. 
     */
@@ -496,13 +495,22 @@ public class EZResourceTest {
     
     /**
      * API CASE 30 (database trigger: delete_orphaned_categories)
+     *
+     * currently disabled
      * 
-     * - create two ez (A and B) with some items belonging to some catagories
+     * In consequence of benchmarking the database trigger, which is thrown by a deletion of an
+     * Einkaufszettel took to long. Therefore the deletion of orphaned categories is done
+     * by an own thread once a day.
+     * 
+     * - create two ez (A and B) with some items belonging to some categories
      * - delete A via http
      * - check if the categories used by the items from A are deleted in database
      * - check if the categories from B are present in database 
      * 
      */
+    
+    /*
+     * 
     @Test
     public void api30() {
 
@@ -530,7 +538,7 @@ public class EZResourceTest {
         
         deleteEZ(A, 200);
         
-        // check if the categorie only used by A is deleted
+        // check if the category only used by A is deleted
     	assertThat(DBReader.getCategory(catA.getCid()) == null, is(true));
     	
     	// check if the other two categories are still present
@@ -539,6 +547,8 @@ public class EZResourceTest {
     	
     	logger.debug("TEST: END api testcase 30 (database trigger)");
     }
+    */
+    
     @Test
     public void api40() {
 
@@ -584,7 +594,7 @@ public class EZResourceTest {
     	logger.debug("TEST: START asyncIO testcase 41 ({} operations of {} parallel clients)", 
     			numberOfOperations * 4,numberOfWorker);
     	
-    	// test behaviour oon a full database
+    	// test behavior on a full database
     	/*
     	sendAsyncEZs(Stream.generate(TestUtils::genRandomEZ)
     			.limit(500)

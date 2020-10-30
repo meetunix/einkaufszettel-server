@@ -6,6 +6,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
+import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
 import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -99,13 +100,19 @@ public class EZServer implements Callable<String>  {
 		
     	logger.info("EinkaufzettelServer started at " + BASE_URI);
     	
+    	// start database cleaning thread
+    	Thread cleaner = new Thread(new DatabaseCleanerThread(), "database_cleaner");
+    	cleaner.start();
+    	
+    	
         final HttpServer server = startServer();
         System.out.println(String.format(
         		"\nEinkaufszettelServer started and listen on %s\nHit enter to stop it...",
         		BASE_URI));
         
         System.in.read();
-        server.shutdownNow();;
+        cleaner.interrupt();
+        server.shutdownNow();
         return null;
 		
 	}
