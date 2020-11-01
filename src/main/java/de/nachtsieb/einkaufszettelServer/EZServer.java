@@ -5,6 +5,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.server.filter.EncodingFilter;
 
 import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
 import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
@@ -18,6 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.Callable;
+
+import javax.ws.rs.ext.InterceptorContext;
 
 /*
  * Copyright © 2020 Martin Steinbach
@@ -79,6 +82,9 @@ public class EZServer implements Callable<String>  {
         	}
         });
         
+        // register the interceptor classes for compressed
+        rc.register(GZIPWriterInterceptor.class);
+
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
