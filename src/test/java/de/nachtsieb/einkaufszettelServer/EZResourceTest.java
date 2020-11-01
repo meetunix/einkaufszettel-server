@@ -174,6 +174,7 @@ public class EZResourceTest {
     	
     }
     
+    
     private void sendSyncEZs(List<Einkaufszettel> ezs) {
     	
     	for (Einkaufszettel ez : ezs) {
@@ -572,14 +573,14 @@ public class EZResourceTest {
     	sendSyncEZs(ezsAsync);
     	end = System.currentTimeMillis();
     	logger.debug("TEST: Adding {} EZs synchronously takes {} seconds",
-    			numberOfEZs, (end - start) / 1000);
+    			numberOfEZs, (double) (end - start) / 1000);
     
     	// async write
     	start = System.currentTimeMillis();
     	sendAsyncEZs(ezsSync);
     	end = System.currentTimeMillis();
     	logger.debug("TEST: Adding {} EZs asynchronously takes {} seconds",
-    			numberOfEZs, (end - start) / 1000);
+    			numberOfEZs, (double) (end - start) / 1000);
     	
     	logger.debug("TEST: END asyncIO testcase 40");
     }
@@ -651,18 +652,18 @@ public class EZResourceTest {
 			else
 				debugMessage = "TEST: deletion of {} EZ takes {} sec";
 
-			logger.debug(debugMessage, numberOfOperations,  (end - start) / 1000);
+			logger.debug(debugMessage, numberOfOperations, (double)  (end - start) / 1000);
 			// sum up all times for each operations
 			sum += end - start;
 		}
 
 		end = System.currentTimeMillis();
     	logger.debug("TEST: simple benchmark of {} CRUD operations: {} seconds",
-    			numberOfOperations * 4, sum / 1000);
+    			(double) numberOfOperations * 4, sum / 1000);
 
 		executor.shutdown();
     	logger.debug("TEST: END asyncIO testcase 41 ({} operations of {} parallel clients)", 
-    			numberOfOperations * 4,numberOfWorker);
+    			(double) numberOfOperations * 4,numberOfWorker);
     }
     
     // lambdas
@@ -695,39 +696,114 @@ public class EZResourceTest {
 			return  crudOperation.operate(ez, expectedReturnCode); 
 		}
 	}
+    /**
+     * DB CLEANER THREAD (cleaning the database)
+     *
+     * - create two ez (A and B) with some items belonging to some categories
+     * - delete A via http
+     * - start the database cleaner Thread
+     * - wait some time
+     * - check if the categories used by the items from A are deleted in database
+     * - check if the categories from B are present in database 
+     * 
+     * Much faster than using database trigger.
+     * 
+     */
+    
+    @Test
+    public void cleaner01() {
 
-	@Test
-	public void cleaner01() {
-		
     	logger.debug("TEST: START testing the database cleaner thread");
-    	
-		int numberOfEZs = 1000;
-		
-		List<Einkaufszettel> ezList = Stream.generate(TestUtils::genRandomEZ)
-				.limit(numberOfEZs)
-				.collect(Collectors.toList());
 
-		sendAsyncEZs(ezList);
+    	Category catA = new Category("AAAAAA", "category that belongs to A");
+    	Category catB = new Category("BBBBBB", "category that belongs to B");
+    	Category catAB = new Category("ABABAB", "category that belongs to A and B");
+    	
+    	Einkaufszettel A = new Einkaufszettel("Einkaufszettel A");
+    	A.addItem(new Item("item A", catA));
+    	A.addItem(new Item("item AB", catAB));
+    	
+    	Einkaufszettel B = new Einkaufszettel("Einkaufszettel B");
+    	B.addItem(new Item("item B", catB));
+    	B.addItem(new Item("item BA", catAB));
+    	
+    	sendEZ(A, 200);
+    	sendEZ(B, 200);
+   
+    	// check if all categories are in database
+    	assertThat(DBReader.getCategory(catA.getCid()).equals(catA), is(true));
+    	assertThat(DBReader.getCategory(catB.getCid()).equals(catB), is(true));
+    	assertThat(DBReader.getCategory(catAB.getCid()).equals(catAB), is(true));
+        
+        deleteEZ(A, 200);
+        
+        // start the cleaning thread and stop it
+		Thread cleaner = new Thread(new DatabaseCleanerThread(), "TEST-DB-CLEANER");
+		cleaner.start();
+
+		// wait some time and stop thread
+		try {
+			int millis = 5000; // to wait for thread
+			logger.debug("TEST: Wait {} seconds for database cleaner thread", millis);
+			Thread.sleep(millis);
+			cleaner.interrupt();;
+		} catch (InterruptedException e1) {
+			logger.error("TEST: waiting for database cleaner thread was interrupted");
+		}
+        // check if the category only used by A is deleted
+    	assertThat(DBReader.getCategory(catA.getCid()) == null, is(true));
+    	
+    	// check if the other two categories are still present
+    	assertThat(DBReader.getCategory(catB.getCid()).equals(catB), is(true));
+    	assertThat(DBReader.getCategory(catAB.getCid()).equals(catAB), is(true));
+    	
+    	logger.debug("TEST: END testing the database cleaner thread");
+    }
+
+    
+    /*
+     * Benchmarks the cleaner thread
+     */
+   
+    /*
+	@Test
+	public void cleaner02() {
+		
+    	logger.debug("TEST: START benchmarking the database cleaner thread");
+    	
+		int numberOfEZs = 500;
+		
+		// split the whole amount up in 10 fragments and send the EZs to the server
+		List<Einkaufszettel> ezList = new ArrayList<>(numberOfEZs / 10);
+		for(int i = 0; i < 10 ; i++ ) {
+			ezList = Stream.generate(TestUtils::genRandomEZ)
+					.limit(numberOfEZs / 10)
+					.collect(Collectors.toList());
+
+			sendAsyncEZs(ezList);
+		}
 		
 		int catsBeforeClean = DBReader.getCIDs(conn).size();
-	
-		ezList.stream().limit(50).forEach(e -> deleteEZ(e, 200));
+
+		// delete the last fragment of EZs
+		ezList.stream().forEach(e -> deleteEZ(e, 200));
 		
+		// start the cleaner and wait some time for finishing
 		Thread cleaner = new Thread(new DatabaseCleanerThread(), "TEST-DB-CLEANER");
 		cleaner.start();
 		
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(20000);
+			cleaner.interrupt();
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.error("TEST: waiting for database cleaner thread was interrupted");
 		}
 		
 		int catsAfterClean = DBReader.getCIDs(conn).size();
 		
 		assertThat(catsBeforeClean > catsAfterClean, is(true));
 		
-		
-    	logger.debug("TEST: END testing the database cleaner thread");
+    	logger.debug("TEST: END benchmarking the database cleaner thread");
 	}
+	*/
 }

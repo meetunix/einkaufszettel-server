@@ -15,7 +15,7 @@ public class EZTestDB {
 
     private static Logger logger = LogManager.getLogger(EZTestDB.class);
 
-	private final static String[] tables = {"items", "category", "einkaufszettel"};
+	private final static String[] tables = {"items", "category", "einkaufszettel", "ez_cleanup"};
 	
 	public static Connection getConnection() {
 		
@@ -23,11 +23,6 @@ public class EZTestDB {
 
 			Connection conn = DBConnPool.getConnection();
 			
-			/*
-			 * uncomment following line if the test should happen in the production database
-			 */
-			//conn = DBConnPool.getConnection();
-					
 			if (conn != null) {
 				logger.info("TEST: database connection established");
 				return conn;

@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
 @Command(description = "Einkaufszettel Server Application",
 			mixinStandardHelpOptions = true,
 			name = "EinkaufszettelServer",
-			version = "EinkaufszettelServer 0.0.1-alpha")
+			version = "EinkaufszettelServer 0.1.0-alpha")
 
 public class EZServer implements Callable<String>  {
 	
@@ -101,7 +101,7 @@ public class EZServer implements Callable<String>  {
     	logger.info("EinkaufzettelServer started at " + BASE_URI);
     	
     	// start database cleaning thread
-    	Thread cleaner = new Thread(new DatabaseCleanerThread(), "database_cleaner");
+    	Thread cleaner = new Thread(new DatabaseCleanerThread(), "DB-CLEANER");
     	cleaner.start();
     	
     	

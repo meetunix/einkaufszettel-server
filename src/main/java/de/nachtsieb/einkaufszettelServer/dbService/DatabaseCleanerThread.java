@@ -47,6 +47,7 @@ public class DatabaseCleanerThread implements Runnable {
 			start = System.currentTimeMillis();
 			int deletedCategories = ps.executeUpdate();
 			end = System.currentTimeMillis();
+			ps.close();
 			
 			logger.info("Daily cleaning of database: deleted {} categories in {} seconds ",
 					deletedCategories, (double) (end - start) / 1000);
@@ -55,9 +56,27 @@ public class DatabaseCleanerThread implements Runnable {
 		} catch (SQLException e) {
 			logger.error("Unable to delete orphaned categories: {}", e.toString());
 		}
+	}
+	
+	private void vacuumDatabase() {
+
+		long start, end;
 		
-		writeCleaningTime();
-		
+		try (Connection conn = DBConnPool.getConnection()) {
+			
+			PreparedStatement ps = conn.prepareStatement("VACUUM einkaufszettel, items, category");
+			
+			start = System.currentTimeMillis();
+			ps.executeUpdate();
+			end = System.currentTimeMillis();
+			ps.close();
+			
+			logger.info("Daily vacuum takes {} seconds ", (double) (end - start) / 1000);
+			
+
+		} catch (SQLException e) {
+			logger.error("Unable to vacuum database: {}", e.toString());
+		}
 	}
 	
 	private void writeCleaningTime() {
@@ -70,6 +89,7 @@ public class DatabaseCleanerThread implements Runnable {
 			psInsert.setTimestamp(1, Timestamp.from((Instant.now())));
 			
 			int inserts = psInsert.executeUpdate();
+			psInsert.close();
 			
 			if (inserts != 1) {
 				logger.error("cleanup time could not be INSERTED to database");
@@ -96,6 +116,9 @@ public class DatabaseCleanerThread implements Runnable {
 			rs.next();
 			lastTime = rs.getTimestamp("max");
 			
+			rs.close();
+			ps.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error("Can not get last cleaning time from database", e.toString());
@@ -104,15 +127,50 @@ public class DatabaseCleanerThread implements Runnable {
 		return Optional.ofNullable(lastTime);
 	}
 	
-	private void logDatabaseStatistics() { //TODO
+	private void logDatabaseStatistics() { 
+		
+		String[] tables = {"einkaufszettel", "items", "category"};
+		long[] amounts = new long[3];
+		
+		try (Connection conn = DBConnPool.getConnection()) {
+
+			int i = 0;
+			for (String table : tables) {
+
+				PreparedStatement ps = conn.prepareStatement(
+						"SELECT count(*) AS amount FROM " + table);
+
+				ResultSet rs = ps.executeQuery();
+
+				rs.next();
+				amounts[i++] = rs.getLong("amount");
+				
+				rs.close();
+				ps.close();
+				
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.warn("Can not get fetch stattistics from database", e.toString());
+		}
 		
 		logger.info("Daily databases statistics: EZs, Items, Categories" );
-		logger.info("Daily databases statistics values: {}, {}, {}", 0, 0 ,0 );
+		logger.info("Daily databases statistics values: {}, {}, {}",
+				amounts[0], amounts[1], amounts[2]);
 	}
 	
-
+	private void doCleaning() {
+		deleteOrphanedCategories();
+		writeCleaningTime();
+		vacuumDatabase();
+		logDatabaseStatistics();
+	}
+	
 	@Override
 	public void run() {
+		
+		logger.debug("database cleaner thread started");
 	
 		try {
 			
@@ -126,7 +184,7 @@ public class DatabaseCleanerThread implements Runnable {
 					if (now.isAfter(dbTime)) {
 
 						if (Duration.between(dbTime, now).compareTo(oneDay) >= 0)
-							deleteOrphanedCategories();
+							doCleaning();
 						else
 							logger.debug("no cleaning needed");
 
@@ -135,7 +193,7 @@ public class DatabaseCleanerThread implements Runnable {
 					}
 					
 				} else {
-					deleteOrphanedCategories();
+					doCleaning();
 				}
 				
 				Thread.sleep(1000 * 60 * 60); // every hour
