@@ -7,6 +7,8 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
 import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
+import de.nachtsieb.einkaufszettelServer.interceptors.GZIPReaderInterceptor;
+import de.nachtsieb.einkaufszettelServer.interceptors.GZIPWriterInterceptor;
 import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -79,6 +81,10 @@ public class EZServer implements Callable<String>  {
         	}
         });
         
+        // register the interceptor classes for compressed
+        rc.register(GZIPWriterInterceptor.class);
+        rc.register(GZIPReaderInterceptor.class);
+
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);

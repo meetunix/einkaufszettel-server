@@ -1,11 +1,14 @@
 package de.nachtsieb.einkaufszettelServer;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NameBinding;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -70,7 +73,7 @@ public class EZRessource {
 			}
 
 		} catch (JsonProcessingException e) {
-			logger.error("Unable to (de)serialize. Exception was thrown: {}", e.toString());
+			logger.error("Unable to (de)serialize. Exception was thrown: {}", e.getMessage());
 			throw new EZException(ErrorMessage.getJsonString(
 					new ErrorMessage("E_JSON", "unable to perform serialization")));
 		}
@@ -170,7 +173,7 @@ public class EZRessource {
 			}
 				
 		} catch (JsonProcessingException e) {
-			logger.error("Unable to (de)serialize. Exception was thrown: {}", e.toString());
+			logger.error("Unable to (de)serialize. Exception was thrown: {}", e.getMessage());
 			throw new EZException(ErrorMessage.getJsonString(
 					new ErrorMessage("E_JSON", "unable to perform serialization")));
 		}
