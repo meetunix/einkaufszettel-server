@@ -1,11 +1,8 @@
 package de.nachtsieb.einkaufszettelServer;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.UUID;
-import java.util.zip.GZIPOutputStream;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -16,12 +13,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.WriterInterceptor;
-import javax.ws.rs.ext.WriterInterceptorContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,12 +35,6 @@ import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
  * TODO: 	jersey manual chapter 12 - URIs and Links (App needs to share link to a Einkaufszettel)
  */
 
-
-//@Compress annotation is the name binding annotation
-@NameBinding
-@Retention(RetentionPolicy.RUNTIME)
-@interface Compress {}
-
 @Path("/ez/")
 public class EZRessource {
 	
@@ -66,7 +53,6 @@ public class EZRessource {
 	 */
 	@GET
 	@Path("{eid: " + UUID_REGEX + "}")
-	@Compress
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEZ(@PathParam("eid") String eid){
 		
@@ -87,7 +73,7 @@ public class EZRessource {
 			}
 
 		} catch (JsonProcessingException e) {
-			logger.error("Unable to (de)serialize. Exception was thrown: {}", e.toString());
+			logger.error("Unable to (de)serialize. Exception was thrown: {}", e.getMessage());
 			throw new EZException(ErrorMessage.getJsonString(
 					new ErrorMessage("E_JSON", "unable to perform serialization")));
 		}
@@ -187,7 +173,7 @@ public class EZRessource {
 			}
 				
 		} catch (JsonProcessingException e) {
-			logger.error("Unable to (de)serialize. Exception was thrown: {}", e.toString());
+			logger.error("Unable to (de)serialize. Exception was thrown: {}", e.getMessage());
 			throw new EZException(ErrorMessage.getJsonString(
 					new ErrorMessage("E_JSON", "unable to perform serialization")));
 		}
@@ -224,19 +210,3 @@ public class EZRessource {
 		
 	}
 }	
-
-@Compress
-class GZIPWriterInterceptor implements WriterInterceptor {
-	 
-    @Override
-    public void aroundWriteTo(WriterInterceptorContext context)
-                    throws IOException, WebApplicationException {
-    	
-    	MultivaluedMap<String,Object> headers = context.getHeaders();
-    	headers.add("Content-Encoding", "gzip");
-    	
-        final OutputStream outputStream = context.getOutputStream();
-        context.setOutputStream(new GZIPOutputStream(outputStream));
-        context.proceed();
-    }
-}
