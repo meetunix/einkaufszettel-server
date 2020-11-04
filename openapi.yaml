@@ -7,7 +7,7 @@ info:
     name: Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
-  - url: 'https://ez.nachtsieb.de:/r0/'
+  - url: 'https://ez.nachtsieb.de:/r0'
 paths:
   '/ez/{eid}':
     get:

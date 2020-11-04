@@ -46,8 +46,21 @@ Installation voraus. Außerdem wird Apache Maven zum Übersetzen und Testen der 
 
 ### Datenbank vorbereiten
 
-    HOW-TO initialise databse (TODO)
-    
+In diesem Abschnitt wird schematisch gezeigt, wie auf PostgreSQL-Server unter GNU/Linux ein
+Datenbanknutzer und eine entsprechende Datenbank für den **einkaufszettel-server** erstellt wird. 
+
+#### 1. Datenbank und Datenbanknutzer erstellen
+
+1. Nutzer mit Passwort erstellen:
+
+    $ sudo -u postgres createuser -P ezuser
+    Enter password for new role:
+    Enter it again:
+
+2. Datenbank erstellen und Eigentümer setzen:
+
+    $ sudo -u postgres createdb -O ezuser ezdatabase
+
 
 ## Konfiguration
 
