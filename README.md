@@ -2,7 +2,6 @@
 
 <p align="center">
 <a href="https://github.com/corona-warn-app/cwa-server/blob/master/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>   
-
 <a href="https://ez.nachtsieb.de/swagger" title="swagger-ui"><img src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fmeetunix%2Feinkaufszettel-server%2Fmain%2Fopenapi.yaml"></a>
 </p>
 
@@ -16,7 +15,7 @@
 
 [english version](README_EN.md)
 
-* **Einkaufszettel Server befindet sich noch in Entwicklung.**
+* **einkaufszettel-server befindet sich noch in Entwicklung.**
 * **Die Dokumentation wird fortlaufend erweitert.**
 
 **einkaufszettel-Server** ist die Serverkomponente für eine verteilte Anwendung zum anonymen Teilen
@@ -28,19 +27,11 @@ Einkaufszettel zu teilen, oder man verwendet den öffentlichen einkaufszettel-se
 
 ## Voraussetzungen
 
-**einkaufszettel-server** ist in java implementiert und setzt eine funktionierende PostgreSQL
-Installation voraus. Außerdem wird Apache Maven zum Übersetzen und Testen der Anwendung benötigt.
+**einkaufszettel-server** ist in java implementiert und setzt eine funktionierende PostgreSQL-Installation
+voraus. Außerdem wird Apache Maven zum Übersetzen und Testen der Anwendung benötigt.
 
-**verwendete Bibliotheken**
-
-* JAX-RS (Jersey)
-* JDBC
-* jsaon-validator
-* HikariCP
-* log4j
-* junit
-* Jackson
-
+* PostgreSQL
+* Apache Maven
 
 ## Übersetzen und Testen
 
@@ -97,20 +88,21 @@ dataSource.prepStmtCacheSqlLimit=2048
 
     mvn clean compile test
 
-
 ## Benutzen
 
 Starten des Servers: 
 
-    java -jar target/einkaufszettelServer-0.1.0-alpha-jar-with-dependencies.jar
+    java -jar target/einkaufszettelServer-[VERSION]-jar-with-dependencies.jar
 
 ### starten über systemd
-
+    
+    TODO
+    
 ## API
 
 [Interaktive API-Dokumentation (Swagger)](https://ez.nachtsieb.de/swagger)
 
-Die Dokumentation der einkaufszettel API steht als OpenAPI 3 - Spezifikation zur Verfügung: [API-Dokumentation](openapi.yaml)
+Die Dokumentation der einkaufszettel API steht als OpenAPIv3-Spezifikation zur Verfügung: [API-Dokumentation](openapi.yaml)
 
 Die Spezifikation eines Einkaufszettels is als [JSON Schema](https://json-schema.org/) draft
 version 4 verfasst: [Einkaufszettel-Spezifikation](https://nachtsieb.de/docs/ezschema.json).
@@ -118,3 +110,13 @@ version 4 verfasst: [Einkaufszettel-Spezifikation](https://nachtsieb.de/docs/ezs
 ## Changelog
 
 [CHANGELOG](CHANGELOG.md)
+
+## einige verwendete Bibliotheken
+
+* JAX-RS (Jersey)
+* JDBC
+* jsaon-validator
+* HikariCP
+* log4j
+* junit
+* Jackson
