@@ -7,7 +7,7 @@ info:
     name: Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
-  - url: 'https://ez.nachtsieb.de:/r0'
+  - url: 'https://ez.nachtsieb.de:/r0/'
 paths:
   '/ez/{eid}':
     get:
@@ -25,7 +25,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 'https://nachtsieb.de/ez-schema.json'
+                $ref: 'https://ez.nachtsieb.de/docs/ezschema.json'
         '404':
           description: There is no EZ with this eid
         default:
@@ -48,7 +48,7 @@ paths:
         content:
           'application/json':
             schema: 
-              $ref: 'https://nachtsieb.de/ez-schema.json'
+              $ref: 'https://ez.nachtsieb.de/docs/ezschema.json'
       responses:
         '200':
           description: EZ properly created or updated
@@ -85,16 +85,10 @@ paths:
           schema:
             type: string
       responses:
-        '204':
+        '200':
           description: EZ was successfully deleted from server
         '404':
           description: There is no EZ with this eid
-        '409':
-          description: Conflict - There is already a newer Version on the server
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/conflict-message"
         default:
           description: unexpected error (500)
           content:
