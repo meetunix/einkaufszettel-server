@@ -45,21 +45,21 @@ Datenbanknutzer und eine entsprechende Datenbank für den **einkaufszettel-serve
 #### 1. Datenbank und Datenbanknutzer erstellen
 
 1. Nutzer mit Passwort erstellen:
-
-    $ sudo -u postgres createuser -P ezuser
-    Enter password for new role:
-    Enter it again:
-
+```
+$ sudo -u postgres createuser -P ezuser
+Enter password for new role:
+Enter it again:
+```
 2. Datenbank erstellen und Eigentümer setzen:
-
-    $ sudo -u postgres createdb -O ezuser ezdatabase
-
+```
+$ sudo -u postgres createdb -O ezuser ezdatabase
+```
 
 ## Konfiguration
 
-Die Konfiguration ist in zwei Teile aufgeteilt:
+Die Konfiguration ist in zwei Dateien aufgeteilt:
 
-1. Konfiguration des servers: `/etc/ez-server/server.propoerties`
+1. Konfiguration des servers **server.properties**: `/etc/ez-server/server.propoerties`
 
 ```
 BASE_URI=http://HOSTNAME:PORT/r0/
@@ -72,7 +72,7 @@ lauschen.
 Das `LOG_LEVEL` kann `WARN`, `INFO` oder `DEBUG` sein.  
 
 
-2. Konfiguration der Datenbankverbindung: `/etc/ez-server/db.propoerties`
+2. Konfiguration der Datenbankverbindung **db.properties**: `/etc/ez-server/db.propoerties`
 
 ```
 jdbcUrl=jdbc:postgresql://HOSTNAME:PORT/DB-NAME
