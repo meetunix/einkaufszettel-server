@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [unreleased] - 2020-11-09
+
+### Added
+
+- compressed payload for receiving and sending (shrinks a Einkaufszettel up to 70%)
+    
+If a request header contains "Accept-Encoding: gzip", the response body
+will be gzip encoded. (for GET-requests)
+
+If a request header contains "Content-Encoding: gzip" einkaufszettel-server assumes
+that the message body is gzip encoded.
+
 
 
 ## [0.1.0-alpha] - 2020-11-01
