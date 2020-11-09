@@ -38,8 +38,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -662,13 +660,13 @@ public class EZResourceTest {
 	}
 	
 	/**
-     * API CASE 30 (compression responses)
+     * API CASE 30 (compression of response)
 	 * 
-	 * Tests if a requested gzipped ez is resonded correctly.
+	 * Tests if a requested gzipped ez is responded correctly.
 	 * 
-	 * - Create Einkaufzettel and send to application
-	 * - reveive einkaufszettel with header: "Accept-Encoding: gzip"
-	 * - check correct header of the responde
+	 * - create Einkaufszettel and send to application
+	 * - receive einkaufszettel with header: "Accept-Encoding: gzip"
+	 * - check correct header of the response
 	 * - unzip and unmarshal
 	 * - compare ez objects
 	 * - compare json strings
@@ -716,7 +714,7 @@ public class EZResourceTest {
 			logger.debug("TEST: received {} bytes (uncompressed)",
 					unzippedBody.getBytes("UTF-8").length);
 
-			// unmarshall string to einkaufszettel
+			// unmarshalling string to einkaufszettel
 			unzippedEZ = mapper.readValue(unzippedBody, Einkaufszettel.class);
 			ezAsJson= mapper.writeValueAsString(ez);
 
@@ -735,16 +733,15 @@ public class EZResourceTest {
 	}
 	
 	/**
-     * API CASE 31 (compress request)
+     * API CASE 31 (compression of request)
 	 * 
 	 * Tests if a gzipped request is handled correctly by the server
 	 * 
-	 * - Create a simple Einkaufzettel and send to application (unzipped)
+	 * - Create a simple Einkaufszettel and send to application (unzipped)
 	 * - alter some fields of the Einkaufszettel
 	 * - send it gzipped to the server (zipped)
-	 * - retrieve the hopefuly altered Einkaufszettel from server (unzipped)
+	 * - retrieve the hopefully altered Einkaufszettel from server (unzipped)
 	 * - compare the EZ
-	 * - compare the raw json stings
 	 * 
 	 */
 	@Test
@@ -774,28 +771,35 @@ public class EZResourceTest {
 			GZIPOutputStream gos = new GZIPOutputStream(out);
 			logger.debug("uncompressed: {} bytes", ezString.getBytes("UTF-8").length);
 			gos.write(ezString.getBytes("UTF-8"));
+			gos.close();
 			byte[] ezStringZipped = out.toByteArray();
 
 			logger.debug("compressed: {} bytes", ezStringZipped.length);
 			
-			ByteArrayInputStream in = new ByteArrayInputStream(ezStringZipped);
-		/*
-		 * configure client for writing ez with gzip Encoding
-		 */
+			InputStream in = new ByteArrayInputStream(ezStringZipped);
 
-    	String requestURL = config.getBaseURI() + "ez/" + ez.getEid();
-        WebTarget target = client.target(requestURL);
-        
-        Variant variant = new Variant(MediaType.APPLICATION_JSON_TYPE, "de", "gzip");
-        //Entity<InputStream> entity = Entity.entity(in, MediaType.APPLICATION_JSON);
-        Entity<InputStream> entity = Entity.entity(in, variant);
-        
-        Response response = target.request()
-        		.put(entity);
+			/*
+			 * configure client for writing EZ with gzip Encoding
+			 */
 
-        logger.debug("RESPONSE: {} ({}) for EZ {}", response.getStatus(),
-        		response.getStatusInfo().getReasonPhrase(), ez.getEid() );
-		
+			String requestURL = config.getBaseURI() + "ez/" + ez.getEid();
+			WebTarget target = client.target(requestURL);
+			
+			Variant variant = new Variant(MediaType.APPLICATION_JSON_TYPE, "en", "gzip");
+			Entity<InputStream> entity = Entity.entity(in, variant);
+		   
+			// send compressed EZ to server 
+			Response response = target.request().put(entity);
+
+			logger.debug("RESPONSE: {} ({}) for EZ {}", response.getStatus(),
+					response.getStatusInfo().getReasonPhrase(), ez.getEid() );
+			
+			// get altered EZ from server
+			Einkaufszettel alteredEZ = retrieveEZ(ez, 200);
+        
+			// compare local altered EZ with remote EZ
+			assertThat(ez.equals(alteredEZ), is(true));
+			
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -803,14 +807,15 @@ public class EZResourceTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
         
 	}
 	
     /**
      * DB CLEANER THREAD (cleaning the database)
      *
-     * - create two ez (A and B) with some items belonging to some categories
-     * - delete A via http
+     * - create two EZ (A and B) with some items belonging to some categories
+     * - delete A via HTTP
      * - start the database cleaner Thread
      * - wait some time
      * - check if the categories used by the items from A are deleted in database
