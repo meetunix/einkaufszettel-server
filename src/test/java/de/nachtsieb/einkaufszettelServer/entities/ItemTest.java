@@ -81,4 +81,5 @@ public class ItemTest {
 		it01.setUnit("some Other");
 		assertThat(it01.equals(it02), is(false));
 	}
+	
 }

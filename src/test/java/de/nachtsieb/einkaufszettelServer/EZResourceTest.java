@@ -7,6 +7,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Variant;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +17,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
 import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
@@ -28,9 +32,18 @@ import de.nachtsieb.einkaufszettelServer.entities.Limits;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -41,6 +54,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Main test cases for testing the RESTful API endpoints. 
@@ -494,67 +509,13 @@ public class EZResourceTest {
     	logger.debug("TEST: END api testcase 09 (simple work case)");
     }
     
-    
     /**
-     * API CASE 30 (database trigger: delete_orphaned_categories)
-     *
-     * currently disabled
-     * 
-     * In consequence of benchmarking the database trigger, which is thrown by a deletion of an
-     * Einkaufszettel took to long. Therefore the deletion of orphaned categories is done
-     * by an own thread once a day.
-     * 
-     * - create two ez (A and B) with some items belonging to some categories
-     * - delete A via http
-     * - check if the categories used by the items from A are deleted in database
-     * - check if the categories from B are present in database 
-     * 
-     */
-    
-    /*
-     * 
-    @Test
-    public void api30() {
-
-    	logger.debug("TEST: START api testcase 30 (database trigger)");
-
-    	Category catA = new Category("AAAAAA", "category that belongs to A");
-    	Category catB = new Category("BBBBBB", "category that belongs to B");
-    	Category catAB = new Category("ABABAB", "category that belongs to A and B");
-    	
-    	Einkaufszettel A = new Einkaufszettel("Einkaufszettel A");
-    	A.addItem(new Item("item A", catA));
-    	A.addItem(new Item("item AB", catAB));
-    	
-    	Einkaufszettel B = new Einkaufszettel("Einkaufszettel B");
-    	B.addItem(new Item("item B", catB));
-    	B.addItem(new Item("item BA", catAB));
-    	
-    	sendEZ(A, 200);
-    	sendEZ(B, 200);
-   
-    	// check if all categories are in database
-    	assertThat(DBReader.getCategory(catA.getCid()).equals(catA), is(true));
-    	assertThat(DBReader.getCategory(catB.getCid()).equals(catB), is(true));
-    	assertThat(DBReader.getCategory(catAB.getCid()).equals(catAB), is(true));
-        
-        deleteEZ(A, 200);
-        
-        // check if the category only used by A is deleted
-    	assertThat(DBReader.getCategory(catA.getCid()) == null, is(true));
-    	
-    	// check if the other two categories are still present
-    	assertThat(DBReader.getCategory(catB.getCid()).equals(catB), is(true));
-    	assertThat(DBReader.getCategory(catAB.getCid()).equals(catAB), is(true));
-    	
-    	logger.debug("TEST: END api testcase 30 (database trigger)");
-    }
+    * API CASE 20 (Benchmark sync and async writes)
     */
-    
     @Test
-    public void api40() {
+    public void api20() {
 
-    	logger.debug("TEST: START asyncIO testcase 40");
+    	logger.debug("TEST: START asyncIO testcase 20");
     	
     	int numberOfEZs = 100;
 
@@ -566,7 +527,7 @@ public class EZResourceTest {
     		ezsAsync.add(TestUtils.genRandomEZ());
     	}
     	
-    	long start, end, sum;
+    	long start, end;
     
     	// sync write
     	start = System.currentTimeMillis();
@@ -582,18 +543,21 @@ public class EZResourceTest {
     	logger.debug("TEST: Adding {} EZs asynchronously takes {} seconds",
     			numberOfEZs, (double) (end - start) / 1000);
     	
-    	logger.debug("TEST: END asyncIO testcase 40");
+    	logger.debug("TEST: END asyncIO testcase 20");
     }
     
+    /**
+    * API CASE 21 (Benchmark: async CRUD operations)
+    */
     @Test
-    public void api41() {
+    public void api21() {
     	
     	int numberOfWorker = 50;
     	int numberOfOperations = 200;
     	long start, end;
     	long sum = 0;
 
-    	logger.debug("TEST: START asyncIO testcase 41 ({} operations of {} parallel clients)", 
+    	logger.debug("TEST: START asyncIO testcase 21 ({} operations of {} parallel clients)", 
     			numberOfOperations * 4,numberOfWorker);
     	
     	// test behavior on a full database
@@ -636,7 +600,7 @@ public class EZResourceTest {
 				try {
 					cse.take().isDone();
 				} catch (InterruptedException e) {
-					logger.error("TEST: api41 test (simple async benchmark) failed");
+					logger.error("TEST: api21 test (simple async benchmark) failed");
 
 			}});
 			
@@ -662,7 +626,7 @@ public class EZResourceTest {
     			(double) numberOfOperations * 4, sum / 1000);
 
 		executor.shutdown();
-    	logger.debug("TEST: END asyncIO testcase 41 ({} operations of {} parallel clients)", 
+    	logger.debug("TEST: END asyncIO testcase 21 ({} operations of {} parallel clients)", 
     			(double) numberOfOperations * 4,numberOfWorker);
     }
     
@@ -696,6 +660,152 @@ public class EZResourceTest {
 			return  crudOperation.operate(ez, expectedReturnCode); 
 		}
 	}
+	
+	/**
+     * API CASE 30 (compression responses)
+	 * 
+	 * Tests if a requested gzipped ez is resonded correctly.
+	 * 
+	 * - Create Einkaufzettel and send to application
+	 * - reveive einkaufszettel with header: "Accept-Encoding: gzip"
+	 * - check correct header of the responde
+	 * - unzip and unmarshal
+	 * - compare ez objects
+	 * - compare json strings
+	 * 
+	 */
+	@Test
+	public void api30() {
+		
+		Einkaufszettel ez = TestUtils.genRandomEZ();
+		Einkaufszettel unzippedEZ = null;
+		
+		sendEZ(ez, 200);
+		
+		/*
+		 * configure client for reading ez with gzip Encoding
+		 */
+		
+    	String requestURL = config.getBaseURI() + "ez/" + ez.getEid();
+        WebTarget target = client.target(requestURL);
+        
+        Response response = target.request()
+        		.accept(MediaType.APPLICATION_JSON)
+        		.acceptEncoding("gzip")
+        		.get();
+
+        logger.debug("RESPONSE: {} ({}) for EZ {}", response.getStatus(),
+        		response.getStatusInfo().getReasonPhrase(), ez.getEid() );
+        
+        // check if the correct response header was set 
+        String encodingValue = response.getHeaderString("Content-Encoding");
+        logger.debug("TEST: response header Content-Encoding -> {}", encodingValue);
+        assertThat(encodingValue.equalsIgnoreCase("gzip"), is(true));
+        logger.debug("TEST: received {} bytes (compressed)",response.getLength());
+        
+        String unzippedBody = null;
+        String ezAsJson = null;
+		ObjectMapper mapper = new ObjectMapper();
+        try {
+
+        	// decode gzipped body to string
+			GZIPInputStream gis = new GZIPInputStream( (InputStream) response.getEntity());
+			InputStreamReader reader = new InputStreamReader(gis, "UTF-8");
+			BufferedReader bufferedReader = new BufferedReader(reader);
+			unzippedBody = bufferedReader.readLine();
+			logger.debug("TEST: received {} bytes (uncompressed)",
+					unzippedBody.getBytes("UTF-8").length);
+
+			// unmarshall string to einkaufszettel
+			unzippedEZ = mapper.readValue(unzippedBody, Einkaufszettel.class);
+			ezAsJson= mapper.writeValueAsString(ez);
+
+		} catch (JsonProcessingException e) {
+			logger.error("TEST: exception occured due to conversion string to ez: {}",
+					e.toString());
+		} catch (IOException e) {
+			logger.error("TEST: exception occured due to conversion from gzip to string: {}",
+					e.toString());
+		}
+        
+        // compare einkaufszettel
+        assertThat(ez.equals(unzippedEZ), is(true));
+        // compare whole json string
+        assertThat(ezAsJson.equals(unzippedBody), is(true));
+	}
+	
+	/**
+     * API CASE 31 (compress request)
+	 * 
+	 * Tests if a gzipped request is handled correctly by the server
+	 * 
+	 * - Create a simple Einkaufzettel and send to application (unzipped)
+	 * - alter some fields of the Einkaufszettel
+	 * - send it gzipped to the server (zipped)
+	 * - retrieve the hopefuly altered Einkaufszettel from server (unzipped)
+	 * - compare the EZ
+	 * - compare the raw json stings
+	 * 
+	 */
+	@Test
+	public void api31() {
+		
+		ObjectMapper mapper = new ObjectMapper();
+
+    	Category cat = new Category("00AA00", "irgendeine kategorie");
+		Einkaufszettel ez = new Einkaufszettel("werden");
+    	ez.addItem(new Item("Käse (viel)", cat));
+    	ez.addItem(new Item("Ribiseln", cat));
+    	ez.addItem(new Item("Paradeiser", cat));
+
+		sendEZ(ez, 200);
+		
+		// alter some attributes
+		ez.incrementVersion();
+		ez.addItem(new Item("Kren", cat));
+		
+		// convert ez to json-string
+		String ezString;
+		try {
+			ezString = mapper.writeValueAsString(ez);
+
+			// gzip the string TODO
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			GZIPOutputStream gos = new GZIPOutputStream(out);
+			logger.debug("uncompressed: {} bytes", ezString.getBytes("UTF-8").length);
+			gos.write(ezString.getBytes("UTF-8"));
+			byte[] ezStringZipped = out.toByteArray();
+
+			logger.debug("compressed: {} bytes", ezStringZipped.length);
+			
+			ByteArrayInputStream in = new ByteArrayInputStream(ezStringZipped);
+		/*
+		 * configure client for writing ez with gzip Encoding
+		 */
+
+    	String requestURL = config.getBaseURI() + "ez/" + ez.getEid();
+        WebTarget target = client.target(requestURL);
+        
+        Variant variant = new Variant(MediaType.APPLICATION_JSON_TYPE, "de", "gzip");
+        //Entity<InputStream> entity = Entity.entity(in, MediaType.APPLICATION_JSON);
+        Entity<InputStream> entity = Entity.entity(in, variant);
+        
+        Response response = target.request()
+        		.put(entity);
+
+        logger.debug("RESPONSE: {} ({}) for EZ {}", response.getStatus(),
+        		response.getStatusInfo().getReasonPhrase(), ez.getEid() );
+		
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+	}
+	
     /**
      * DB CLEANER THREAD (cleaning the database)
      *
@@ -758,6 +868,7 @@ public class EZResourceTest {
     	assertThat(DBReader.getCategory(catAB.getCid()).equals(catAB), is(true));
     	
     	logger.debug("TEST: END testing the database cleaner thread");
+
     }
 
     
