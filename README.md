@@ -27,11 +27,9 @@ Einkaufszettel zu teilen, oder man verwendet den öffentlichen einkaufszettel-se
 
 ## Voraussetzungen
 
-**einkaufszettel-server** ist in java implementiert und setzt eine funktionierende PostgreSQL-Installation
-voraus. Außerdem wird Apache Maven zum Übersetzen und Testen der Anwendung benötigt.
-
-* PostgreSQL
-* Apache Maven
+1. Java Runtime Environment: Version 8 oder höher
+2. PostgeSQL
+3. Apache Maven: Übersetzen, Testen und zum Erstellen des JAR-Paketes 
 
 ## Übersetzen und Testen
 
@@ -39,18 +37,19 @@ voraus. Außerdem wird Apache Maven zum Übersetzen und Testen der Anwendung ben
 
 ### Datenbank vorbereiten
 
-In diesem Abschnitt wird schematisch gezeigt, wie auf PostgreSQL-Server unter GNU/Linux ein
+In diesem Abschnitt wird schematisch gezeigt, wie auf einem PostgreSQL-Server unter GNU/Linux einn
 Datenbanknutzer und eine entsprechende Datenbank für den **einkaufszettel-server** erstellt wird. 
 
-#### 1. Datenbank und Datenbanknutzer erstellen
-
 1. Nutzer mit Passwort erstellen:
+
 ```
 $ sudo -u postgres createuser -P ezuser
 Enter password for new role:
 Enter it again:
 ```
+
 2. Datenbank erstellen und Eigentümer setzen:
+
 ```
 $ sudo -u postgres createdb -O ezuser ezdatabase
 ```
@@ -95,8 +94,51 @@ Starten des Servers:
     java -jar target/einkaufszettelServer-[VERSION]-jar-with-dependencies.jar
 
 ### starten über systemd
+
+Da das JAR-Paket von **einkaufszettel-server** einen eigenen Webserver enthält kann man
+*systemd* zum Verwalten der Anwendung (start, stop, Nutzerkontext) verwenden. Es wird empfohlen
+**einkaufszettel-server** mit einem extra dafür angelegtem Nutzerkonto zu betreiben. 
     
-    TODO
+1. Neue Systemgruppe/-nutzer unter GNU/Linux anlegen
+
+    sudo groupadd -r ezserver
+    sudo useradd -r -s /bin/false -g ezserver ezserver
+
+2. Arbeitsverzeichnis für *systemd* anlegen und Berechtigungen setzen
+
+In diesem Verzeichnis muss das JAR-Paket liegen.
+
+    sudo mkdir /opt/einkaufszettel-server
+    sudo chown ezserver: /opt/einkaufszettel-server
+
+3. Systemd unit-file `/etc/systemd/system/einkaufszettel-server.service` erstellen
+
+
+```
+[Unit]
+Description=Manage einkaufszettel-server
+
+[Service]
+WorkingDirectory=/opt/einkaufszettel-server
+ExecStart=/bin/java -jar myapp.jar
+User=ezserver
+Type=simple
+Restart=on-failure
+RestartSec=10
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
+```
+    
+
+4. Ausführung bei Systemstart und Start
+
+    sudo systemctl dameon-reload
+    sudo systemctl start einkufszettel-server
+    sudo systemctl enable einkufszettel-server
+
+
     
 ## API
 

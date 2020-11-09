@@ -96,7 +96,29 @@ public class EZServer implements Callable<String>  {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-    	
+    
+    	// starts the grizzly web server
+        final HttpServer server = startServer();
+        System.out.println(String.format(
+        		"\nEinkaufszettelServer started and listen on %s\n", BASE_URI));
+
+    	// start database cleaning thread
+    	Thread cleaner = new Thread(new DatabaseCleanerThread(), "DB-CLEANER");
+    	cleaner.start();
+
+    	// if the JVM shuts down the following thread is executed
+        Runtime.getRuntime().addShutdownHook(new Thread() 
+        { 
+          public void run() 
+          { 
+            System.out.println("closing database cleaner thread"); 
+            cleaner.interrupt();
+            System.out.println("shutting down web server"); 
+            server.shutdownNow();
+            System.out.println("goodbye"); 
+          } 
+        }); 
+        
     	int exitCode = new CommandLine(new EZServer()).execute(args);
     	System.exit(exitCode);
     }
@@ -104,21 +126,11 @@ public class EZServer implements Callable<String>  {
 	@Override
 	public String call() throws Exception {
 		
-    	logger.info("EinkaufzettelServer started at " + BASE_URI);
+    	logger.info("EinkaufzettelServer started at {} ", BASE_URI);
     	
-    	// start database cleaning thread
-    	Thread cleaner = new Thread(new DatabaseCleanerThread(), "DB-CLEANER");
-    	cleaner.start();
+    	while(Thread.currentThread().isAlive())
+    		Thread.sleep(5000);
     	
-    	
-        final HttpServer server = startServer();
-        System.out.println(String.format(
-        		"\nEinkaufszettelServer started and listen on %s\nHit enter to stop it...",
-        		BASE_URI));
-        
-        System.in.read();
-        cleaner.interrupt();
-        server.shutdownNow();
         return null;
 		
 	}

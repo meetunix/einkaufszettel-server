@@ -16,6 +16,8 @@ will be gzip encoded. (for GET-requests)
 If a request header contains "Content-Encoding: gzip" einkaufszettel-server assumes
 that the message body is gzip encoded.
 
+- starting from systemd is now possible
+
 
 
 ## [0.1.0-alpha] - 2020-11-01
