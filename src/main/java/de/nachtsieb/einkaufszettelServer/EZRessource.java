@@ -1,14 +1,11 @@
 package de.nachtsieb.einkaufszettelServer;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.NameBinding;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,10 +27,6 @@ import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
 import de.nachtsieb.einkaufszettelServer.entities.ErrorMessage;
 import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
 import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
-
-/*
- * TODO: 	jersey manual chapter 12 - URIs and Links (App needs to share link to a Einkaufszettel)
- */
 
 @Path("/ez/")
 public class EZRessource {

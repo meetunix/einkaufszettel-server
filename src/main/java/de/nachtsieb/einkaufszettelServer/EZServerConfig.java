@@ -23,6 +23,7 @@ public final class EZServerConfig {
 
 	private String baseURI;
 	private String logLevel;
+	private String logPath;
 	
 	public EZServerConfig() {
 		loadConfFile(CONF_PATH);
@@ -40,6 +41,7 @@ public final class EZServerConfig {
 
 			this.baseURI = props.getProperty("BASE_URI");
 			this.logLevel = props.getProperty("LOG_LEVEL"); //TODO: check for valid log level
+			this.logPath = props.getProperty("LOG_PATH"); 
 
 		} catch (InvalidPathException | IOException e) {
 			logger.error("unable to load config file from given path " + confFilePath);
@@ -62,4 +64,9 @@ public final class EZServerConfig {
 	public void setLogLevel(String logLevel) {
 		this.logLevel = logLevel;
 	}
+
+	public String getLogPath() {
+		return logPath;
+	}
+	
 }

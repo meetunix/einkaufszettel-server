@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="EinkauszettelServer" monitorInterval="10">
+<Configuration status="warn" name="EinkauszettelServer">
+
 	<Appenders>
 
 		<Console name="Console" target="SYSTEM_OUT">
@@ -9,16 +10,22 @@
 			</PatternLayout>
 		</Console>
 
-		<File name="file_out" fileName="ezserver.log" append="true">
+		<RollingFile name="rolling_file"
+			fileName="${sys:logPath:-/tmp}/ezserver.log"
+			filePattern="${sys:logPath:-/tmp}/ezserver.%i.log.gz" append="true">
 			<PatternLayout>
 				<Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %m%n</Pattern>
 			</PatternLayout>
-		</File>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="20 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
 
 	</Appenders>
 	<Loggers>
 		<Logger name="de.nachtsieb" level="debug" additivity="false">
-			<AppenderRef ref="file_out"/>
+			<AppenderRef ref="rolling_file" />
 		</Logger>
 		<Root level="warn">
 			<AppenderRef ref="Console" />

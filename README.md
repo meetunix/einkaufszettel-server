@@ -63,6 +63,7 @@ Die Konfiguration ist in zwei Dateien aufgeteilt:
 ```
 BASE_URI=http://HOSTNAME:PORT/r0/
 LOG_LEVEL=LEVEL
+LOG_PATH=/var/log/
 ```
 
 Der Server verwendet die Adresse und den Port aus `BASE_URI` um auf eingehende Anfragen zu
