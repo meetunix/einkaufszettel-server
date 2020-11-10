@@ -9,24 +9,17 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Properties;
 
-import javax.inject.Singleton;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-@Singleton
 public final class EZServerConfig {
 	
-    private static Logger logger = LogManager.getLogger(EZServerConfig.class);
-
-	public static final String CONF_PATH = "/etc/ez-server/server.properties";
-
 	private String baseURI;
 	private String logLevel;
 	private String logPath;
+	private String jdbcURL;
+	private String dbUsername;
+	private String dbPassword;
 	
-	public EZServerConfig() {
-		loadConfFile(CONF_PATH);
+	public EZServerConfig(String serverConfPath) {
+		loadConfFile(serverConfPath);
 	}
 
 	private void loadConfFile(String confFilePath) {
@@ -42,9 +35,12 @@ public final class EZServerConfig {
 			this.baseURI = props.getProperty("BASE_URI");
 			this.logLevel = props.getProperty("LOG_LEVEL"); //TODO: check for valid log level
 			this.logPath = props.getProperty("LOG_PATH"); 
+			this.jdbcURL = props.getProperty("JDBC_URL"); 
+			this.dbUsername = props.getProperty("DATABASE_USERNAME"); 
+			this.dbPassword = props.getProperty("DATABASE_PASSWORD"); 
 
 		} catch (InvalidPathException | IOException e) {
-			logger.error("unable to load config file from given path " + confFilePath);
+			System.err.println("could not read server.properties");
 			System.exit(-1);
 		}
 	}
@@ -53,20 +49,28 @@ public final class EZServerConfig {
 		return baseURI;
 	}
 
-	public void setBaseURI(String baseURI) {
-		this.baseURI = baseURI;
-	}
-
 	public String getLogLevel() {
 		return logLevel;
-	}
-
-	public void setLogLevel(String logLevel) {
-		this.logLevel = logLevel;
 	}
 
 	public String getLogPath() {
 		return logPath;
 	}
+
+	public String getJdbcURL() {
+		return jdbcURL;
+	}
+
+	public String getDbUsername() {
+		return dbUsername;
+	}
+
+	public String getDbPassword() {
+		String password = dbPassword;
+		this.dbPassword = null;
+		return password;
+	}
+	
+	
 	
 }

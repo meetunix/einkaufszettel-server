@@ -1,11 +1,5 @@
 package de.nachtsieb.einkaufszettelServer;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -16,10 +10,13 @@ import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPReaderInterceptor;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPWriterInterceptor;
 import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
+import java.util.concurrent.Callable;
 
 /*
  * Copyright © 2020 Martin Steinbach
@@ -27,12 +24,20 @@ import java.util.Map;
  * See file LICENSE for license information
  *
  */
+@Command(description = "Einkaufszettel Server Application",
+			mixinStandardHelpOptions = true,
+			name = "EinkaufszettelServer",
+			version = "EinkaufszettelServer 0.1.0-alpha")
 
-public class EZServer {
+public class EZServer implements Callable<String>  {
 	
+	@Option(names = { "-c", "--config-path"}, description = "Path to server config file")
+	private static String serverConfigPath = "/etc/ez-server/server.properties";
 
 	private static JsonValidator jsonValidator;
 	private static EZServerConfig config;
+	
+	public static final String DEFAULT_SERVER_CONFIG_PATH = "/etc/ez-server/server.properties";
 	
 	public static String baseURI;
 	
@@ -45,13 +50,28 @@ public class EZServer {
      * @return Grizzly HTTP server.
      */
     public static HttpServer startServer() {
+
+        // load server config file
+        config = new EZServerConfig(serverConfigPath);
+        
+        // set log configuration
+        System.setProperty("logPath", config.getLogPath());
+        System.setProperty("logLevel", config.getLogLevel());
+        
+        // set database properties
+        System.setProperty("jdbcURL", config.getJdbcURL());
+        System.setProperty("databaseUsername", config.getDbUsername());
+        System.setProperty("databasePassword", config.getDbPassword());
+        
+        
+        BASE_URI = config.getBaseURI();
+
         // create a resource config that scans for JAX-RS resources and providers
         // in de.nachtsieb.einkaufszettelServer package
         final ResourceConfig rc = new ResourceConfig()
         		.packages("de.nachtsieb.einkaufszettelServer");
         rc.property(ServerProperties.WADL_FEATURE_DISABLE, true);
         
-        BASE_URI = config.getBaseURI();
         
         /*
          *  Injecting an instance of the class JsonValidator to the application. Results in much
@@ -86,35 +106,23 @@ public class EZServer {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-    	
-        // load local config
-        config = new EZServerConfig();
+        
+    	// parse cli arguments
+    	int exitCode = new CommandLine(new EZServer()).execute(args);
+    	System.exit(exitCode);
+    }
 
-    	System.setProperty("logPath", config.getLogPath());
-    	System.out.println("log directory: " + System.getProperty("logPath"));
-
-    	LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-    	Configuration config = ctx.getConfiguration();
-    	LoggerConfig loggerConfig = config.getLoggerConfig("de.nachtsieb"); 
-    	Map<String,Appender> apps = loggerConfig.getAppenders();
-    	Appender rfa = apps.get("rolling_file");
-    	System.out.println(rfa.getName());
-    	
-    	
-
-    	System.out.println("LOADED LOGGER CONFIG : " + loggerConfig.getName() );
-    	System.out.println("LEVEL BEFORE : " + loggerConfig.getLevel() );
-
-    	loggerConfig.setLevel(Level.WARN);
-
-    	System.out.println("LEVEL AFTER : " + loggerConfig.getLevel() );
-    	ctx.updateLoggers();
-    	
+	@Override
+	public String call() throws Exception {
+		
+        
+        
     	// starts the grizzly web server
         final HttpServer server = startServer();
         System.out.println(String.format(
         		"\nEinkaufszettelServer started and listen on %s\n", BASE_URI));
 
+    	
     	// start database cleaning thread
     	Thread cleaner = new Thread(new DatabaseCleanerThread(), "DB-CLEANER");
     	cleaner.start();
@@ -131,15 +139,11 @@ public class EZServer {
             System.out.println("goodbye"); 
           } 
         }); 
-        
 
-    
-		
     	while(Thread.currentThread().isAlive())
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+    		Thread.sleep(5000);
+    	
+        return null;
+		
 	}
 }

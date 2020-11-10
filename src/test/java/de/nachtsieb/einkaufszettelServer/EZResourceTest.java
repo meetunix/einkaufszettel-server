@@ -60,7 +60,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public class EZResourceTest {
 	
-    private static Logger logger = LogManager.getLogger(EZResourceTest.class);
+        private static Logger logger;
 
     private static HttpServer server;
     private Client client ;
@@ -74,7 +74,9 @@ public class EZResourceTest {
         server = EZServer.startServer();
         conn = EZTestDB.getConnection();
         
-        config = new EZServerConfig();
+        config = new EZServerConfig(EZServer.DEFAULT_SERVER_CONFIG_PATH);
+        
+        logger = LogManager.getLogger(EZResourceTest.class);
         
     }
     

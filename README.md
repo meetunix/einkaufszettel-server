@@ -15,9 +15,6 @@
 
 [english version](README_EN.md)
 
-* **einkaufszettel-server befindet sich noch in Entwicklung.**
-* **Die Dokumentation wird fortlaufend erweitert.**
-
 **einkaufszettel-Server** ist die Serverkomponente für eine verteilte Anwendung zum anonymen Teilen
 von Einkaufszetteln. Um einen Einkaufszettel zu teilen ist keine Anmeldung nötig. Entweder man
 betreibt seinen eigenen *einkaufszettel-server* um mithilfe der [EZApp (ToDo)]
@@ -31,9 +28,14 @@ Einkaufszettel zu teilen, oder man verwendet den öffentlichen einkaufszettel-se
 2. PostgeSQL
 3. Apache Maven: Übersetzen, Testen und zum Erstellen des JAR-Paketes 
 
-## Übersetzen und Testen
+## Übersetzen
 
-    mvn clean compile package
+```
+mvn clean compile package -DskipTests
+```
+    
+Nach dem Übersetzen befindet sich die JAR-Datei `einkaufszettelServer-[VERSION]-jar-with-dependencies.jar`
+im `target`-Verzeichnis.
 
 ### Datenbank vorbereiten
 
@@ -56,14 +58,23 @@ $ sudo -u postgres createdb -O ezuser ezdatabase
 
 ## Konfiguration
 
-Die Konfiguration ist in zwei Dateien aufgeteilt:
+Die Konfigurationsdatei kann **einkaufszettel-server** beim Start mitgeteilt werden. Sollte
+Option `-c PATH` nicht verwendet werden, wird die Datei `/etc/ez-server/server.properties` verwendet.
 
-1. Konfiguration des servers **server.properties**: `/etc/ez-server/server.propoerties`
+```
+java -jar einkaufszettelServer-[VERSION]-jar-with-dependencies.jar -c /PATH/server.properties
+
+```
+
+**Aufbau der Konfigurationsdatei**
 
 ```
 BASE_URI=http://HOSTNAME:PORT/r0/
 LOG_LEVEL=LEVEL
 LOG_PATH=/var/log/
+JDBC_URL=jdbc:postgresql://HOSTNAME:PORT/DB-NAME
+DATABASE_USERNAME=DB-USER
+DATABASE_PASSWORD=PASSWORD
 ```
 
 Der Server verwendet die Adresse und den Port aus `BASE_URI` um auf eingehende Anfragen zu
@@ -71,28 +82,9 @@ lauschen.
 
 Das `LOG_LEVEL` kann `WARN`, `INFO` oder `DEBUG` sein.  
 
-
-2. Konfiguration der Datenbankverbindung **db.properties**: `/etc/ez-server/db.propoerties`
-
-```
-jdbcUrl=jdbc:postgresql://HOSTNAME:PORT/DB-NAME
-dataSource.user=DB-USER
-dataSource.password=PASSWORD
-dataSource.cachePrepStmts=true
-dataSource.prepStmtCacheSize=250
-dataSource.prepStmtCacheSqlLimit=2048
-```
-
-
 ### Konfiguration testen
 
     mvn clean compile test
-
-## Benutzen
-
-Starten des Servers: 
-
-    java -jar target/einkaufszettelServer-[VERSION]-jar-with-dependencies.jar
 
 ### starten über systemd
 
@@ -121,7 +113,7 @@ Description=Manage einkaufszettel-server
 
 [Service]
 WorkingDirectory=/opt/einkaufszettel-server
-ExecStart=/bin/java -jar myapp.jar
+ExecStart=/bin/java -jar einkaufszettelServer-[VERSION]-jar-with-dependencies.jar
 User=ezserver
 Type=simple
 Restart=on-failure
@@ -132,7 +124,6 @@ KillSignal=SIGINT
 WantedBy=multi-user.target
 ```
     
-
 4. Ausführung bei Systemstart und Start
 
     sudo systemctl dameon-reload
@@ -140,7 +131,6 @@ WantedBy=multi-user.target
     sudo systemctl enable einkufszettel-server
 
 
-    
 ## API
 
 [Interaktive API-Dokumentation (Swagger)](https://ez.nachtsieb.de/swagger)
