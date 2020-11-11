@@ -7,7 +7,7 @@
 	<groupId>de.nachtsieb</groupId>
 	<artifactId>einkaufszettelServer</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.0-alpha</version>
+	<version>0.1.0</version>
 	<name>einkaufszettelServer</name>
 
 	<dependencyManagement>
@@ -32,7 +32,7 @@
 			<artifactId>jersey-hk2</artifactId>
 		</dependency>
 
-		<!-- uncomment this to get JSON support: <dependency> <groupId>org.glassfish.jersey.media</groupId> 
+		<!-- uncomment this to get JSON support: <dependency> <groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-binding</artifactId> </dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -45,6 +45,11 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.2.14</version>
 		</dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+        </dependency>
 		<!-- HikariCP - fast and lightweight JDBC-Connection-Pooling -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
@@ -57,7 +62,7 @@
 			<version>2.2</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- jersey-media-json-jackson needed for DataBinding (no need to implement 
+		<!-- jersey-media-json-jackson needed for DataBinding (no need to implement
 			own MessageBodyWriter and MessageBodyReader) -->
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
@@ -68,7 +73,7 @@
 			<artifactId>json-schema-validator</artifactId>
 			<version>2.2.14</version>
 		</dependency>
-		<!-- Jackson already wanted by json-schema-validator <dependency> <groupId>com.fasterxml.jackson.core</groupId> 
+		<!-- Jackson already wanted by json-schema-validator <dependency> <groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId> <version>2.11.0</version> </dependency> -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

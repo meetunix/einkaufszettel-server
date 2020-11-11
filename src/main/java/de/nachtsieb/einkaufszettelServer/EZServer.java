@@ -27,7 +27,7 @@ import java.util.concurrent.Callable;
 @Command(description = "Einkaufszettel Server Application",
 			mixinStandardHelpOptions = true,
 			name = "EinkaufszettelServer",
-			version = "EinkaufszettelServer 0.1.0-alpha")
+			version = "EinkaufszettelServer 0.1.0")
 
 public class EZServer implements Callable<String>  {
 	
@@ -115,14 +115,11 @@ public class EZServer implements Callable<String>  {
 	@Override
 	public String call() throws Exception {
 		
-        
-        
     	// starts the grizzly web server
         final HttpServer server = startServer();
         System.out.println(String.format(
         		"\nEinkaufszettelServer started and listen on %s\n", BASE_URI));
 
-    	
     	// start database cleaning thread
     	Thread cleaner = new Thread(new DatabaseCleanerThread(), "DB-CLEANER");
     	cleaner.start();
@@ -144,6 +141,5 @@ public class EZServer implements Callable<String>  {
     		Thread.sleep(5000);
     	
         return null;
-		
 	}
 }

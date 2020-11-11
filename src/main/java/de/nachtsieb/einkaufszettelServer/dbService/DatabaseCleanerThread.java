@@ -109,7 +109,7 @@ public class DatabaseCleanerThread implements Runnable {
 		try (Connection conn = DBConnPool.getConnection()) {
 			
 			PreparedStatement ps = conn.prepareStatement(
-					"SELECT MAX(category_cleanup_time) FROM ez_cleanup");
+					"SELECT MAX(category_cleanup_time) AS max FROM ez_cleanup");
 
 			ResultSet rs = ps.executeQuery();
 			
