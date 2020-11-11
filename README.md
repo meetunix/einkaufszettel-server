@@ -1,16 +1,16 @@
 <h1 align="center">einkaufszettel-server</h1>
 
 <p align="center">
-<a href="https://github.com/corona-warn-app/cwa-server/blob/master/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>   
+<a href="https://github.com/corona-warn-app/cwa-server/blob/master/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
 <a href="https://ez.nachtsieb.de/swagger" title="swagger-ui"><img src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fmeetunix%2Feinkaufszettel-server%2Fmain%2Fopenapi.yaml"></a>
 </p>
 
 
 <p align="center">
-<a href="#Voraussetzungen">Voraussetzungen</a> • 
-<a href="#Konfiguration">Konfiguration</a> • 
-<a href="#API">API</a> • 
-<a href="#Changelog">Changelog</a> 
+<a href="#Voraussetzungen">Voraussetzungen</a> •
+<a href="#Konfiguration">Konfiguration</a> •
+<a href="#API">API</a> •
+<a href="#Changelog">Changelog</a>
 </p>
 
 [english version](README_EN.md)
@@ -26,21 +26,21 @@ Einkaufszettel zu teilen, oder man verwendet den öffentlichen einkaufszettel-se
 
 1. Java Runtime Environment: Version 8 oder höher
 2. PostgeSQL
-3. Apache Maven: Übersetzen, Testen und zum Erstellen des JAR-Paketes 
+3. Apache Maven: Übersetzen, Testen und zum Erstellen des JAR-Paketes
 
 ## Übersetzen
 
 ```
 mvn clean compile package -DskipTests
 ```
-    
+
 Nach dem Übersetzen befindet sich die JAR-Datei `einkaufszettelServer-[VERSION]-jar-with-dependencies.jar`
 im `target`-Verzeichnis.
 
 ### Datenbank vorbereiten
 
-In diesem Abschnitt wird schematisch gezeigt, wie auf einem PostgreSQL-Server unter GNU/Linux einn
-Datenbanknutzer und eine entsprechende Datenbank für den **einkaufszettel-server** erstellt wird. 
+In diesem Abschnitt wird schematisch gezeigt, wie auf einem PostgreSQL-Server unter GNU/Linux ein
+Datenbanknutzer und eine entsprechende Datenbank für den **einkaufszettel-server** erstellt wird.
 
 1. Nutzer mit Passwort erstellen:
 
@@ -80,29 +80,34 @@ DATABASE_PASSWORD=PASSWORD
 Der Server verwendet die Adresse und den Port aus `BASE_URI` um auf eingehende Anfragen zu
 lauschen.
 
-Das `LOG_LEVEL` kann `WARN`, `INFO` oder `DEBUG` sein.  
+Das `LOG_LEVEL` kann `WARN`, `INFO` oder `DEBUG` sein.
 
 ### Konfiguration testen
 
-    mvn clean compile test
+```mvn clean compile test```
 
 ### starten über systemd
 
 Da das JAR-Paket von **einkaufszettel-server** einen eigenen Webserver enthält kann man
 *systemd* zum Verwalten der Anwendung (start, stop, Nutzerkontext) verwenden. Es wird empfohlen
-**einkaufszettel-server** mit einem extra dafür angelegtem Nutzerkonto zu betreiben. 
-    
+**einkaufszettel-server** mit einem extra dafür angelegtem Nutzerkonto zu betreiben.
+
 1. Neue Systemgruppe/-nutzer unter GNU/Linux anlegen
 
-    sudo groupadd -r ezserver
-    sudo useradd -r -s /bin/false -g ezserver ezserver
+```
+$ sudo groupadd -r ezserver
+$ sudo useradd -r -s /bin/false -g ezserver ezserver
+```
+
 
 2. Arbeitsverzeichnis für *systemd* anlegen und Berechtigungen setzen
 
 In diesem Verzeichnis muss das JAR-Paket liegen.
 
-    sudo mkdir /opt/einkaufszettel-server
-    sudo chown ezserver: /opt/einkaufszettel-server
+```
+$ sudo mkdir /opt/einkaufszettel-server
+$ sudo chown ezserver: /opt/einkaufszettel-server
+```
 
 3. Systemd unit-file `/etc/systemd/system/einkaufszettel-server.service` erstellen
 
@@ -123,13 +128,14 @@ KillSignal=SIGINT
 [Install]
 WantedBy=multi-user.target
 ```
-    
+
 4. Ausführung bei Systemstart und Start
 
-    sudo systemctl dameon-reload
-    sudo systemctl start einkufszettel-server
-    sudo systemctl enable einkufszettel-server
-
+```
+sudo systemctl dameon-reload
+sudo systemctl start einkufszettel-server
+sudo systemctl enable einkufszettel-server
+```
 
 ## API
 
