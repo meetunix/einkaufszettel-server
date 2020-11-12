@@ -12,6 +12,8 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.nachtsieb.einkaufszettelServer.EZServerConfig;
+
 /**
  * This thread will be started, if the main application starts. Once a day it
  * will clean up the database for unused categories. And logs how long the
@@ -27,9 +29,16 @@ public class DatabaseCleanerThread implements Runnable {
 	
     private static Logger logger = LogManager.getLogger(DatabaseCleanerThread.class);
     
-    private Duration oneDay = Duration.ofHours(24); 
+    private final Duration oneDay = Duration.ofHours(24); 
+    private EZServerConfig conf;
     
-	/**
+    
+    public DatabaseCleanerThread(EZServerConfig config) {
+    	this.conf = config;
+    }
+    
+    
+    /**
 	 * Deletes orphaned (not used by any item) categories from database.
 	 * 
 	 * @return Number of deleted categories
@@ -163,7 +172,8 @@ public class DatabaseCleanerThread implements Runnable {
 	private void doCleaning() {
 		deleteOrphanedCategories();
 		writeCleaningTime();
-		vacuumDatabase();
+		if(conf.getJdbcURL().contains("postgres"))
+			vacuumDatabase();
 		logDatabaseStatistics();
 	}
 	

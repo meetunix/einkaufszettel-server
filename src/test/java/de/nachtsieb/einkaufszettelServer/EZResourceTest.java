@@ -854,7 +854,7 @@ public class EZResourceTest {
         deleteEZ(A, 200);
         
         // start the cleaning thread and stop it
-		Thread cleaner = new Thread(new DatabaseCleanerThread(), "TEST-DB-CLEANER");
+		Thread cleaner = new Thread(new DatabaseCleanerThread(config), "TEST-DB-CLEANER");
 		cleaner.start();
 
 		// wait some time and stop thread

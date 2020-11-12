@@ -6,6 +6,8 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
+import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
+import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
 import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPReaderInterceptor;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPWriterInterceptor;
@@ -15,6 +17,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.concurrent.Callable;
 
@@ -119,9 +122,18 @@ public class EZServer implements Callable<String>  {
         final HttpServer server = startServer();
         System.out.println(String.format(
         		"\nEinkaufszettelServer started and listen on %s\n", BASE_URI));
+       
+        // create database schema if main table does not exists in database
+        if ( ! DBReader.tableExists(DBReader.TABLE_EINKAUFSZETTEL)) {
+        	System.out.println("\nCreate database schema\n");
+        	ResLoader resl = new ResLoader();
+        	InputStream is = resl.getFileFromResourceAsStream("pgDBSchema.sql");
+        	String schema = resl.getStringfromInputstream(is);
+			DBWriter.ceateTables(schema.replace("\n", " "));
+        }
 
     	// start database cleaning thread
-    	Thread cleaner = new Thread(new DatabaseCleanerThread(), "DB-CLEANER");
+    	Thread cleaner = new Thread(new DatabaseCleanerThread(config), "DB-CLEANER");
     	cleaner.start();
 
     	// if the JVM shuts down the following thread is executed

@@ -1,6 +1,7 @@
 package de.nachtsieb.einkaufszettelServer.dbService;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,6 +25,31 @@ import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
 public final class DBReader {
 	
     private static Logger logger = LogManager.getLogger(DBReader.class);
+
+	public static final String TABLE_EINKAUFSZETTEL = "einkaufszettel";
+    
+    public static boolean tableExists(String table) {
+    	
+		boolean tableExists = false;
+
+		try (Connection conn = DBConnPool.getConnection()) {
+			
+			//check if table already exists
+			DatabaseMetaData dbmeta = conn.getMetaData();
+			ResultSet metaRes = dbmeta.getTables(null, null, table , new String[] {"TABLE"} );
+		
+			while(metaRes.next()) {
+				if (metaRes.getString("TABLE_NAME").toLowerCase().equals(table)) {
+					tableExists = true;
+				}
+			}
+			metaRes.close();
+
+		} catch (Exception e) {
+			logger.error("Unable to fetch meta data from database");
+		}
+		return tableExists;
+    }
     
 	/**
 	 * Returns all eids from the database.

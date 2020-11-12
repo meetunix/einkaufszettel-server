@@ -87,6 +87,12 @@ public final class EZServerConfig {
 		}
 		// write all property values to the configMap
 		allowedConfigPropertyList.forEach(k -> setProperty(k));
+		System.out.println("\nThe following configuration parameters are used:\n");
+		for (String key : allowedConfigPropertyList) {
+			if (! key.equals(PROPERTY_DATABASE_PASSWORD))
+				System.out.println(String.format("%-20s: %s",key, configMap.get(key)));
+		}
+		System.out.println();
 	}
 	
 	private void setProperty(String propyKey) {
@@ -109,18 +115,40 @@ public final class EZServerConfig {
 		if (propyKey.equals(PROPERTY_LOG_PATH)) {
 
 			Path path = Paths.get(propertiesFromFile.getProperty(PROPERTY_LOG_PATH));
-			File pathFile = path.toFile();
+			File filePath = path.toFile();
 			
-			if (! (pathFile.exists() && pathFile.isDirectory() && pathFile.canWrite()) ) {
-
-				System.err.println(String.format(
-						"Config-Error: log path %s does not exists or is not writeable.",
-						path.toString()));
-				System.exit(-1);
-			}
+			validatePath(filePath);
 		}
+			
+		// if H2 in file mode is used, check if the path is writeable 
+		if (propyKey.equals(PROPERTY_JDBC_URL)) {
 
+			String jdbcString = propertiesFromFile.getProperty(PROPERTY_JDBC_URL);
+
+			if ( jdbcString.contains("file")) {
+
+				String[] splittedString = jdbcString.split(":");
+				String filePathString = splittedString[splittedString.length - 1];
+				File filePath = Path.of(filePathString).getParent().toFile();
+				validatePath(filePath);
+		}
+	}
+		
+		// copy the left properties
 		configMap.put(propyKey, propertiesFromFile.getProperty(propyKey));
+		
+	}
+	
+	private void validatePath(File filePath) {
+
+		if (! (filePath.exists() && filePath.isDirectory() && filePath.canWrite()) ) {
+
+			System.err.println(String.format(
+					"Config-Error: Path %s does not exists or is not writeable.",
+					filePath.toString()));
+			System.exit(-1);
+		}
+		
 	}
 
 	public String getBaseURI() {

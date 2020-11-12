@@ -6,7 +6,7 @@
 ITERATIONS=200
 
 FILE="./delete_example.json"
-URL="https://$1/r0/ez/76f2c9e4-ea57-4df6-bdbf-cc7a5301df80"
+URL="$1/r0/ez/76f2c9e4-ea57-4df6-bdbf-cc7a5301df80"
 
 COMMAND="curl -s -H \"Content-Type: application/json\" -XPUT -s $URL --data-binary @$FILE > /dev/null"
 

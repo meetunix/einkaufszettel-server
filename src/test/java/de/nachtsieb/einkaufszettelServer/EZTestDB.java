@@ -1,7 +1,6 @@
 package de.nachtsieb.einkaufszettelServer;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -31,24 +30,16 @@ public class EZTestDB {
 		} catch (SQLException w) {
 			logger.error("TEST: database connection could not be established: {}", w.toString());
 		}
-		
 		return null;
-		
 	}
 	
 	public static void resetDatabase(Connection conn) {
 		
-		try {
+		ResLoader resl = new ResLoader();
+		InputStream is = resl.getFileFromResourceAsStream("pgDBSchema.sql");
+		String schema = resl.getStringfromInputstream(is);
 
-			ResourceLoader resLoader = new ResourceLoader();
-			File file = resLoader.getFileFromResources("pgDBSchema.sql");
-			String schema = resLoader.getFileasString(file);
-
-			DBWriter.deleteTables(tables);
-			DBWriter.ceateTables(schema.replace("\n", " "));
-
-		} catch (IOException e) {
-			logger.error("TEST: unable to reset test database : {}", e.toString());
-		}
+		DBWriter.deleteTables(tables);
+		DBWriter.ceateTables(schema.replace("\n", " "));
 	}
 }
