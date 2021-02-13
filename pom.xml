@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.14</version>
+			<version>42.2.18</version>
 		</dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>3.4.5</version>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
-			<version>4.5.1</version>
+			<version>4.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -150,7 +150,7 @@
 	</build>
 
 	<properties>
-		<jersey.version>2.32</jersey.version>
+		<jersey.version>2.33</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 </project>
