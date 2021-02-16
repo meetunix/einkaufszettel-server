@@ -3,4 +3,7 @@ target/
 .project
 .settings/**
 .classpath
+*.pyc
+__pycache__
+*.swp
 
