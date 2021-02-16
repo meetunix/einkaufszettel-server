@@ -73,6 +73,7 @@ class Einkaufszettel:
 
     def increment_version(self):
         self.version += 1
+        return self
 
     def add_item(self, item):
         self.items.append(item)
