@@ -160,7 +160,7 @@ public class EZRessource {
 
 				logger.debug("Going to UPDATE the EZ with eid: {}", newEZ.getEid());
 				DBWriter.updateEZ(newEZ);
-				logger.info("EZ ({}) updated successfully", newEZ.getEid());
+				//logger.info("EZ ({}) updated successfully", newEZ.getEid());
 
 				return Response.ok().build();
 			}

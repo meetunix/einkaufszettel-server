@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -181,21 +182,24 @@ public final class DBWriter{
 	private static boolean writeOrUpdateCategory(Map<UUID,Category> catMap, Connection conn) {
 		
 		// get all cids from database to check wich category has to be created or updated
-		List<UUID> cidList = DBReader.getCIDs(conn);
+		// List<UUID> cidList = DBReader.getCIDs(conn);
 	
 		// if a cid is already in database add it for updating. The rest of the map must be created
-		List<Category> updateList = new ArrayList<>();
+		List<Category> updateList = new LinkedList<>();
+		
+		List<Category> createList = new LinkedList<>();
 
-		for (UUID cid : cidList) {
-			Category cat = catMap.get(cid);
-			if (cat != null) {
-				updateList.add(cat);
-				catMap.remove(cid);
-			}
+		for (UUID cid : catMap.keySet()) {
+
+			if (DBReader.categoryExists(cid, conn))
+				updateList.add(catMap.get(cid));
+			else
+				createList.add(catMap.get(cid));
 		}
+			
 		
 		if(catMap.size() > 0) {
-			if (! writeCategory(catMap, conn)) {return false;};
+			if (! writeCategory(createList, conn)) {return false;};
 		}
 
 		if(updateList.size() > 0) {
@@ -205,20 +209,19 @@ public final class DBWriter{
 		return true;
 	}
 		
-	private static boolean writeCategory(Map<UUID,Category> catMap, Connection conn) {
+	private static boolean writeCategory(List<Category> catList, Connection conn) {
 
 		try {
 		
-			logger.debug("trying to INSERT {} categories to database", catMap.size());
+			logger.debug("trying to INSERT {} categories to database", catList.size());
 
 			PreparedStatement psInsert = conn.prepareStatement(
 					"INSERT INTO category VALUES (?, ?, ?)");
 
 			// insert new categories
-			int amntInsertStatements = catMap.size();
+			int amntInsertStatements = catList.size();
 
-			for (UUID catID : catMap.keySet()) { 
-				Category cat = catMap.get(catID);
+			for (Category cat : catList) { 
 				
 				psInsert.setObject(1, cat.getCid());
 				psInsert.setString(2, cat.getColor());

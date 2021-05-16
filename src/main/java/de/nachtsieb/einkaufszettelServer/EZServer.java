@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
 @Command(description = "Einkaufszettel Server Application",
 			mixinStandardHelpOptions = true,
 			name = "EinkaufszettelServer",
-			version = "EinkaufszettelServer 0.2.0")
+			version = "EinkaufszettelServer 0.2.1")
 
 public class EZServer implements Callable<String>  {
 	

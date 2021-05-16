@@ -132,11 +132,44 @@ public final class DBReader {
 		} catch (SQLException e) {
 			logger.error(e.toString());
 			throw new EZDBException(ErrorMessage.getJsonString(
-					new ErrorMessage("E_READ_DB", "unable to get gid list from database")
+					new ErrorMessage("E_READ_DB", "unable to get cid list from database")
 					));
 		}
 		
 		return cids;
+	}
+	
+	/**
+	 * Return true if the category (cid) exists, otherwise false.
+	 * 
+	 * @param cid
+	 * @param conn
+	 * @return
+	 */
+	
+	public static boolean categoryExists(UUID cid, Connection conn) {
+		
+		try {
+			PreparedStatement ps = conn.prepareStatement(
+					"SELECT 1 FROM category WHERE cid = ?;");
+			
+			ps.setObject(1, cid);
+
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next())
+				return true;
+			else
+				return false;
+				
+			
+		} catch (SQLException e) {
+			logger.error(e.toString());
+			throw new EZDBException(ErrorMessage.getJsonString(
+					new ErrorMessage("E_READ_DB", "unable to ask for existence of cid.")
+					));
+		}
+		
 	}
 
 	/**
