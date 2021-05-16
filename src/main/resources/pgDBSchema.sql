@@ -39,6 +39,10 @@ create table if not exists ez_schmea_version (
     schema_version  int         NOT NULL
 );
 
+
+create index if not exists idx_items_eid ON items (eid);
+create index if not exists idx_items_cid ON items (cid);
+
 /*
 CREATE OR REPLACE FUNCTION delete_orphaned_categories() RETURNS TRIGGER AS
     $$
