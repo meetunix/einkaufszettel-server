@@ -370,17 +370,17 @@ public final class DBWriter {
    */
   private static boolean writeOrUpdateItemList(Einkaufszettel ez, Connection conn) {
 
+    // TODO currently O(4n) ... thats bad!
 
-    // get all iids from database to check which category has to be created or updated
+
+    // get all iids from database to check which item has to be created or updated
     List<UUID> iidsFromDB = DBReader.getIIDs(ez, conn);
 
     // needed for a later lookup
     Map<UUID, Item> itemMap =
         ez.getItems().stream().collect(Collectors.toMap(Item::getIid, item -> item));
 
-    /*
-     * Create Lists for CUD operations on items
-     */
+    // Create Lists for CUD operations on items
     List<UUID> itemsToDelete = new ArrayList<>(ez.getItems().size() / 2);
     List<UUID> itemsToUpdate = new ArrayList<>(ez.getItems().size() / 2);
 
