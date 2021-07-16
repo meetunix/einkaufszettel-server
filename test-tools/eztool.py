@@ -18,15 +18,15 @@ def benchmark(func, *arg):
 def main():
     """Main."""
     com = Communicator(sys.argv[1])
-    ezl = [Einkaufszettel.random(32) for i in range(1000)]
+    ezl = [Einkaufszettel.random(32) for i in range(100000)]
     eids = [ez.eid for ez in ezl]
 
     benchmark(com.store, ezl)
-    # benchmark(com.read, eids)
+    benchmark(com.read, eids)
 
-    # ezll = [ez.increment_version() for ez in ezl]
-    # benchmark(com.store, ezll)
-    benchmark(com.delete, eids)
+    ezll = [ez.increment_version() for ez in ezl]
+    benchmark(com.store, ezll)
+    # benchmark(com.delete, eids)
 
 
 main()
