@@ -8,54 +8,54 @@ import java.nio.charset.StandardCharsets;
 
 public class ResLoader {
 
-	public ResLoader() {}
+  public ResLoader() {}
 
-    // get a file from the resources directory (works indide and outside jar file)
-    public InputStream getFileFromResourceAsStream(String fileName) {
+  // get a file from the resources directory (works inside and outside jar file)
+  public InputStream getFileFromResourceAsStream(String fileName) {
 
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+    ClassLoader classLoader = getClass().getClassLoader();
+    InputStream inputStream = classLoader.getResourceAsStream(fileName);
 
-        if (inputStream == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
-        } else {
-            return inputStream;
-        }
+    if (inputStream == null) {
+      throw new IllegalArgumentException("file not found! " + fileName);
+    } else {
+      return inputStream;
     }
-    
-    // convert inputstream to string
-    public String getStringfromInputstream(InputStream is) {
-    	
-    	StringBuilder sb = new StringBuilder();
-    	BufferedReader br = new BufferedReader(new InputStreamReader(is));
-    	
-    	try {
+  }
 
-	    	String line;
-			while ((line = br.readLine()) != null)
-				sb.append(line);
+  // convert input stream to string
+  public String getStringfromInputstream(InputStream is) {
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    		
-    	return sb.toString();
-    	
+    StringBuilder sb = new StringBuilder();
+    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+    try {
+
+      String line;
+      while ((line = br.readLine()) != null)
+        sb.append(line);
+
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    // print input stream (just for debugging)
-    public void printInputStream(InputStream is) {
+    return sb.toString();
 
-        try (InputStreamReader streamReader = new InputStreamReader(is, StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(streamReader)) {
+  }
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
+  // print input stream (just for debugging)
+  public void printInputStream(InputStream is) {
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    try (InputStreamReader streamReader = new InputStreamReader(is, StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(streamReader)) {
+
+      String line;
+      while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+      }
+
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+  }
 }

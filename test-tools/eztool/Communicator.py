@@ -7,7 +7,7 @@ import threading
 thread_local = threading.local()
 
 class Communicator:
-    def __init__(self, base_url, endpoint="/r0/ez/", worker=8):
+    def __init__(self, base_url, endpoint="/r0/ez/", worker=16):
         self.base_url = base_url
         self.endpoint = endpoint
         self.url = self.base_url + self.endpoint

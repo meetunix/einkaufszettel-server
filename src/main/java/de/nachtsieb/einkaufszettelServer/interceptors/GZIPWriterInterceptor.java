@@ -8,37 +8,37 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 public class GZIPWriterInterceptor implements WriterInterceptor {
-    private static Logger logger = LogManager.getLogger(GZIPWriterInterceptor.class);
-    
-    
-	public GZIPWriterInterceptor() {
-		super();
-	}
+  private static Logger logger = LogManager.getLogger(GZIPWriterInterceptor.class);
 
-	private HttpHeaders context;
 
-	public GZIPWriterInterceptor(@Context HttpHeaders context) {
-		this.context = context;
-	}
+  public GZIPWriterInterceptor() {
+    super();
+  }
 
-	@Override
-	public void aroundWriteTo(WriterInterceptorContext writerInterceptorContext)
-			throws IOException, WebApplicationException {
+  private HttpHeaders context;
 
-		String acceptEncoding = context.getHeaderString("Accept-Encoding");
+  public GZIPWriterInterceptor(@Context HttpHeaders context) {
+    this.context = context;
+  }
 
-		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
-			logger.debug("gzip encoding requested");
-			final OutputStream outputStream = writerInterceptorContext.getOutputStream();
-			writerInterceptorContext.setOutputStream(new GZIPOutputStream(outputStream));
-			writerInterceptorContext.getHeaders().putSingle("Content-Encoding", "gzip");
-		}
+  @Override
+  public void aroundWriteTo(WriterInterceptorContext writerInterceptorContext)
+      throws IOException, WebApplicationException {
 
-		writerInterceptorContext.proceed();
-	}
+    String acceptEncoding = context.getHeaderString("Accept-Encoding");
+
+    if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
+      logger.debug("gzip encoding requested");
+      final OutputStream outputStream = writerInterceptorContext.getOutputStream();
+      writerInterceptorContext.setOutputStream(new GZIPOutputStream(outputStream));
+      writerInterceptorContext.getHeaders().putSingle("Content-Encoding", "gzip");
+    }
+
+    writerInterceptorContext.proceed();
+  }
 }

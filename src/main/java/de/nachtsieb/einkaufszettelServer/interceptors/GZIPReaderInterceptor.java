@@ -8,37 +8,37 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 public class GZIPReaderInterceptor implements ReaderInterceptor {
-    private static Logger logger = LogManager.getLogger(GZIPReaderInterceptor.class);
-    
-    
-	public GZIPReaderInterceptor() {
-		super();
-	}
+  private static Logger logger = LogManager.getLogger(GZIPReaderInterceptor.class);
 
-	private HttpHeaders context;
 
-	public GZIPReaderInterceptor(@Context HttpHeaders context) {
-		this.context = context;
-	}
+  public GZIPReaderInterceptor() {
+    super();
+  }
 
-	@Override
-	public Object aroundReadFrom(ReaderInterceptorContext readerInterceptorContext)
-			throws IOException, WebApplicationException {
+  private HttpHeaders context;
 
-		String contentEncoding = context.getHeaderString("Content-Encoding");
+  public GZIPReaderInterceptor(@Context HttpHeaders context) {
+    this.context = context;
+  }
 
-		if (contentEncoding != null && contentEncoding.contains("gzip")) {
-			logger.debug("gzip encoded request arrived");
-			final InputStream inputStream = readerInterceptorContext.getInputStream();
-			readerInterceptorContext.setInputStream(new GZIPInputStream(inputStream));
-			//readerInterceptorContext.getHeaders().putSingle("Content-Encoding", "gzip");
-		}
+  @Override
+  public Object aroundReadFrom(ReaderInterceptorContext readerInterceptorContext)
+      throws IOException, WebApplicationException {
 
-		return readerInterceptorContext.proceed();
-	}
+    String contentEncoding = context.getHeaderString("Content-Encoding");
+
+    if (contentEncoding != null && contentEncoding.contains("gzip")) {
+      logger.debug("gzip encoded request arrived");
+      final InputStream inputStream = readerInterceptorContext.getInputStream();
+      readerInterceptorContext.setInputStream(new GZIPInputStream(inputStream));
+      // readerInterceptorContext.getHeaders().putSingle("Content-Encoding", "gzip");
+    }
+
+    return readerInterceptorContext.proceed();
+  }
 }
