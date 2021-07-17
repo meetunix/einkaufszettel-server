@@ -187,7 +187,7 @@ sudo systemctl enable einkufszettel-server
 
 ## API
 
-[Interaktive API-Dokumentation (Swagger)](https://ez.nachtsieb.de/swagger)
+[Interaktive API-Dokumentation (Swagger)](https://swagger.nachtsieb.de)
 
 Die Dokumentation der einkaufszettel API steht als OpenAPIv3-Spezifikation zur Verfügung: [API-Dokumentation](openapi.yaml)
 
