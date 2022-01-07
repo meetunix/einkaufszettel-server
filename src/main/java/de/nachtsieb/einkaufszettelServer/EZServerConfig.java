@@ -28,10 +28,10 @@ public final class EZServerConfig {
   public static final String LOG_LEVEL_INFO = "INFO";
   public static final String LOG_LEVEL_DEBUG = "DEBUG";
 
-  private Properties propertiesFromFile = new Properties();
-  private Map<String, String> configMap = new HashMap<>();
-  private List<String> allowedLogLevel;
-  private List<String> allowedConfigPropertyList;
+  private final Properties propertiesFromFile = new Properties();
+  private final Map<String, String> configMap = new HashMap<>();
+  private final List<String> allowedLogLevel;
+  private final List<String> allowedConfigPropertyList;
 
   public EZServerConfig(String serverConfPath) {
 
@@ -68,22 +68,21 @@ public final class EZServerConfig {
 
     // check if all needed properties from file are present
     List<String> filePropertyList = Stream.of(propertiesFromFile.keySet().toArray())
-        .map(v -> v.toString()).collect(Collectors.toList());
+        .map(Object::toString).collect(Collectors.toList());
 
     for (String fileProp : filePropertyList) {
       if (!allowedConfigPropertyList.contains(fileProp)) {
-        System.err.println(
-            String.format("Config-Error: property %s is unkown, possible properties are:\n%s ",
-                fileProp, allowedConfigPropertyList));
+        System.err.printf("Config-Error: property %s is unknown, possible properties are:\n%s %n",
+            fileProp, allowedConfigPropertyList);
         System.exit(-1);
       }
     }
     // write all property values to the configMap
-    allowedConfigPropertyList.forEach(k -> setProperty(k));
+    allowedConfigPropertyList.forEach(this::setProperty);
     System.out.println("\nThe following configuration parameters are used:\n");
     for (String key : allowedConfigPropertyList) {
       if (!key.equals(PROPERTY_DATABASE_PASSWORD))
-        System.out.println(String.format("%-20s: %s", key, configMap.get(key)));
+        System.out.printf("%-20s: %s%n", key, configMap.get(key));
     }
     System.out.println();
   }
@@ -98,8 +97,8 @@ public final class EZServerConfig {
       if (!allowedLogLevel.contains(logLevelFromFile.toUpperCase())) {
 
         System.err
-            .println(String.format("Config-Error: log level %s unkown, possible levels are:\n%s ",
-                logLevelFromFile, allowedLogLevel));
+            .printf("Config-Error: log level %s unknown, possible levels are:\n%s %n",
+                logLevelFromFile, allowedLogLevel);
         System.exit(-1);
       }
     }
@@ -136,8 +135,8 @@ public final class EZServerConfig {
 
     if (!(filePath.exists() && filePath.isDirectory() && filePath.canWrite())) {
 
-      System.err.println(String.format("Config-Error: Path %s does not exists or is not writeable.",
-          filePath.toString()));
+      System.err.printf("Config-Error: Path %s does not exists or is not writeable.%n",
+          filePath);
       System.exit(-1);
     }
 
