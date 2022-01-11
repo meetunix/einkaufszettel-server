@@ -1,6 +1,5 @@
 package de.nachtsieb.einkaufszettelServer.validation;
 
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.util.UUID;
@@ -51,7 +50,7 @@ public class ValidationTest {
 		//object -> json2
 		String json2 = mapper.writeValueAsString(revEz);
 		
-		assertThat(json1.equals(json2), is(true));
+		assertEquals(json1, json2);
 	}
 	
 	@Test
@@ -65,8 +64,8 @@ public class ValidationTest {
 		Einkaufszettel revEz = mapper.readValue(json1, Einkaufszettel.class);
 		//object -> json2
 		String json2 = mapper.writeValueAsString(revEz);
-		
-		assertThat(json1.equals(json2), is(true));
-		
+
+		assertEquals(json1, json2);
+
 	}
 }
