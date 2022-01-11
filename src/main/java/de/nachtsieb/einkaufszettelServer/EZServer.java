@@ -7,6 +7,13 @@
 
 package de.nachtsieb.einkaufszettelServer;
 
+import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
+import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
+import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
+import de.nachtsieb.einkaufszettelServer.interceptors.GZIPReaderInterceptor;
+import de.nachtsieb.einkaufszettelServer.interceptors.GZIPWriterInterceptor;
+import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
+import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidatorNetworknt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -16,18 +23,12 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
-import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
-import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
-import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
-import de.nachtsieb.einkaufszettelServer.interceptors.GZIPReaderInterceptor;
-import de.nachtsieb.einkaufszettelServer.interceptors.GZIPWriterInterceptor;
-import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @Command(description = "Einkaufszettel Server Application", mixinStandardHelpOptions = true,
-    name = "EinkaufszettelServer", version = "EinkaufszettelServer 0.2.1")
+    name = "EinkaufszettelServer", version = "EinkaufszettelServer 0.2.4")
 
 public class EZServer implements Callable<String> {
 
@@ -47,7 +48,7 @@ public class EZServer implements Callable<String> {
 
   /**
    * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
-   * 
+   *
    * @return Grizzly HTTP server.
    */
   public static HttpServer startServer() {
@@ -64,7 +65,6 @@ public class EZServer implements Callable<String> {
     System.setProperty("databaseUsername", config.getDbUsername());
     System.setProperty("databasePassword", config.getDbPassword());
 
-
     BASE_URI = config.getBaseURI();
 
     // create a resource config that scans for JAX-RS resources and providers
@@ -78,10 +78,10 @@ public class EZServer implements Callable<String> {
      * json validation and a smaller footprint, because it is not necessary to create a new
      * validator object on each request. At 10000 serial requests the validation on my system takes
      * 45 seconds. Without using a singleton object it needs 55 seconds to process all requests.
-     * 
+     *
      * doing the same for the config object
      */
-    jsonValidator = new JsonValidator();
+    jsonValidator = new JsonValidatorNetworknt();
     rc.register(new AbstractBinder() {
       @Override
       protected void configure() {
@@ -101,7 +101,7 @@ public class EZServer implements Callable<String> {
 
   /**
    * Main method.
-   * 
+   *
    * @param args
    * @throws IOException
    */
@@ -117,8 +117,7 @@ public class EZServer implements Callable<String> {
 
     // starts the grizzly web server
     final HttpServer server = startServer();
-    System.out
-        .println(String.format("\nEinkaufszettelServer started and listen on %s\n", BASE_URI));
+    System.out.printf("\nEinkaufszettelServer started and listen on %s\n%n", BASE_URI);
 
     // create database schema if main table does not exists in database
     if (!DBReader.tableExists(DBReader.TABLE_EINKAUFSZETTEL)) {
@@ -144,8 +143,9 @@ public class EZServer implements Callable<String> {
       }
     });
 
-    while (Thread.currentThread().isAlive())
+    while (Thread.currentThread().isAlive()) {
       Thread.sleep(5000);
+    }
 
     return null;
   }

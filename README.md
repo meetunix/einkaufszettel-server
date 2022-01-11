@@ -24,8 +24,8 @@ Einkaufszettel zu teilen, oder man verwendet den öffentlichen einkaufszettel-se
 
 ## Voraussetzungen
 
-1. Java Runtime Environment: Version 8 oder höher
-2. Apache Maven: Übersetzen, Testen und zum Erstellen des JAR-Paketes
+1. Java Runtime Environment: Version 11 oder höher
+2. Apache Maven: Übersetzen, Testen und Erstellen des JAR-Paketes
 
 ## Übersetzen
 
@@ -39,7 +39,7 @@ im `target`-Verzeichnis.
 
 ## Konfiguration
 
-Die Konfigurationsdatei wird beim Start üder die Option `-c` übergeben. Sollte
+Die Konfigurationsdatei wird beim Start über die Option `-c` übergeben. Sollte
 Option `-c PATH` nicht verwendet werden, wird die Datei `/etc/ez-server/server.properties` verwendet.
 
 ```
@@ -95,7 +95,7 @@ $ sudo -u postgres createdb -O ezuser ezdatabase
 
 3. Pfad in der Konfigurationsdatei angeben:
 
-Folgender Ausschnitt aus der Konfigurationsdatei zeigt exemplarisch die Verwendung die Verwendung
+Folgender Ausschnitt aus der Konfigurationsdatei zeigt exemplarisch die Verwendung
 von POstgreSQL:
 
 ```
@@ -114,7 +114,7 @@ sich besonders für kleine Installationen. Die Konfiguration geschieht ausschlie
 Variable `JDBC_URL` aus der Konfigurationsdatei.
 
 Im folgenden Beispiel speichert H2 seine Daten in das Verzeichnis `/var/ez-database/` und verwendet
-als dateinamenpräfix `db.*`. Dateiname und Nutzer werden bei der automatischen Erstellung ebenfalls
+als Dateinamenpräfix `db.*`. Dateiname und Nutzer werden bei der automatischen Erstellung ebenfalls
 erstellt und sind für den Zugriff auf die Datenbank notwendig.
 
 ```
@@ -136,7 +136,7 @@ JDBC_URL=jdbc:h2:file:/var/ez-database/db
 
 ## starten über systemd
 
-Da das JAR-Paket von **einkaufszettel-server** einen eigenen Webserver enthält kann man
+Da das JAR-Paket von **einkaufszettel-server** einen eigenen Webserver enthält, kann man
 *systemd* zum Verwalten der Anwendung (start, stop, Nutzerkontext) verwenden. Es wird empfohlen
 **einkaufszettel-server** mit einem extra dafür angelegtem Nutzerkonto zu betreiben.
 
@@ -202,7 +202,7 @@ version 4 verfasst: [Einkaufszettel-Spezifikation](https://nachtsieb.de/docs/ezs
 
 * JAX-RS (Jersey)
 * JDBC
-* jsaon-validator
+* json-validator
 * HikariCP
 * log4j
 * junit

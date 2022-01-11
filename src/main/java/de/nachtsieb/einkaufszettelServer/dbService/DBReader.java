@@ -22,7 +22,7 @@ import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
  */
 public final class DBReader {
 
-  private static Logger logger = LogManager.getLogger(DBReader.class);
+  private static final Logger logger = LogManager.getLogger(DBReader.class);
 
   public static final String TABLE_EINKAUFSZETTEL = "einkaufszettel";
 
@@ -150,10 +150,7 @@ public final class DBReader {
 
       ResultSet rs = ps.executeQuery();
 
-      if (rs.next())
-        return true;
-      else
-        return false;
+      return rs.next();
 
 
     } catch (SQLException e) {
