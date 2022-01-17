@@ -4,8 +4,8 @@ WORKDIR /
 ARG JAR_FILE
 ARG CONF_FILE
 RUN mkdir /log /ezdb
-COPY /target/${JAR_FILE} ezserver.jar
-COPY example_configs/${CONF_FILE} config.properties
+COPY ${JAR_FILE} ezserver.jar
+ADD example_configs /configs
 VOLUME ["/ezdb", "/logs"]
 EXPOSE 8080
-CMD ["java", "-jar", "/ezserver.jar", "-c", "/config.properties"]
+CMD  java -jar ezserver.jar -c configs/$CONF_FILE
