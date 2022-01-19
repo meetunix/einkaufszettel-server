@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.xml.bind.annotation.XmlRootElement;
 import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
-import joptsimple.internal.Strings;
 
 
 /**
@@ -273,7 +272,8 @@ public class Einkaufszettel {
       amountOfItems = 0;
     }
 
-    String fence = Strings.repeat('=', 51);
+    String equal = "=";
+    String fence = equal.repeat(51);
 
     StringBuilder sb = new StringBuilder(fence);
     sb.append(String.format("\n%-10s %40s\n", "EZ-Id:", eid));
