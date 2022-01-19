@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+
+  ezserver-app:
+    container_name: ezserver_app
+    image: meetunix/ezserver:latest
+    restart: unless-stopped
+    ports:
+      - "18080:8080"
+    environment:
+      CONF_FILE: "server-h2-persistent.properties"
+    volumes:
+        -   "ezserver_h2_logs:/logs"
+        -   "ezserver_h2_db:/ezdb"
+
+volumes:
+  ezserver_h2_db:
+  ezserver_h2_logs:

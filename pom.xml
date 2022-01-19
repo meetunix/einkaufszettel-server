@@ -164,6 +164,7 @@
               <arguments>
                 <argument>rmi</argument>
                 <argument>meetunix/ezserver:${project.version}</argument>
+                <argument>meetunix/ezserver:latest</argument>
               </arguments>
             </configuration>
           </execution>
@@ -187,6 +188,23 @@
               </arguments>
             </configuration>
           </execution>
+          <!-- docker tag previously built image to latest -->
+          <execution>
+            <id>docker-tag</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>docker</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>tag</argument>
+                <argument>meetunix/ezserver:${project.version}</argument>
+                <argument>meetunix/ezserver:latest</argument>
+              </arguments>
+            </configuration>
+          </execution>
           <!-- deploy docker image on docker-hub -->
           <execution>
             <id>docker-login</id>
@@ -206,8 +224,9 @@
               </arguments>
             </configuration>
           </execution>
+          <!-- push docker image to docker-hub: version tag -->
           <execution>
-            <id>docker-push</id>
+            <id>docker-push-version</id>
             <phase>install</phase>
             <goals>
               <goal>exec</goal>
@@ -218,6 +237,22 @@
               <arguments>
                 <argument>push</argument>
                 <argument>meetunix/ezserver:${project.version}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <!-- push docker image to docker-hub: latest tag -->
+          <execution>
+            <id>docker-push-latest</id>
+            <phase>install</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>docker</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>push</argument>
+                <argument>meetunix/ezserver:latest</argument>
               </arguments>
             </configuration>
           </execution>
