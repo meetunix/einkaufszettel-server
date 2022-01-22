@@ -9,7 +9,7 @@
 
 
 <p align="center">
-<a href="Changelog">Changelog</a>  •
+<a href="#Changelog">Changelog</a>  •
 <a href="https://nachtsieb.de/docs/ezschema.json">Spezifikation (JSON-Schema)</a>  •
 <a href="https://swagger.nachtsieb.de">API (Swagger)</a>
 </p>
