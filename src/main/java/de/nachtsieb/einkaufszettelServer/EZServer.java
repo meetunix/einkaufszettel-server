@@ -17,6 +17,7 @@ import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidatorNetworknt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -58,7 +59,14 @@ public class EZServer implements Callable<String> {
 
     // set log configuration
     System.setProperty("logPath", config.getLogPath());
-    System.setProperty("logLevel", config.getLogLevel());
+    // get log level from environment if available, otherwise use value from config
+    Optional<String> logLevel = Optional.ofNullable(System.getenv().get("EZSERVER_LOG_LEVEL"));
+    if (logLevel.isPresent()) {
+      System.setProperty("logLevel", logLevel.get());
+    } else {
+      System.setProperty("logLevel", config.getLogLevel());
+    }
+
 
     // set database properties
     System.setProperty("jdbcURL", config.getJdbcURL());

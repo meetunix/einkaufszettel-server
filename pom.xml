@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>2.0.206</version>
+      <version>2.1.210</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
@@ -151,7 +151,7 @@
               <goal>java</goal>
             </goals>
           </execution>
-          <!-- remove docker image for current version in clean phase  -->
+          <!-- docker: remove docker image for current version in clean phase  -->
           <execution>
             <id>docker-clean</id>
             <phase>clean</phase>
@@ -168,7 +168,7 @@
               </arguments>
             </configuration>
           </execution>
-          <!-- docker build configuration using the local Dockerfile -->
+          <!-- docker: build configuration using the local Dockerfile -->
           <execution>
             <id>docker-build</id>
             <phase>package</phase>
@@ -188,7 +188,7 @@
               </arguments>
             </configuration>
           </execution>
-          <!-- docker tag previously built image to latest -->
+          <!-- docker: tag previously built image to latest -->
           <execution>
             <id>docker-tag</id>
             <phase>package</phase>
@@ -205,7 +205,7 @@
               </arguments>
             </configuration>
           </execution>
-          <!-- deploy docker image on docker-hub -->
+          <!-- docker: deploy docker image on docker-hub -->
           <execution>
             <id>docker-login</id>
             <phase>install</phase>
@@ -224,7 +224,7 @@
               </arguments>
             </configuration>
           </execution>
-          <!-- push docker image to docker-hub: version tag -->
+          <!-- docker: push docker image to docker-hub: version tag -->
           <execution>
             <id>docker-push-version</id>
             <phase>install</phase>
@@ -240,7 +240,7 @@
               </arguments>
             </configuration>
           </execution>
-          <!-- push docker image to docker-hub: latest tag -->
+          <!-- docker: push docker image to docker-hub: latest tag -->
           <execution>
             <id>docker-push-latest</id>
             <phase>install</phase>
