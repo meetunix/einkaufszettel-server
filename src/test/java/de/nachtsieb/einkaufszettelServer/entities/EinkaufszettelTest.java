@@ -6,8 +6,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import joptsimple.internal.Strings;
-
 import de.nachtsieb.einkaufszettelServer.TestUtils;
 import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
 
@@ -44,11 +42,11 @@ public class EinkaufszettelTest {
 	// testing if exception is thrown while adding invalid name to an ez instance
 	@Test
 	public void EZNameException () {
-
+		String umlauts = "ä";
 		String[] names = {
 				"",
 				"a",
-				Strings.repeat('ä', 49),
+				umlauts.repeat(49),
 				" ",
 				"   ",
 				"\n",

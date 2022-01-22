@@ -30,7 +30,7 @@ import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
 
 public final class DBWriter {
 
-  private static Logger logger = LogManager.getLogger(DBWriter.class);
+  private static final Logger logger = LogManager.getLogger(DBWriter.class);
 
   /**
    * Insert an existing Einkaufszettel object to the database and returns true if the database
@@ -171,7 +171,7 @@ public final class DBWriter {
    * 
    * May be replaced with a stored procedure in the future (TODO)
    * 
-   * @param list of categories
+   * @param catMap Map of categories
    * @param conn a database connection with open transaction
    * @return true if the category was successful created or updated
    */
@@ -385,7 +385,7 @@ public final class DBWriter {
     List<UUID> itemsToUpdate = new ArrayList<>(ez.getItems().size() / 2);
 
     List<UUID> itemsToInsert =
-        ez.getItems().stream().map(item -> item.getIid()).collect(Collectors.toList());
+        ez.getItems().stream().map(Item::getIid).collect(Collectors.toList());
 
     for (UUID iidDB : iidsFromDB) {
       if (itemsToInsert.contains(iidDB)) {
@@ -402,7 +402,7 @@ public final class DBWriter {
      * convert uuids to items, because writeItemList needs a list as parameter
      */
     List<Item> newItems = new ArrayList<>(itemMap.size());
-    newItems = itemsToInsert.stream().map(uuid -> itemMap.get(uuid)).collect(Collectors.toList());
+    newItems = itemsToInsert.stream().map(itemMap::get).collect(Collectors.toList());
 
     // write new items to database
     if (newItems.size() > 0) {
@@ -480,7 +480,6 @@ public final class DBWriter {
    * Delete all iids (UUIDs identifying items) from a given list from the database.
    * 
    * @param items
-   * @param ez
    * @param conn
    * @return
    */
@@ -577,7 +576,7 @@ public final class DBWriter {
   /**
    * Creates a table for every statement inside String array.
    * 
-   * @param statements String[]
+   * @param schema One ore more sql statements
    * @return true if all tables where created successfully otherwise false.
    * @throws SQLException
    */

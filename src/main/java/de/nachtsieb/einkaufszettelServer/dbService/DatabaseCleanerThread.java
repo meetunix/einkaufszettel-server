@@ -14,20 +14,20 @@ import de.nachtsieb.einkaufszettelServer.EZServerConfig;
 
 /**
  * This thread will be started, if the main application starts. Once a day it will clean up the
- * database for unused categories. And logs how long the clean up took.
+ * database for unused categories. And logs how long the cleanup took.
  * 
  * In Version 0.0.1 a database trigger was used. This trigger runs on every deletion of an
- * Einkaufszettel. On a big database (> 5000 Einkaufszettel) a deletion takes to long. Moreover it
+ * Einkaufszettel. On a big database (> 5000 Einkaufszettel) a deletion takes too long. Moreover, it
  * is not necessary to clean up categories that often.
  * 
  */
 
 public class DatabaseCleanerThread implements Runnable {
 
-  private static Logger logger = LogManager.getLogger(DatabaseCleanerThread.class);
+  private static final Logger logger = LogManager.getLogger(DatabaseCleanerThread.class);
 
   private final Duration oneDay = Duration.ofHours(24);
-  private EZServerConfig conf;
+  private final EZServerConfig conf;
 
 
   public DatabaseCleanerThread(EZServerConfig config) {
@@ -37,8 +37,6 @@ public class DatabaseCleanerThread implements Runnable {
 
   /**
    * Deletes orphaned (not used by any item) categories from database.
-   * 
-   * @return Number of deleted categories
    */
   private void deleteOrphanedCategories() {
 
@@ -100,7 +98,7 @@ public class DatabaseCleanerThread implements Runnable {
       }
 
     } catch (SQLException e) {
-      logger.error("Can not get write cleaning time to database", e.toString());
+      logger.error("Can not get write cleaning time to database: {}", e.getMessage());
     }
 
   }
@@ -125,7 +123,7 @@ public class DatabaseCleanerThread implements Runnable {
 
     } catch (SQLException e) {
       e.printStackTrace();
-      logger.error("Can not get last cleaning time from database", e.toString());
+      logger.error("Can not get last cleaning time from database due to {}", e.getMessage());
     }
 
     return Optional.ofNullable(lastTime);
@@ -155,7 +153,7 @@ public class DatabaseCleanerThread implements Runnable {
 
     } catch (SQLException e) {
       e.printStackTrace();
-      logger.warn("Can not get fetch stattistics from database", e.toString());
+      logger.warn("Can not get fetch statistics from database due to {}", e.getMessage());
     }
 
     logger.info("Daily databases statistics: EZs, Items, Categories");

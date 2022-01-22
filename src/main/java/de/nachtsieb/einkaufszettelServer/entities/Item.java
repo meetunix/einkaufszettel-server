@@ -2,7 +2,6 @@ package de.nachtsieb.einkaufszettelServer.entities;
 
 import java.util.UUID;
 import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
-import joptsimple.internal.Strings;
 
 public class Item {
 
@@ -236,7 +235,8 @@ public class Item {
 
   @Override
   public String toString() {
-    String fence = Strings.repeat('=', 31);
+    String equal = "";
+    String fence = equal.repeat(31);
 
     StringBuilder sb = new StringBuilder(fence);
     sb.append(String.format("\n%-10s %20d\n", "Item-Id:", iid));

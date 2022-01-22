@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2022-01-11
+
+### Changed
+
+- new and faster JSON validator
+- bumped Jackson to 2.35, H2 to Version 2 and log4j to 2.17.1
+
+
+### fixed
+
+- slf4j misconfiguration fixed
+
+
+## [0.2.3] - 2021-12-13
+
+### Fixed
+
+- log4j vulnerability CVE-2021-45105
+- log4j vulnerability CVE-2021-45046
+- log4j vulnerability CVE-2021-44228
+
+
+## [0.2.2] - 2021-12-13
+
+### Fixed
+
+- log4j vulnerability CVE-2021-44228
+
 
 ## [0.2.1] - 2021-05-16
 
@@ -32,13 +60,13 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
     - if a request header contains "Accept-Encoding: gzip", the response body will be gzip encoded. (for GET-requests)
 
     - If a request header contains "Content-Encoding: gzip" einkaufszettel-server assumes that the message body is gzip encoded.
-    
+
 
 - starting from systemd is now possible
 
 - from now on a single configuration file is used
 
-- the path to the configuration file can be passed by cli arguemnt `-c PATH` 
+- the path to the configuration file can be passed by cli arguemnt `-c PATH`
 
 
 

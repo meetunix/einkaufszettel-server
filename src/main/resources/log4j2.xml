@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="EinkauszettelServer">
 
-	<Appenders>
+  <Appenders>
 
-		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout>
-				<Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} %msg%n
-				</Pattern>
-			</PatternLayout>
-		</Console>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout>
+        <Pattern>
+          %highlight{%d{yyyy-MM-dd HH:mm:ss} %-22t %-22C{1} %-5level %m%n}{TRACE=white}
+        </Pattern>
+      </PatternLayout>
+    </Console>
 
-		<RollingFile name="rolling_file"
-			fileName="${sys:logPath:-/tmp}/ezserver.log"
-			filePattern="${sys:logPath:-/tmp}/ezserver.%i.log.gz" append="true">
-			<PatternLayout>
-				<Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %m%n</Pattern>
-			</PatternLayout>
-			<Policies>
-				<SizeBasedTriggeringPolicy size="20 MB" />
-			</Policies>
-			<DefaultRolloverStrategy max="10" />
-		</RollingFile>
+    <RollingFile name="rolling_file"
+      fileName="${sys:logPath:-/tmp}/ezserver.log"
+      filePattern="${sys:logPath:-/tmp}/ezserver.%i.log.gz" append="true">
+      <PatternLayout>
+        <Pattern>
+          %d{yyyy-MM-dd HH:mm:ss} %-22t{1} %-22C{1} %-5level %m%n
+        </Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="20 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+    </RollingFile>
 
-	</Appenders>
-	<Loggers>
-        <Logger name="de.nachtsieb" level="${sys:logLevel:-warn}" additivity="false">
-			<AppenderRef ref="rolling_file" />
-		</Logger>
-		<Root level="warn">
-			<AppenderRef ref="Console" />
-		</Root>
-	</Loggers>
+  </Appenders>
+  <Loggers>
+    <Logger name="de.nachtsieb" level="${sys:logLevel:-debug}" additivity="true">
+      <AppenderRef ref="rolling_file"/>
+    </Logger>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
 </Configuration>

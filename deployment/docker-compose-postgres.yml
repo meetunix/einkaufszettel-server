@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+
+  ezserver-app:
+    container_name: ezserver_app
+    image: meetunix/ezserver:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:18080:8080"
+    environment:
+      CONF_FILE: "server-postgres.properties"
+      EZSERVER_LOG_LEVEL: debug
+    volumes:
+        -   "ezserver_logs:/log"
+        -   "ezserver_db:/ezdb"
+
+    depends_on:
+      - ezserver-db
+
+  ezserver-db:
+    container_name: ezserver_database
+    image: postgres:13-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: "IeCaehiYioBooThaeSh4"
+      POSTGRES_USER: "ezuser"
+      POSTGRES_DB: "ezdb"
+    volumes:
+      -   "ezserver_db:/var/lib/postgresql/data"
+    ports:
+      - "127.0.0.1:5432:5432"
+
+volumes:
+  ezserver_db:
+  ezserver_logs:
