@@ -1,5 +1,10 @@
 package de.nachtsieb.einkaufszettelServer.dbService;
 
+import de.nachtsieb.einkaufszettelServer.entities.Category;
+import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
+import de.nachtsieb.einkaufszettelServer.entities.ErrorMessage;
+import de.nachtsieb.einkaufszettelServer.entities.Item;
+import de.nachtsieb.einkaufszettelServer.exceptions.EZDBException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -10,16 +15,8 @@ import java.util.List;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import de.nachtsieb.einkaufszettelServer.entities.Category;
-import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
-import de.nachtsieb.einkaufszettelServer.entities.ErrorMessage;
-import de.nachtsieb.einkaufszettelServer.entities.Item;
-import de.nachtsieb.einkaufszettelServer.exceptions.EZDBException;
-import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
 
-/**
- * Implementation of DataReader using JDBC with a relational database.
- */
+/** Implementation of DataReader using JDBC with a relational database. */
 public final class DBReader {
 
   private static final Logger logger = LogManager.getLogger(DBReader.class);
@@ -50,36 +47,9 @@ public final class DBReader {
   }
 
   /**
-   * Returns all eids from the database.
-   * 
-   * @return List of UUID
-   */
-  public static List<UUID> getEIDs() {
-
-    List<UUID> eids = new ArrayList<>();
-
-    try (Connection conn = DBConnPool.getConnection()) {
-
-      PreparedStatement ps = conn.prepareStatement("SELECT eid FROM einkausfszettel;");
-      ResultSet rs = ps.executeQuery();
-
-      while (rs.next()) {
-        eids.add((UUID) rs.getObject("eid"));
-      }
-
-    } catch (SQLException e) {
-      logger.error(e.toString());
-      throw new EZDBException(ErrorMessage
-          .getJsonString(new ErrorMessage("E_READ_DB", "unable to get eid list from database")));
-    }
-
-    return eids;
-  }
-
-  /**
    * Returns all iids that belongs to an Einkaufszettel.
-   * 
-   * @return
+   *
+   * @return list of IIDs
    */
   public static List<UUID> getIIDs(Einkaufszettel ez, Connection conn) {
 
@@ -99,48 +69,21 @@ public final class DBReader {
 
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(ErrorMessage
-          .getJsonString(new ErrorMessage("E_READ_DB", "unable to get iid list from database")));
+      throw new EZDBException(
+          ErrorMessage.getJsonString(
+              new ErrorMessage("E_READ_DB", "unable to get iid list from database")));
     }
 
     return iids;
   }
 
   /**
-   * Returns all cids from the database.
-   * 
-   * @return
-   */
-  public static List<UUID> getCIDs(Connection conn) {
-
-    List<UUID> cids = new ArrayList<>();
-
-    try {
-
-      PreparedStatement ps = conn.prepareStatement("SELECT cid FROM category;");
-      ResultSet rs = ps.executeQuery();
-
-      while (rs.next()) {
-        cids.add((UUID) rs.getObject("cid"));
-      }
-
-    } catch (SQLException e) {
-      logger.error(e.toString());
-      throw new EZDBException(ErrorMessage
-          .getJsonString(new ErrorMessage("E_READ_DB", "unable to get cid list from database")));
-    }
-
-    return cids;
-  }
-
-  /**
    * Return true if the category (cid) exists, otherwise false.
-   * 
-   * @param cid
-   * @param conn
-   * @return
+   *
+   * @param cid - a cid uuid which will be checked for existence
+   * @param conn - the database connection
+   * @return - true if the category exists
    */
-
   public static boolean categoryExists(UUID cid, Connection conn) {
 
     try {
@@ -152,20 +95,18 @@ public final class DBReader {
 
       return rs.next();
 
-
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(ErrorMessage
-          .getJsonString(new ErrorMessage("E_READ_DB", "unable to ask for existence of cid.")));
+      throw new EZDBException(
+          ErrorMessage.getJsonString(
+              new ErrorMessage("E_READ_DB", "unable to ask for existence of cid.")));
     }
-
   }
 
   /**
    * Creates a Einkaufszettel object from the given uuid. If there is no Einkaufszettel with eid in
    * the Database null will be returned.
-   * 
-   * 
+   *
    * @param eid - UUID
    * @return Einkaufszettel or null
    */
@@ -183,8 +124,13 @@ public final class DBReader {
 
       if (rs.next()) {
 
-        ez = new Einkaufszettel(eid, rs.getTimestamp("created").getTime(),
-            rs.getTimestamp("modified").getTime(), rs.getString("name"), rs.getInt("version"));
+        ez =
+            new Einkaufszettel(
+                eid,
+                rs.getTimestamp("created").getTime(),
+                rs.getTimestamp("modified").getTime(),
+                rs.getString("name"),
+                rs.getInt("version"));
 
         rs.close();
         ps.close();
@@ -201,19 +147,18 @@ public final class DBReader {
 
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(ErrorMessage
-          .getJsonString(new ErrorMessage("E_READ_DB", "unable to read EZ from database")));
+      throw new EZDBException(
+          ErrorMessage.getJsonString(
+              new ErrorMessage("E_READ_DB", "unable to read EZ from database")));
     }
   }
 
   /**
    * Returns a list of Items that belongs to a given Einkaufszettel ez. Each item includes
    * information from the corresponding category. The list may be empty.
-   * 
+   *
    * @param ez Einkaufszettel
    * @return List of Items
-   * @throws EZException
-   * @throws SQLException
    */
   private static List<Item> getItems(Einkaufszettel ez, Connection conn) {
 
@@ -231,10 +176,18 @@ public final class DBReader {
       // fill item list with new items from database
       while (rs.next()) {
 
-        Item item = new Item((UUID) rs.getObject("iid"), rs.getString("item_name"),
-            rs.getInt("ordinal"), rs.getInt("amount"), rs.getFloat("size"), rs.getString("unit"),
-            new Category((UUID) rs.getObject("cid"), rs.getString("color"),
-                rs.getString("description")));
+        Item item =
+            new Item(
+                (UUID) rs.getObject("iid"),
+                rs.getString("item_name"),
+                rs.getInt("ordinal"),
+                rs.getInt("amount"),
+                rs.getFloat("size"),
+                rs.getString("unit"),
+                new Category(
+                    (UUID) rs.getObject("cid"),
+                    rs.getString("color"),
+                    rs.getString("description")));
 
         items.add(item);
       }
@@ -246,19 +199,18 @@ public final class DBReader {
 
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(ErrorMessage
-          .getJsonString(new ErrorMessage("E_READ_DB", "unable to read items from database")));
+      throw new EZDBException(
+          ErrorMessage.getJsonString(
+              new ErrorMessage("E_READ_DB", "unable to read items from database")));
     }
   }
-
 
   /**
    * Creates a Category object from the given cid. If no category with cid in database null will be
    * returned.
-   * 
+   *
    * @param cid - Long
    * @return Category or null
-   * @throws SQLException
    */
   public static Category getCategory(UUID cid) {
 
@@ -281,8 +233,9 @@ public final class DBReader {
 
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(ErrorMessage
-          .getJsonString(new ErrorMessage("E_READ_DB", "unable to read category from database")));
+      throw new EZDBException(
+          ErrorMessage.getJsonString(
+              new ErrorMessage("E_READ_DB", "unable to read category from database")));
     }
   }
 }

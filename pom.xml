@@ -11,7 +11,7 @@
   <name>einkaufszettelServer</name>
 
   <properties>
-    <jersey.version>2.35</jersey.version>
+    <jersey.version>2.36</jersey.version>
     <log4j.version>2.17.1</log4j.version>
     <docker.password>just_a_placeholder</docker.password>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -50,12 +50,12 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.3.1</version>
+      <version>42.3.6</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>2.1.210</version>
+      <version>2.1.212</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>com.networknt</groupId>
       <artifactId>json-schema-validator</artifactId>
-      <version>1.0.65</version>
+      <version>1.0.70</version>
     </dependency>
     <!-- Jackson already wanted by json-schema-validator <dependency> <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId> <version>2.11.0</version> </dependency> -->
@@ -183,7 +183,9 @@
                 <argument>-t</argument>
                 <argument>meetunix/ezserver:${project.version}</argument>
                 <argument>--build-arg</argument>
-                <argument>JAR_FILE=target/einkaufszettelServer-${project.version}-jar-with-dependencies.jar</argument>
+                <argument>
+                  JAR_FILE=target/einkaufszettelServer-${project.version}-jar-with-dependencies.jar
+                </argument>
                 <argument>.</argument>
               </arguments>
             </configuration>

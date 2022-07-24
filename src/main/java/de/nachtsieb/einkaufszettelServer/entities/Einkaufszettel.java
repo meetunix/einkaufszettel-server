@@ -1,20 +1,16 @@
 package de.nachtsieb.einkaufszettelServer.entities;
 
+import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.xml.bind.annotation.XmlRootElement;
-import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
 
-
-/**
- * This class represents the Einkaufszettel and the items that belongs to it.
- */
+/** This class represents the Einkaufszettel and the items that belongs to it. */
 @XmlRootElement
 public class Einkaufszettel {
-
 
   private UUID eid; // the pkey of this relation JDBC: .setObject() and .getObject()
   private long created;
@@ -25,15 +21,13 @@ public class Einkaufszettel {
 
   /**
    * Constructor for an existing Einkaufszettel.
-   * 
+   *
    * @param eid UUID
    * @param created long
    * @param modified long
    * @param name String
    * @param version int
-   * @throws EZException
    */
-
   public Einkaufszettel(UUID eid, long created, long modified, String name, int version)
       throws EZException {
 
@@ -47,9 +41,8 @@ public class Einkaufszettel {
 
   /**
    * Constructor for a new Einkaufszettel.
-   * 
-   * @param name
-   * @throws EZException
+   *
+   * @param name - name of the einkaufszettel
    */
   public Einkaufszettel(String name) throws EZException {
 
@@ -61,46 +54,22 @@ public class Einkaufszettel {
     this.items = null;
   }
 
-  public Einkaufszettel() {};
-
-
-  /********************
-   * additional methods
-   ********************/
-
-
-  /**
-   * Compares the eid from the Object with a given UUID.
-   * 
-   * @param otherEid - UUID
-   * @return true if the eid of the Object has the same value as otherEid.
-   */
-
-  public boolean istTheSame(UUID otherEid) {
-    return this.eid.equals(otherEid);
-  }
-
   /**
    * Adds a new item to the list of items for this einkaufszettel
-   * 
+   *
    * @param item - Item
-   * @return true if value was added succesfull
    */
-
-  public boolean addItem(Item item) {
+  public void addItem(Item item) {
 
     // if no initial item list was set, this is the right time to set empty list
     if (this.items == null) {
       this.items = new ArrayList<>();
     }
 
-    return items.add(item);
-
+    items.add(item);
   }
 
-  /**
-   * Increments the version
-   */
+  /** Increments the version */
   public void incrementVersion() {
     if (version < Integer.MAX_VALUE) {
       this.version += 1;
@@ -109,22 +78,15 @@ public class Einkaufszettel {
     }
   }
 
-
-  /*******************
-   * getter and setter
-   *******************/
-
   public UUID getEid() {
     return eid;
   }
 
-
   /**
    * Sets the eid, if null is given a new UUID is generated.
-   * 
+   *
    * @param eid a UUID or null
    */
-
   public void setEid(UUID eid) throws EZException {
 
     if (eid == null) {
@@ -132,9 +94,7 @@ public class Einkaufszettel {
     } else {
       this.eid = eid;
     }
-
   }
-
 
   public long getCreated() {
     return created;
@@ -142,7 +102,7 @@ public class Einkaufszettel {
 
   /**
    * Sets the time of creation. If 0 ist given, the current time will be used.
-   * 
+   *
    * @param created long
    */
   public void setCreated(long created) {
@@ -152,19 +112,16 @@ public class Einkaufszettel {
     } else {
       this.created = created;
     }
-
   }
-
 
   public long getModified() {
     return modified;
   }
 
-
   /**
    * Sets the time of last modification. If 0 is given the creation time is used. If the given time
    * is smaller the current time is used.
-   * 
+   *
    * @param modified - long
    */
   public void setModified(long modified) {
@@ -178,18 +135,15 @@ public class Einkaufszettel {
     }
   }
 
-
   public String getName() {
     return name;
   }
 
   /**
    * Sets a name for the einkaufszettel.
-   * 
+   *
    * @param name - String
-   * @throws EZException
    */
-
   public void setName(String name) throws EZException {
 
     if (name == null || name.isBlank() || !name.matches(Limits.EZ_NAME_REGEX)) {
@@ -199,34 +153,23 @@ public class Einkaufszettel {
     }
   }
 
-
   public int getVersion() {
     return version;
   }
 
-
   /**
    * Sets the current version of the einkaufszettel, if 0 or negative value given the version is set
    * to 1.
-   * 
+   *
    * @param version - int
    */
-
   public void setVersion(int version) {
-
-    if (version < 1 || version > Integer.MAX_VALUE) {
-      this.version = 1;
-    } else {
-
-      this.version = version;
-    }
+    this.version = Math.max(version, 1);
   }
-
 
   public List<Item> getItems() {
     return items;
   }
-
 
   public void setItems(List<Item> items) throws EZException {
 
@@ -239,9 +182,13 @@ public class Einkaufszettel {
 
   public boolean equals(Einkaufszettel ez) {
 
-    boolean ezCheck = this.eid.compareTo(ez.getEid()) == 0 && this.created == ez.getCreated()
-        && this.modified == ez.getModified() && this.name.equals(ez.getName())
-        && this.version == ez.getVersion() && this.items.size() == ez.getItems().size();
+    boolean ezCheck =
+        this.eid.compareTo(ez.getEid()) == 0
+            && this.created == ez.getCreated()
+            && this.modified == ez.getModified()
+            && this.name.equals(ez.getName())
+            && this.version == ez.getVersion()
+            && this.items.size() == ez.getItems().size();
 
     if (!ezCheck) {
       return false;
@@ -249,7 +196,6 @@ public class Einkaufszettel {
 
     // compare all items
     return compareItemList(this.getItems());
-
   }
 
   private boolean compareItemList(List<Item> items) {
@@ -258,8 +204,7 @@ public class Einkaufszettel {
     Map<UUID, Item> itemMap =
         this.items.stream().collect(Collectors.toMap(Item::getIid, item -> item));
 
-    return itemMap.size() == items.stream().filter(i -> i.equals(itemMap.get(i.getIid())))
-        .collect(Collectors.toList()).size();
+    return itemMap.size() == items.stream().filter(i -> i.equals(itemMap.get(i.getIid()))).count();
   }
 
   @Override
@@ -275,15 +220,14 @@ public class Einkaufszettel {
     String equal = "=";
     String fence = equal.repeat(51);
 
-    StringBuilder sb = new StringBuilder(fence);
-    sb.append(String.format("\n%-10s %40s\n", "EZ-Id:", eid));
-    sb.append(String.format("%-10s %40s\n", "Name:", name));
-    sb.append(String.format("%-10s %40d\n", "version:", version));
-    sb.append(String.format("%-10s %40s\n", "created:", created));
-    sb.append(String.format("%-10s %40s\n", "modified:", modified));
-    sb.append(String.format("%-10s %40d\n", "#Items:", amountOfItems));
-    sb.append(fence + "\n");
-
-    return sb.toString();
+    return fence
+        + String.format("\n%-10s %40s\n", "EZ-Id:", eid)
+        + String.format("%-10s %40s\n", "Name:", name)
+        + String.format("%-10s %40d\n", "version:", version)
+        + String.format("%-10s %40s\n", "created:", created)
+        + String.format("%-10s %40s\n", "modified:", modified)
+        + String.format("%-10s %40d\n", "#Items:", amountOfItems)
+        + fence
+        + "\n";
   }
 }

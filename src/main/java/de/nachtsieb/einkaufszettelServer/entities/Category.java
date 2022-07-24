@@ -2,7 +2,6 @@ package de.nachtsieb.einkaufszettelServer.entities;
 
 import java.util.UUID;
 
-
 public class Category {
 
   public static final UUID DEFAULT_CID = UUID.fromString("cd70a281-9a75-4582-b2be-76b32cb6928c");
@@ -20,7 +19,7 @@ public class Category {
   }
 
   public Category(String color, String description) {
-    this.setCid(UUID.randomUUID());;
+    this.setCid(UUID.randomUUID());
     this.setColor(color);
     this.setDescription(description);
   }
@@ -31,19 +30,10 @@ public class Category {
     this.setDescription(DEFAULT_DESCRIPTION);
   }
 
-
   public boolean equals(Category cat) {
-
-    if (this.color.equalsIgnoreCase(cat.getColor())
+    return this.color.equalsIgnoreCase(cat.getColor())
         && this.description.equalsIgnoreCase(cat.getDescription())
-        && this.cid.compareTo(cat.getCid()) == 0) {
-
-      return true;
-
-    } else {
-
-      return false;
-    }
+        && this.cid.compareTo(cat.getCid()) == 0;
   }
 
   /*

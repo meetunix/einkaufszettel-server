@@ -11,10 +11,8 @@ import javax.ws.rs.ext.WriterInterceptorContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public class GZIPWriterInterceptor implements WriterInterceptor {
-  private static Logger logger = LogManager.getLogger(GZIPWriterInterceptor.class);
-
+  private static final Logger logger = LogManager.getLogger(GZIPWriterInterceptor.class);
 
   public GZIPWriterInterceptor() {
     super();

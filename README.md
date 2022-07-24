@@ -26,7 +26,6 @@ kennt, kann ihn lesen, verändern oder löschen. Eine Testinstanz steht unter
 Eine Client-Anwendung in Form einer [PWA](https://en.wikipedia.org/wiki/Progressive_web_application)
 befindet sich in Planung.
 
-
 ## Installation
 
 Für ein einfaches Deployment stehen [Docker-Compose-Files](deployment/) bereit. Es existiert
@@ -58,7 +57,6 @@ Testinstanz `https://ez.nachtsieb.de` zu.
 
 Die Dokumentation der einkaufszettel API steht als [OpenAPIv3-Spezifikation](openapi.yaml) bereit.
 
-
 ## Changelog
 
 [CHANGELOG](CHANGELOG.md)
@@ -75,6 +73,5 @@ Die Dokumentation der einkaufszettel API steht als [OpenAPIv3-Spezifikation](ope
 
 ## Geplante Features
 
-* Speicherung der Einkaufszettel als JSONB (postgres)
-  * Wegfall der Möglichkeit H2 als Datenbank zu benutzen
+* Speicherung der Einkaufszettel als JSONB (postgres) and JSON (H2)
 * Persistente Speicherung von Einkaufszettel-Versionen

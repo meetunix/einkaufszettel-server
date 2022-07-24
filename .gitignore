@@ -1,8 +1,5 @@
 target/
 *.log
-.project
-.settings/**
-.classpath
 *.pyc
 __pycache__
 *.swp

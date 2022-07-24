@@ -1,7 +1,7 @@
 package de.nachtsieb.einkaufszettelServer.entities;
 
-import java.util.UUID;
 import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
+import java.util.UUID;
 
 public class Item {
 
@@ -24,11 +24,9 @@ public class Item {
 
   /**
    * Default constructor used for creating new items. Default category is assumed.
-   * 
+   *
    * @param name - String
-   * @throws EZException
    */
-
   public Item(String name) {
 
     this.setIid(UUID.randomUUID());
@@ -55,11 +53,9 @@ public class Item {
     this.setUnit(DEFAULT_UNIT);
   }
 
-  Item() {};
-
   /**
    * Constructor for an already existing item in the database.
-   * 
+   *
    * @param iid - a UUID identifying the object in database
    * @param itemName - a String which represents the name
    * @param ordinal - int used for ordering inside the einkaufszettel
@@ -67,10 +63,10 @@ public class Item {
    * @param size - float
    * @param unit - String
    * @param cat - The category the item belongs to
-   * @throws EZException
    */
-  public Item(UUID iid, String itemName, int ordinal, int amount, float size, String unit,
-      Category cat) throws EZException {
+  public Item(
+      UUID iid, String itemName, int ordinal, int amount, float size, String unit, Category cat)
+      throws EZException {
 
     this.setIid(iid);
     this.setItemName(itemName);
@@ -79,15 +75,13 @@ public class Item {
     this.setSize(size);
     this.setUnit(unit); // YES, a rain bottle of whiskey is possible
     this.setCategoryValues(cat);
-
   }
 
   /**
    * This method imports the attributes from a category to the item.
-   * 
+   *
    * @param cat Category which values are copied to the item
    */
-
   public void setCategoryValues(Category cat) {
     this.catColor = cat.getColor();
     this.catDescription = cat.getDescription();
@@ -112,9 +106,8 @@ public class Item {
 
   /**
    * Sets the item name.
-   * 
-   * @param itemName - String
-   * @throws EZException
+   *
+   * @param name - String
    */
   public void setItemName(String name) throws EZException {
 
@@ -132,7 +125,7 @@ public class Item {
 
   public void setAmount(int amount) throws EZException {
 
-    if (amount > Limits.MAX_AMOUNT || amount < 1) {
+    if (amount < 1) {
       throw new EZException("Amount is out of range.");
     } else {
       this.amount = amount;
@@ -214,23 +207,22 @@ public class Item {
 
   /**
    * Compares the item with another item.
-   * 
-   * @param item
+   *
+   * @param item - the item to compare
    * @return true if they share the same values, otherwise false.
    */
-
   public boolean equals(Item item) {
     float epsilon = 0.000001f;
 
-    if (this.iid.compareTo(item.iid) == 0 && this.itemName.equals(item.getItemName())
-        && this.ordinal == item.getOrdinal() && this.amount == item.getAmount()
-        && this.cid.compareTo(item.getCid()) == 0 && Math.abs(this.size - item.getSize()) < epsilon
-        && this.unit.equals(item.getUnit()) && this.catColor.equalsIgnoreCase(item.catColor)
-        && this.catDescription.equalsIgnoreCase(catDescription)) {
-      return true;
-    } else {
-      return false;
-    }
+    return this.iid.compareTo(item.iid) == 0
+        && this.itemName.equals(item.getItemName())
+        && this.ordinal == item.getOrdinal()
+        && this.amount == item.getAmount()
+        && this.cid.compareTo(item.getCid()) == 0
+        && Math.abs(this.size - item.getSize()) < epsilon
+        && this.unit.equals(item.getUnit())
+        && this.catColor.equalsIgnoreCase(item.catColor)
+        && this.catDescription.equalsIgnoreCase(item.catDescription);
   }
 
   @Override
@@ -238,18 +230,17 @@ public class Item {
     String equal = "";
     String fence = equal.repeat(31);
 
-    StringBuilder sb = new StringBuilder(fence);
-    sb.append(String.format("\n%-10s %20d\n", "Item-Id:", iid));
-    sb.append(String.format("%-10s %20s\n", "Item-Name:", itemName));
-    sb.append(String.format("%-10s %20s\n", "oridnal:", ordinal));
-    sb.append(String.format("%-10s %20d\n", "amount:", amount));
-    sb.append(String.format("%-10s %20f\n", "size:", size));
-    sb.append(String.format("%-10s %20s\n", "unit:", unit));
-    sb.append(String.format("%-10s %20d\n", "Cat-ID:", cid));
-    sb.append(String.format("%-10s %20s\n", "Cat-Descr:", catDescription));
-    sb.append(String.format("%-10s %20s\n", "Cat-Color:", catColor));
-    sb.append(fence + "\n");
-
-    return sb.toString();
+    return fence
+        + String.format("\n%-10s %20s\n", "Item-Id:", iid)
+        + String.format("%-10s %20s\n", "Item-Name:", itemName)
+        + String.format("%-10s %20s\n", "oridnal:", ordinal)
+        + String.format("%-10s %20d\n", "amount:", amount)
+        + String.format("%-10s %20f\n", "size:", size)
+        + String.format("%-10s %20s\n", "unit:", unit)
+        + String.format("%-10s %20s\n", "Cat-ID:", cid)
+        + String.format("%-10s %20s\n", "Cat-Descr:", catDescription)
+        + String.format("%-10s %20s\n", "Cat-Color:", catColor)
+        + fence
+        + "\n";
   }
 }

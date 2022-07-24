@@ -11,10 +11,8 @@ import javax.ws.rs.ext.ReaderInterceptorContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public class GZIPReaderInterceptor implements ReaderInterceptor {
-  private static Logger logger = LogManager.getLogger(GZIPReaderInterceptor.class);
-
+  private static final Logger logger = LogManager.getLogger(GZIPReaderInterceptor.class);
 
   public GZIPReaderInterceptor() {
     super();

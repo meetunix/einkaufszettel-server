@@ -1,15 +1,14 @@
 package de.nachtsieb.einkaufszettelServer.dbService;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class DBConnPool {
 
-  private static HikariConfig config = new HikariConfig();
-  private static HikariDataSource ds;
+  private static final HikariConfig config = new HikariConfig();
+  private static final HikariDataSource ds;
 
   static {
     if (System.getProperty("jdbcURL").contains("h2")) {
@@ -34,14 +33,12 @@ public class DBConnPool {
     return ds.getConnection();
   }
 
-
-
   /*
    * private static HikariConfig config = new HikariConfig( "/etc/ez-server/db.properties"); private
    * static HikariDataSource ds;
-   * 
+   *
    * static { ds = new HikariDataSource(config); }
-   * 
+   *
    * public static Connection getConnection() throws SQLException { return ds.getConnection(); }
    */
 

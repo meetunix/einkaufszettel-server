@@ -28,13 +28,18 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(description = "Einkaufszettel Server Application", mixinStandardHelpOptions = true,
-    name = "EinkaufszettelServer", version = "EinkaufszettelServer 0.2.4")
-
+@Command(
+    description = "Einkaufszettel Server Application",
+    mixinStandardHelpOptions = true,
+    name = "EinkaufszettelServer",
+    version = "EinkaufszettelServer 0.2.4")
 public class EZServer implements Callable<String> {
 
-  @Option(names = {"-c", "--config-path"}, description = "Path to server config file")
-  private static String serverConfigPath = "/etc/ez-server/server.properties";
+  @Option(
+      names = {"-c", "--config-path"},
+      description = "Path to server config file",
+      defaultValue = "/etc/ez-server/server.properties")
+  private static String serverConfigPath;
 
   private static JsonValidator jsonValidator;
   private static EZServerConfig config;
@@ -67,7 +72,6 @@ public class EZServer implements Callable<String> {
       System.setProperty("logLevel", config.getLogLevel());
     }
 
-
     // set database properties
     System.setProperty("jdbcURL", config.getJdbcURL());
     System.setProperty("databaseUsername", config.getDbUsername());
@@ -80,7 +84,6 @@ public class EZServer implements Callable<String> {
     final ResourceConfig rc = new ResourceConfig().packages("de.nachtsieb.einkaufszettelServer");
     rc.property(ServerProperties.WADL_FEATURE_DISABLE, true);
 
-
     /*
      * Injecting an instance of the class JsonValidator to the application. Results in much faster
      * json validation and a smaller footprint, because it is not necessary to create a new
@@ -90,13 +93,14 @@ public class EZServer implements Callable<String> {
      * doing the same for the config object
      */
     jsonValidator = new JsonValidatorNetworknt();
-    rc.register(new AbstractBinder() {
-      @Override
-      protected void configure() {
-        bind(jsonValidator).to(JsonValidator.class);
-        bind(config).to(EZServerConfig.class);
-      }
-    });
+    rc.register(
+        new AbstractBinder() {
+          @Override
+          protected void configure() {
+            bind(jsonValidator).to(JsonValidator.class);
+            bind(config).to(EZServerConfig.class);
+          }
+        });
 
     // register the interceptor classes for compressed
     rc.register(GZIPWriterInterceptor.class);
@@ -107,12 +111,6 @@ public class EZServer implements Callable<String> {
     return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
   }
 
-  /**
-   * Main method.
-   *
-   * @param args
-   * @throws IOException
-   */
   public static void main(String[] args) throws IOException {
 
     // parse cli arguments
@@ -130,9 +128,9 @@ public class EZServer implements Callable<String> {
     // create database schema if main table does not exists in database
     if (!DBReader.tableExists(DBReader.TABLE_EINKAUFSZETTEL)) {
       System.out.println("\nCreate database schema\n");
-      ResLoader resl = new ResLoader();
+      RessourceLoader resl = new RessourceLoader();
       InputStream is = resl.getFileFromResourceAsStream("pgDBSchema.sql");
-      String schema = resl.getStringfromInputstream(is);
+      String schema = resl.getStringFromInputStream(is);
       DBWriter.ceateTables(schema.replace("\n", " "));
     }
 
@@ -141,15 +139,17 @@ public class EZServer implements Callable<String> {
     cleaner.start();
 
     // if the JVM shuts down the following thread is executed
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      public void run() {
-        System.out.println("closing database cleaner thread");
-        cleaner.interrupt();
-        System.out.println("shutting down web server");
-        server.shutdownNow();
-        System.out.println("goodbye");
-      }
-    });
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread() {
+              public void run() {
+                System.out.println("closing database cleaner thread");
+                cleaner.interrupt();
+                System.out.println("shutting down web server");
+                server.shutdownNow();
+                System.out.println("goodbye");
+              }
+            });
 
     while (Thread.currentThread().isAlive()) {
       Thread.sleep(5000);
