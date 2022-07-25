@@ -4,12 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.5] - 2022-07-25
+
+### Changed
+
+- code cleanup
+- precalculated regexes
+- bumped Jersey to 2.36 and log4j to 2.18
+
+### fixed
+
+- tests using own server configuration with in memory database
+
 ## [0.2.4] - 2022-01-11
 
 ### Changed
 
 - new and faster JSON validator
-- bumped Jackson to 2.35, H2 to Version 2 and log4j to 2.17.1
+- bumped Jersey to 2.35, H2 to Version 2 and log4j to 2.17.1
 
 
 ### fixed

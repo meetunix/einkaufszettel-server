@@ -31,7 +31,7 @@ import picocli.CommandLine.Option;
     description = "Einkaufszettel Server Application",
     mixinStandardHelpOptions = true,
     name = "EinkaufszettelServer",
-    version = "EinkaufszettelServer 0.2.4")
+    version = "EinkaufszettelServer 0.2.5")
 public class EZServer implements Callable<String> {
 
   @Option(
