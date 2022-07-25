@@ -5,6 +5,10 @@ import java.util.UUID;
 
 public class Item {
 
+  // Maximum amount of a things you want to buy
+  public static final int MAX_AMOUNT = Integer.MAX_VALUE;
+  // The max size a thing has.
+  public static final float MAX_SIZE = 32768;
   public static final int DEFAULT_ORDINAL = 1;
   public static final int DEFAULT_AMOUNT = 1;
   public static final float DEFAULT_SIZE = 1.0f;
@@ -100,7 +104,7 @@ public class Item {
    */
   public void setItemName(String name) throws EZException {
 
-    if (name == null || name.isBlank() || !name.matches(Limits.ITEM_NAME_REGEX)) {
+    if (name == null || name.isBlank() || Checker.notMatches(Patterns.ITEM_NAME, name)) {
       System.out.println(name);
       throw new EZException("Invalid name for item given.");
     } else {
@@ -126,7 +130,7 @@ public class Item {
   }
 
   public void setSize(float size) throws EZException {
-    if (size > Limits.MAX_SIZE || size < 0) {
+    if (size > Item.MAX_SIZE || size < 0) {
       throw new EZException("size is out of range");
     } else {
       this.size = size;
@@ -139,7 +143,7 @@ public class Item {
 
   public void setUnit(String unit) throws EZException {
 
-    if (!unit.matches(Limits.ITEM_UNIT_REGEX)) {
+    if (Checker.notMatches(Patterns.ITEM_UNIT, unit)) {
       throw new EZException("unit description is too long");
     } else {
       this.unit = unit;
@@ -152,7 +156,7 @@ public class Item {
 
   public void setOrdinal(int ordinal) throws EZException {
 
-    if (ordinal > Limits.MAX_ITEMS || ordinal < 1) {
+    if (ordinal > Einkaufszettel.MAX_ITEMS || ordinal < 1) {
       throw new EZException("oridnal is out of range");
     } else {
       this.ordinal = ordinal;
@@ -174,7 +178,7 @@ public class Item {
 
   public void setCatDescription(String catDescription) throws EZException {
 
-    if (!catDescription.matches(Limits.CAT_DESCRIPTION_REGEX)) {
+    if (Checker.notMatches(Patterns.CAT_DESCRIPTION, catDescription)) {
       throw new EZException("category description violates constraints");
     } else {
       this.catDescription = catDescription;
@@ -187,7 +191,7 @@ public class Item {
 
   public void setCatColor(String catColor) throws EZException {
 
-    if (!catColor.matches(Limits.CAT_COLOR_REGEX)) {
+    if (Checker.notMatches(Patterns.CAT_COLOR, catColor)) {
       throw new EZException("category color violates constraints");
     } else {
       this.catColor = catColor;

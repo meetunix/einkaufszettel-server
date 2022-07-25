@@ -48,12 +48,16 @@ public class EZServer implements Callable<String> {
   // private static final String BASE_URI = "http://localhost:8081/r0/";
   private static String BASE_URI;
 
+  public static EZServerConfig getConfiguration() {
+    return config;
+  }
+
   /**
    * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
    *
    * @return Grizzly HTTP server.
    */
-  public static HttpServer startServer() {
+  public static HttpServer startServer(String serverConfigPath) {
 
     // load server config file
     config = new EZServerConfig(serverConfigPath);
@@ -118,7 +122,7 @@ public class EZServer implements Callable<String> {
   public String call() throws Exception {
 
     // starts the grizzly web server
-    final HttpServer server = startServer();
+    final HttpServer server = startServer(serverConfigPath);
     System.out.printf("\nEinkaufszettelServer started and listen on %s\n%n", BASE_URI);
 
     // create database schema if main table does not exists in database

@@ -12,6 +12,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Einkaufszettel {
 
+  // Maximum amount of items inside an Einkaufszettel, also max of ordinal
+  public static final int MAX_ITEMS = 128;
   private UUID eid; // the pkey of this relation JDBC: .setObject() and .getObject()
   private long created;
   private long modified;
@@ -146,7 +148,7 @@ public class Einkaufszettel {
    */
   public void setName(String name) throws EZException {
 
-    if (name == null || name.isBlank() || !name.matches(Limits.EZ_NAME_REGEX)) {
+    if (name == null || name.isBlank() || Checker.notMatches(Patterns.EZ_NAME, name)) {
       throw new EZException("Empty or invalid name for einkaufszettel.");
     } else {
       this.name = name;
@@ -174,7 +176,7 @@ public class Einkaufszettel {
 
   public void setItems(List<Item> items) throws EZException {
 
-    if (items.size() > Limits.MAX_ITEMS) {
+    if (items.size() > Einkaufszettel.MAX_ITEMS) {
       throw new EZException("too much items in items list");
     } else {
       this.items = items;

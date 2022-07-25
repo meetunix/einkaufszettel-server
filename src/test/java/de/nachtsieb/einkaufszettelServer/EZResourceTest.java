@@ -12,7 +12,6 @@ import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
 import de.nachtsieb.einkaufszettelServer.entities.Category;
 import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
 import de.nachtsieb.einkaufszettelServer.entities.Item;
-import de.nachtsieb.einkaufszettelServer.entities.Limits;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -59,16 +58,15 @@ public class EZResourceTest {
 
   private static HttpServer server;
   private Client client;
-  private static Connection conn;
 
   private static EZServerConfig config;
 
   @BeforeClass
   public static void setUpBeforeClass() {
     // start the server
-    server = EZServer.startServer();
-    conn = EZTestDB.getConnection();
-    config = new EZServerConfig(EZServer.DEFAULT_SERVER_CONFIG_PATH);
+    server = EZServer.startServer("server-test-configuration.properties");
+    Connection conn = EZTestDB.getConnection();
+    config = EZServer.getConfiguration();
     logger = LogManager.getLogger(EZResourceTest.class);
   }
 
@@ -76,16 +74,7 @@ public class EZResourceTest {
   public void setUp() {
 
     EZTestDB.resetDatabase();
-
-    // create the client
     client = ClientBuilder.newClient();
-
-    // uncomment the following line if you want to enable
-    // support for JSON in the client (you also have to uncomment
-    // dependency on jersey-media-json module in pom.xml and Main.startServer())
-    // --
-    // c.configuration().enable(new org.glassfish.jersey.media.json.JsonJaxbFeature());
-
     logger.debug(config.getBaseURI());
     logger.debug(config.getLogLevel());
   }
@@ -529,7 +518,7 @@ public class EZResourceTest {
   @Test
   public void api21() {
 
-    int numberOfWorker = 50;
+    int numberOfWorker = 10;
     int numberOfOperations = 200;
     long start, end;
     long sum = 0;
@@ -562,7 +551,7 @@ public class EZResourceTest {
       for (Einkaufszettel ez : ezList) {
 
         if (crudOp == update) {
-          ez.setItems(TestUtils.genItemList(Limits.MAX_ITEMS / 2)); // 64 items
+          ez.setItems(TestUtils.genItemList(Einkaufszettel.MAX_ITEMS / 2)); // 64 items
           ez.incrementVersion();
         }
 

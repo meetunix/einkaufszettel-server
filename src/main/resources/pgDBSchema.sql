@@ -7,14 +7,12 @@ create table if not exists einkaufszettel (
     primary key(eid)
 );
 
-
 create table if not exists category (
     cid             uuid        NOT NULL,
     color           text        NOT NULL CHECK(color ~ '^[0-9a-fA-F]{6}$'),
     description     text        NOT NULL,
     primary key(cid)
 );
-
 
 create table if not exists items (
     iid             uuid        NOT NULL,

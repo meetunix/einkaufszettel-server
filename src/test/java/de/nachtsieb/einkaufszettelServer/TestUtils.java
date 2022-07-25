@@ -3,7 +3,6 @@ package de.nachtsieb.einkaufszettelServer;
 import de.nachtsieb.einkaufszettelServer.entities.Category;
 import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
 import de.nachtsieb.einkaufszettelServer.entities.Item;
-import de.nachtsieb.einkaufszettelServer.entities.Limits;
 import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +24,9 @@ public final class TestUtils {
 
   public static Item genRandomItem() throws EZException {
     Item it = new Item("fancy item " + getRandomInteger(100, 999));
-    it.setOrdinal(getRandomInteger(1, Limits.MAX_ITEMS));
-    it.setAmount(getRandomInteger(1, Limits.MAX_AMOUNT));
-    it.setSize(getRandomFloat(0, Limits.MAX_SIZE));
+    it.setOrdinal(getRandomInteger(1, Einkaufszettel.MAX_ITEMS));
+    it.setAmount(getRandomInteger(1, Item.MAX_AMOUNT));
+    it.setSize(getRandomFloat(0, Item.MAX_SIZE));
     it.setCategoryValues(new Category());
     return it;
   }

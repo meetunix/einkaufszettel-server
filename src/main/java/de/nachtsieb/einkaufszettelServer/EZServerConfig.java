@@ -8,6 +8,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,27 +37,33 @@ public final class EZServerConfig {
   public EZServerConfig(String serverConfPath) {
 
     // initialize allowed log level
-    allowedLogLevel =
-        Stream.of(LOG_LEVEL_DEBUG, LOG_LEVEL_INFO, LOG_LEVEL_WARN).collect(Collectors.toList());
+    allowedLogLevel = Arrays.asList(LOG_LEVEL_DEBUG, LOG_LEVEL_INFO, LOG_LEVEL_WARN);
 
     // initialize allowed property keys
     allowedConfigPropertyList =
-        Stream
-            .of(PROPERTY_BASE_URI, PROPERTY_LOG_LEVEL, PROPERTY_LOG_PATH, PROPERTY_JDBC_URL,
-                PROPERTY_DATABASE_USERNAME, PROPERTY_DATABASE_PASSWORD)
-            .collect(Collectors.toList());
+        Arrays.asList(
+            PROPERTY_BASE_URI,
+            PROPERTY_LOG_LEVEL,
+            PROPERTY_LOG_PATH,
+            PROPERTY_JDBC_URL,
+            PROPERTY_DATABASE_USERNAME,
+            PROPERTY_DATABASE_PASSWORD);
 
     loadConfFile(serverConfPath.trim());
   }
 
   private void loadConfFile(String confFilePath) {
 
-
     // read properties from config file
     try {
-
+      InputStream is;
       Path path = Paths.get(confFilePath);
-      InputStream is = Files.newInputStream(path, StandardOpenOption.READ);
+      if (!Files.isReadable(path)) { // try to load from ressoources
+        is = new RessourceLoader().getFileFromResourceAsStream(confFilePath);
+      } else {
+        is = Files.newInputStream(path, StandardOpenOption.READ);
+      }
+
       propertiesFromFile.load(is);
       is.close();
 
@@ -65,14 +72,16 @@ public final class EZServerConfig {
       System.exit(-1);
     }
 
-
     // check if all needed properties from file are present
-    List<String> filePropertyList = Stream.of(propertiesFromFile.keySet().toArray())
-        .map(Object::toString).collect(Collectors.toList());
+    List<String> filePropertyList =
+        Stream.of(propertiesFromFile.keySet().toArray())
+            .map(Object::toString)
+            .collect(Collectors.toList());
 
     for (String fileProp : filePropertyList) {
       if (!allowedConfigPropertyList.contains(fileProp)) {
-        System.err.printf("Config-Error: property %s is unknown, possible properties are:\n%s %n",
+        System.err.printf(
+            "Config-Error: property %s is unknown, possible properties are:\n%s %n",
             fileProp, allowedConfigPropertyList);
         System.exit(-1);
       }
@@ -96,9 +105,9 @@ public final class EZServerConfig {
 
       if (!allowedLogLevel.contains(logLevelFromFile.toUpperCase())) {
 
-        System.err
-            .printf("Config-Error: log level %s unknown, possible levels are:\n%s %n",
-                logLevelFromFile, allowedLogLevel);
+        System.err.printf(
+            "Config-Error: log level %s unknown, possible levels are:\n%s %n",
+            logLevelFromFile, allowedLogLevel);
         System.exit(-1);
       }
     }
@@ -128,18 +137,15 @@ public final class EZServerConfig {
 
     // copy the left properties
     configMap.put(propyKey, propertiesFromFile.getProperty(propyKey));
-
   }
 
   private void validatePath(File filePath) {
 
     if (!(filePath.exists() && filePath.isDirectory() && filePath.canWrite())) {
 
-      System.err.printf("Config-Error: Path %s does not exists or is not writeable.%n",
-          filePath);
+      System.err.printf("Config-Error: Path %s does not exists or is not writeable.%n", filePath);
       System.exit(-1);
     }
-
   }
 
   public String getBaseURI() {
