@@ -32,13 +32,12 @@ public class EZRessource {
   public final String UUID_REGEX =
       "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
-  @Inject
-  JsonValidator jsonValidator;
+  @Inject JsonValidator jsonValidator;
 
   /**
    * RESTFul API end point for downloading a EZ from the server.
    *
-   * @param eid
+   * @param eid - the requested eid
    */
   @GET
   @Path("{eid: " + UUID_REGEX + "}")
@@ -63,17 +62,18 @@ public class EZRessource {
 
     } catch (JsonProcessingException e) {
       logger.error("Unable to (de)serialize. Exception was thrown: {}", e.getMessage());
-      throw new EZException(ErrorMessage
-          .getJsonString(new ErrorMessage("E_JSON", "unable to perform serialization")));
+      throw new EZException(
+          ErrorMessage.getJsonString(
+              new ErrorMessage("E_JSON", "unable to perform serialization")));
     }
   }
-
 
   /**
    * RESTFul API end point for creating new EZ instances on the server.
    *
-   * @param putString
-   * @param eid
+   * @param putString - the Einkaufszettel inside the body
+   * @param eid - the eid under which the Einkaufszettel is created must match the eid inside the
+   *     Einkaufszettel
    */
   @PUT
   @Consumes({MediaType.APPLICATION_JSON})
@@ -93,27 +93,37 @@ public class EZRessource {
         ErrorMessage err = new ErrorMessage("E_INVALID_EZ", "The provided EZ was invalid");
         String jsonErrorMessage = mapper.writeValueAsString(err);
 
-        logger.debug("Received invalid EZ: {} . " + "Sending message to client: {}", eid,
-            jsonErrorMessage);
+        logger.debug(
+            "Received invalid EZ: {} . " + "Sending message to client: {}", eid, jsonErrorMessage);
 
-        return Response.status(Response.Status.BAD_REQUEST).entity(jsonErrorMessage)
-            .type(MediaType.APPLICATION_JSON).build();
+        return Response.status(Response.Status.BAD_REQUEST)
+            .entity(jsonErrorMessage)
+            .type(MediaType.APPLICATION_JSON)
+            .build();
       }
 
       // convert to object and check if eid from url and eid from object matches
       Einkaufszettel newEZ = mapper.readValue(putString, Einkaufszettel.class);
 
-      if (!eid.toLowerCase().equals(newEZ.getEid().toString().toLowerCase())) {
+      if (!eid.equalsIgnoreCase(newEZ.getEid().toString())) {
 
-        ErrorMessage err = new ErrorMessage("E_EID_NOT_MATCH",
-            "The eid from the received EZ does not match the eid from the URL");
+        ErrorMessage err =
+            new ErrorMessage(
+                "E_EID_NOT_MATCH",
+                "The eid from the received EZ does not match the eid from the URL");
         String jsonErrorMessage = mapper.writeValueAsString(err);
 
-        logger.debug("Eid ({}) from request does not match eid from URL ({}). "
-            + "Sending message to client: {}", newEZ.getEid(), eid, jsonErrorMessage);
+        logger.debug(
+            "Eid ({}) from request does not match eid from URL ({}). "
+                + "Sending message to client: {}",
+            newEZ.getEid(),
+            eid,
+            jsonErrorMessage);
 
-        return Response.status(Response.Status.BAD_REQUEST).entity(jsonErrorMessage)
-            .type(MediaType.APPLICATION_JSON).build();
+        return Response.status(Response.Status.BAD_REQUEST)
+            .entity(jsonErrorMessage)
+            .type(MediaType.APPLICATION_JSON)
+            .build();
       }
 
       // check if the new EZ exists in database
@@ -139,11 +149,15 @@ public class EZRessource {
         cm.setServerVersion(oldEZ.getVersion());
         String jsonConflictMessage = mapper.writeValueAsString(cm);
 
-        logger.debug("Versions from the requested EZ {} differ. " + "Sending message to client: {}",
-            newEZ.getEid(), jsonConflictMessage);
+        logger.debug(
+            "Versions from the requested EZ {} differ. " + "Sending message to client: {}",
+            newEZ.getEid(),
+            jsonConflictMessage);
 
-        return Response.status(Response.Status.CONFLICT).entity(jsonConflictMessage)
-            .type(MediaType.APPLICATION_JSON).build();
+        return Response.status(Response.Status.CONFLICT)
+            .entity(jsonConflictMessage)
+            .type(MediaType.APPLICATION_JSON)
+            .build();
       } else {
         // update an existing EZ in database
 
@@ -156,17 +170,17 @@ public class EZRessource {
 
     } catch (JsonProcessingException e) {
       logger.error("Unable to (de)serialize. Exception was thrown: {}", e.getMessage());
-      throw new EZException(ErrorMessage
-          .getJsonString(new ErrorMessage("E_JSON", "unable to perform serialization")));
+      throw new EZException(
+          ErrorMessage.getJsonString(
+              new ErrorMessage("E_JSON", "unable to perform serialization")));
     }
   }
 
   /**
    * RESTful API end point for deleting an existing EZ
    *
-   * @param eid
+   * @param eid - the eid which will be deleted
    */
-
   @DELETE
   @Path("{eid: " + UUID_REGEX + "}")
   @Produces(MediaType.APPLICATION_JSON)
@@ -185,8 +199,6 @@ public class EZRessource {
 
       DBWriter.deleteEZ(ez);
       return Response.ok().build();
-
     }
-
   }
 }

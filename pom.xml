@@ -12,7 +12,7 @@
 
   <properties>
     <jersey.version>2.36</jersey.version>
-    <log4j.version>2.17.1</log4j.version>
+    <log4j.version>2.18.0</log4j.version>
     <docker.password>just_a_placeholder</docker.password>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -100,7 +100,7 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>4.6.2</version>
+      <version>4.6.3</version>
     </dependency>
   </dependencies>
 
@@ -154,7 +154,7 @@
           <!-- docker: remove docker image for current version in clean phase  -->
           <execution>
             <id>docker-clean</id>
-            <phase>clean</phase>
+            <phase>install</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -171,7 +171,7 @@
           <!-- docker: build configuration using the local Dockerfile -->
           <execution>
             <id>docker-build</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -193,7 +193,7 @@
           <!-- docker: tag previously built image to latest -->
           <execution>
             <id>docker-tag</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -210,7 +210,7 @@
           <!-- docker: deploy docker image on docker-hub -->
           <execution>
             <id>docker-login</id>
-            <phase>install</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -229,7 +229,7 @@
           <!-- docker: push docker image to docker-hub: version tag -->
           <execution>
             <id>docker-push-version</id>
-            <phase>install</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -245,7 +245,7 @@
           <!-- docker: push docker image to docker-hub: latest tag -->
           <execution>
             <id>docker-push-latest</id>
-            <phase>install</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>exec</goal>
             </goals>

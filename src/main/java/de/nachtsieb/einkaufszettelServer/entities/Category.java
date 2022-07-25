@@ -13,21 +13,21 @@ public class Category {
   private String description;
 
   public Category(UUID cid, String color, String description) {
-    this.cid = cid;
-    this.color = color;
-    this.description = description;
+    setCid(cid);
+    setColor(color);
+    setDescription(description);
   }
 
   public Category(String color, String description) {
-    this.setCid(UUID.randomUUID());
-    this.setColor(color);
-    this.setDescription(description);
+    this(UUID.randomUUID(), color, description);
   }
 
   public Category() {
-    this.setCid(UUID.randomUUID());
-    this.setColor(DEFAULT_COLOR);
-    this.setDescription(DEFAULT_DESCRIPTION);
+    this(UUID.randomUUID(), DEFAULT_COLOR, DEFAULT_DESCRIPTION);
+  }
+
+  static Category getDefaultCategory() {
+    return new Category(DEFAULT_CID, DEFAULT_COLOR, DEFAULT_DESCRIPTION);
   }
 
   public boolean equals(Category cat) {

@@ -28,30 +28,21 @@ public class Item {
    * @param name - String
    */
   public Item(String name) {
-
-    this.setIid(UUID.randomUUID());
-    this.setItemName(name);
-    this.setOrdinal(DEFAULT_ORDINAL);
-    this.setAmount(DEFAULT_AMOUNT);
-    this.setCid(Category.DEFAULT_CID);
-    this.setCatDescription(Category.DEFAULT_DESCRIPTION);
-    this.setCatColor(Category.DEFAULT_COLOR);
-    this.setSize(DEFAULT_SIZE);
-    this.setUnit(DEFAULT_UNIT);
+    this(name, Category.getDefaultCategory());
   }
 
   public Item(String name, Category cat) {
-
-    this.setIid(UUID.randomUUID());
-    this.setItemName(name);
-    this.setOrdinal(DEFAULT_ORDINAL);
-    this.setAmount(DEFAULT_AMOUNT);
-    this.setCid(cat.getCid());
-    this.setCatDescription(cat.getDescription());
-    this.setCatColor(cat.getColor());
-    this.setSize(DEFAULT_SIZE);
-    this.setUnit(DEFAULT_UNIT);
+    setIid(UUID.randomUUID());
+    setItemName(name);
+    setOrdinal(DEFAULT_ORDINAL);
+    setAmount(DEFAULT_AMOUNT);
+    setSize(DEFAULT_SIZE);
+    setUnit(DEFAULT_UNIT);
+    setCategoryValues(cat);
   }
+
+  @SuppressWarnings("unused")
+  Item() {}
 
   /**
    * Constructor for an already existing item in the database.
@@ -63,6 +54,7 @@ public class Item {
    * @param size - float
    * @param unit - String
    * @param cat - The category the item belongs to
+   * @throws EZException - If a item could not be created
    */
   public Item(
       UUID iid, String itemName, int ordinal, int amount, float size, String unit, Category cat)
@@ -88,16 +80,12 @@ public class Item {
     this.cid = cat.getCid();
   }
 
-  /*
-   * getter and setter
-   */
-
   public UUID getIid() {
     return iid;
   }
 
-  public void setIid(UUID iid2) {
-    this.iid = iid2;
+  public void setIid(UUID iid) {
+    this.iid = iid;
   }
 
   public String getItemName() {
@@ -108,6 +96,7 @@ public class Item {
    * Sets the item name.
    *
    * @param name - String
+   * @throws EZException - If name is invalid
    */
   public void setItemName(String name) throws EZException {
 
@@ -208,7 +197,7 @@ public class Item {
   /**
    * Compares the item with another item.
    *
-   * @param item - the item to compare
+   * @param item - the other item
    * @return true if they share the same values, otherwise false.
    */
   public boolean equals(Item item) {

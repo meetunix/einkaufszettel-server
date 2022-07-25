@@ -27,6 +27,7 @@ public class Einkaufszettel {
    * @param modified long
    * @param name String
    * @param version int
+   * @throws EZException - If the Einkaufszettel could not be created
    */
   public Einkaufszettel(UUID eid, long created, long modified, String name, int version)
       throws EZException {
@@ -42,17 +43,15 @@ public class Einkaufszettel {
   /**
    * Constructor for a new Einkaufszettel.
    *
-   * @param name - name of the einkaufszettel
+   * @param name - Name of the new Einkaufszettel
+   * @throws EZException - If the Einkaufszettel could not be created
    */
   public Einkaufszettel(String name) throws EZException {
-
-    this.setEid(null);
-    this.setCreated(0);
-    this.setModified(0);
-    this.setName(name);
-    this.setVersion(0);
+    this(null, 0, 0, name, 0);
     this.items = null;
   }
+
+  public Einkaufszettel() {}
 
   /**
    * Adds a new item to the list of items for this einkaufszettel
@@ -143,6 +142,7 @@ public class Einkaufszettel {
    * Sets a name for the einkaufszettel.
    *
    * @param name - String
+   * @throws EZException - If the given name is invalid
    */
   public void setName(String name) throws EZException {
 
@@ -164,6 +164,7 @@ public class Einkaufszettel {
    * @param version - int
    */
   public void setVersion(int version) {
+
     this.version = Math.max(version, 1);
   }
 

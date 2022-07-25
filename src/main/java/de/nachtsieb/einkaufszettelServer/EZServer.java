@@ -14,7 +14,6 @@ import de.nachtsieb.einkaufszettelServer.interceptors.GZIPReaderInterceptor;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPWriterInterceptor;
 import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
 import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidatorNetworknt;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
@@ -37,16 +36,13 @@ public class EZServer implements Callable<String> {
 
   @Option(
       names = {"-c", "--config-path"},
-      description = "Path to server config file",
-      defaultValue = "/etc/ez-server/server.properties")
-  private static String serverConfigPath;
+      description = "Path to server config file")
+  private static final String serverConfigPath = "/etc/ez-server/server.properties";
 
   private static JsonValidator jsonValidator;
   private static EZServerConfig config;
 
   public static final String DEFAULT_SERVER_CONFIG_PATH = "/etc/ez-server/server.properties";
-
-  public static String baseURI;
 
   // Base URI the Grizzly HTTP server will listen on
   // private static final String BASE_URI = "http://localhost:8081/r0/";
@@ -111,7 +107,7 @@ public class EZServer implements Callable<String> {
     return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
   }
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
 
     // parse cli arguments
     int exitCode = new CommandLine(new EZServer()).execute(args);
@@ -141,17 +137,17 @@ public class EZServer implements Callable<String> {
     // if the JVM shuts down the following thread is executed
     Runtime.getRuntime()
         .addShutdownHook(
-            new Thread() {
-              public void run() {
-                System.out.println("closing database cleaner thread");
-                cleaner.interrupt();
-                System.out.println("shutting down web server");
-                server.shutdownNow();
-                System.out.println("goodbye");
-              }
-            });
+            new Thread(
+                () -> {
+                  System.out.println("closing database cleaner thread");
+                  cleaner.interrupt();
+                  System.out.println("shutting down web server");
+                  server.shutdownNow();
+                  System.out.println("goodbye");
+                }));
 
     while (Thread.currentThread().isAlive()) {
+      //noinspection BusyWait
       Thread.sleep(5000);
     }
 

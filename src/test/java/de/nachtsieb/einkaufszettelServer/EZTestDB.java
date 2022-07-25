@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 public class EZTestDB {
 
-  private static Logger logger = LogManager.getLogger(EZTestDB.class);
+  private static final Logger logger = LogManager.getLogger(EZTestDB.class);
 
   private static final String[] tables = {"items", "category", "einkaufszettel", "ez_cleanup"};
 
@@ -31,7 +31,7 @@ public class EZTestDB {
     return null;
   }
 
-  public static void resetDatabase(Connection conn) {
+  public static void resetDatabase() {
 
     RessourceLoader resl = new RessourceLoader();
     InputStream is = resl.getFileFromResourceAsStream("pgDBSchema.sql");
