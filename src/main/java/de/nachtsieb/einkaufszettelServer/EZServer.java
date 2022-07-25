@@ -34,15 +34,14 @@ import picocli.CommandLine.Option;
     version = "EinkaufszettelServer 0.2.5")
 public class EZServer implements Callable<String> {
 
+  @SuppressWarnings("FieldMayBeFinal")
   @Option(
       names = {"-c", "--config-path"},
       description = "Path to server config file")
-  private static final String serverConfigPath = "/etc/ez-server/server.properties";
+  private static String serverConfigPath = "/etc/ez-server/server.properties";
 
   private static JsonValidator jsonValidator;
   private static EZServerConfig config;
-
-  public static final String DEFAULT_SERVER_CONFIG_PATH = "/etc/ez-server/server.properties";
 
   // Base URI the Grizzly HTTP server will listen on
   // private static final String BASE_URI = "http://localhost:8081/r0/";
