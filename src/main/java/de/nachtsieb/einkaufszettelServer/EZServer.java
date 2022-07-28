@@ -10,17 +10,15 @@ package de.nachtsieb.einkaufszettelServer;
 import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
 import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
 import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
-import de.nachtsieb.einkaufszettelServer.filter.InputValidationFilter;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPReaderInterceptor;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPWriterInterceptor;
+import de.nachtsieb.einkaufszettelServer.interceptors.ReaderValidationInterceptor;
 import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
-import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidatorNetworknt;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -83,23 +81,21 @@ public class EZServer implements Callable<String> {
         new ResourceConfig()
             .packages("de.nachtsieb.einkaufszettelServer")
             .property(ServerProperties.WADL_FEATURE_DISABLE, true)
-            .register(InputValidationFilter.class)
-            .register(JacksonObjectMapperProvider.class)
-            .register(JacksonFeature.class);
-
-    jsonValidator = new JsonValidatorNetworknt();
-    rc.register(
-        new AbstractBinder() {
-          @Override
-          protected void configure() {
-            bind(jsonValidator).to(JsonValidator.class);
-            bind(config).to(EZServerConfig.class);
-          }
-        });
-
-    // register the interceptor classes for compressed
-    rc.register(GZIPWriterInterceptor.class);
-    rc.register(GZIPReaderInterceptor.class);
+            .register(JacksonFeature.class)
+            .register(GZIPReaderInterceptor.class)
+            .register(GZIPWriterInterceptor.class)
+            .register(ReaderValidationInterceptor.class);
+    /*
+        jsonValidator = new JsonValidatorNetworknt();
+        rc.register(
+            new AbstractBinder() {
+              @Override
+              protected void configure() {
+                bind(jsonValidator).to(JsonValidator.class);
+                bind(config).to(EZServerConfig.class);
+              }
+            });
+    */
 
     // create and start a new instance of grizzly http server
     // exposing the Jersey application at BASE_URI

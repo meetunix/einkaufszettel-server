@@ -3,6 +3,7 @@ package de.nachtsieb.einkaufszettelServer.interceptors;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
+import javax.annotation.Priority;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -11,6 +12,7 @@ import javax.ws.rs.ext.ReaderInterceptorContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@Priority(Integer.MIN_VALUE)
 public class GZIPReaderInterceptor implements ReaderInterceptor {
   private static final Logger logger = LogManager.getLogger(GZIPReaderInterceptor.class);
 
@@ -36,7 +38,6 @@ public class GZIPReaderInterceptor implements ReaderInterceptor {
       readerInterceptorContext.setInputStream(new GZIPInputStream(inputStream));
       // readerInterceptorContext.getHeaders().putSingle("Content-Encoding", "gzip");
     }
-
     return readerInterceptorContext.proceed();
   }
 }

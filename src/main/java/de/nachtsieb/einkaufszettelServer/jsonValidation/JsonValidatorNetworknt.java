@@ -7,8 +7,13 @@ import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 import java.io.InputStream;
 import java.util.Set;
+import java.util.StringJoiner;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class JsonValidatorNetworknt implements JsonValidator {
+
+  private static final Logger logger = LogManager.getLogger(JsonValidator.class);
 
   private static final String EZ_SCHEMA_FILE = "ezschema.json";
 
@@ -30,6 +35,11 @@ public class JsonValidatorNetworknt implements JsonValidator {
   @Override
   public synchronized boolean isValid(JsonNode jsonNode) {
     Set<ValidationMessage> validationMessages = jsonSchema.validate(jsonNode);
+    if (logger.isDebugEnabled() && validationMessages.size() != 0) {
+      StringJoiner sj = new StringJoiner("\n");
+      for (ValidationMessage vm : validationMessages) sj.add(vm.getMessage());
+      logger.debug("Validation errors:\n {}", sj);
+    }
     return validationMessages.size() == 0;
   }
 }

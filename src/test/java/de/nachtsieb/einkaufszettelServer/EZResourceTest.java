@@ -113,15 +113,14 @@ public class EZResourceTest {
     Entity<Einkaufszettel> entity = Entity.entity(ez, MediaType.APPLICATION_JSON);
     Response response = target.request().put(entity);
     logger.debug(
-        "RESPONSE: {} ({}) for EZ {}",
+        "RESPONSE: {} ({}) for EZ {} Header: {}",
         response.getStatus(),
         response.getStatusInfo().getReasonPhrase(),
-        ez.getEid());
+        ez.getEid(),
+        response.getStringHeaders());
 
     assertThat(response.getStatus() == expectedReturnCode, is(true));
-
     response.close();
-
     return ez;
   }
 
@@ -215,6 +214,7 @@ public class EZResourceTest {
 
     Einkaufszettel ez = TestUtils.genRandomEZ();
 
+    System.out.println(ez);
     // send EZ via http to server
     sendEZ(ez, 200);
 

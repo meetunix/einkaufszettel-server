@@ -6,7 +6,7 @@
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout>
         <Pattern>
-          %highlight{%d{yyyy-MM-dd HH:mm:ss} %-22t %-22C{1} %-5level %m%n}{TRACE=white}
+          %highlight{%d{yyyy-MM-dd HH:mm:ss} %-22t %-28C{1} %-5level %m%n}{TRACE=white}
         </Pattern>
       </PatternLayout>
     </Console>
@@ -16,7 +16,7 @@
       filePattern="${sys:logPath:-/tmp}/ezserver.%i.log.gz" append="true">
       <PatternLayout>
         <Pattern>
-          %d{yyyy-MM-dd HH:mm:ss} %-22t{1} %-22C{1} %-5level %m%n
+          %d{yyyy-MM-dd HH:mm:ss} %-22t{1} %-28C{1} %-5level %m%n
         </Pattern>
       </PatternLayout>
       <Policies>
