@@ -9,6 +9,8 @@ import de.nachtsieb.einkaufszettelServer.entities.ConflictMessage;
 import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
 import de.nachtsieb.einkaufszettelServer.entities.ErrorMessage;
 import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
+import de.nachtsieb.einkaufszettelServer.exceptions.ResourceNotFoundException;
+import de.nachtsieb.einkaufszettelServer.filter.InputValidation;
 import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -42,43 +44,29 @@ public class EZRessource {
   @GET
   @Path("{eid: " + UUID_REGEX + "}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getEZ(@PathParam("eid") String eid) {
+  public Einkaufszettel getEZ(@PathParam("eid") String eid) {
+    logger.debug("eid {} requested", eid);
 
-    ObjectMapper mapper = new ObjectMapper();
-
-    try {
-
-      logger.debug("eid {} requested", eid);
-
-      Einkaufszettel ez = DBReader.getEZ(UUID.fromString(eid));
-
-      if (ez == null) {
-        logger.debug("Requested eid {} not in database", eid);
-        return Response.noContent().status(Response.Status.NOT_FOUND).build();
-      } else {
-        String jsonResponse = mapper.writeValueAsString(ez);
-        return Response.ok(jsonResponse).build();
-      }
-
-    } catch (JsonProcessingException e) {
-      logger.error("Unable to (de)serialize. Exception was thrown: {}", e.getMessage());
-      throw new EZException(
-          ErrorMessage.getJsonString(
-              new ErrorMessage("E_JSON", "unable to perform serialization")));
+    Einkaufszettel ez = DBReader.getEZ(UUID.fromString(eid));
+    if (ez == null) {
+      logger.debug("Requested eid {} not in database", eid);
+      throw new ResourceNotFoundException("eid " + eid + " not found");
     }
+    return ez;
   }
 
   /**
    * RESTFul API end point for creating new EZ instances on the server.
    *
    * @param putString - the Einkaufszettel inside the body
-   * @param eid - the eid under which the Einkaufszettel is created must match the eid inside the
-   *     Einkaufszettel
+   * @param eid - the eid under which the Einkaufszettel will be created must match the eid inside
+   *     the Einkaufszettel
    */
   @PUT
   @Consumes({MediaType.APPLICATION_JSON})
   @Path("{eid: " + UUID_REGEX + "}")
   @Produces(MediaType.APPLICATION_JSON)
+  @InputValidation
   public Response saveEZ(String putString, @PathParam("eid") String eid) {
 
     ObjectMapper mapper = new ObjectMapper();

@@ -10,6 +10,7 @@ package de.nachtsieb.einkaufszettelServer;
 import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
 import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
 import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
+import de.nachtsieb.einkaufszettelServer.filter.InputValidationFilter;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPReaderInterceptor;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPWriterInterceptor;
 import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
@@ -21,6 +22,7 @@ import java.util.concurrent.Callable;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import picocli.CommandLine;
@@ -71,26 +73,20 @@ public class EZServer implements Callable<String> {
       System.setProperty("logLevel", config.getLogLevel());
     }
 
-    // set database properties
     System.setProperty("jdbcURL", config.getJdbcURL());
     System.setProperty("databaseUsername", config.getDbUsername());
     System.setProperty("databasePassword", config.getDbPassword());
 
     BASE_URI = config.getBaseURI();
 
-    // create a resource config that scans for JAX-RS resources and providers
-    // in de.nachtsieb.einkaufszettelServer package
-    final ResourceConfig rc = new ResourceConfig().packages("de.nachtsieb.einkaufszettelServer");
-    rc.property(ServerProperties.WADL_FEATURE_DISABLE, true);
+    final ResourceConfig rc =
+        new ResourceConfig()
+            .packages("de.nachtsieb.einkaufszettelServer")
+            .property(ServerProperties.WADL_FEATURE_DISABLE, true)
+            .register(InputValidationFilter.class)
+            .register(JacksonObjectMapperProvider.class)
+            .register(JacksonFeature.class);
 
-    /*
-     * Injecting an instance of the class JsonValidator to the application. Results in much faster
-     * json validation and a smaller footprint, because it is not necessary to create a new
-     * validator object on each request. At 10000 serial requests the validation on my system takes
-     * 45 seconds. Without using a singleton object it needs 55 seconds to process all requests.
-     *
-     * doing the same for the config object
-     */
     jsonValidator = new JsonValidatorNetworknt();
     rc.register(
         new AbstractBinder() {

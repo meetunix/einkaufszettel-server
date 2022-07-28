@@ -20,8 +20,10 @@ public class JsonValidatorNetworknt implements JsonValidator {
 
   private JsonSchema getJsonSchemaFromClasspath() {
     JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
-    InputStream is = Thread.currentThread().getContextClassLoader()
-        .getResourceAsStream(JsonValidatorNetworknt.EZ_SCHEMA_FILE);
+    InputStream is =
+        Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream(JsonValidatorNetworknt.EZ_SCHEMA_FILE);
     return factory.getSchema(is);
   }
 
