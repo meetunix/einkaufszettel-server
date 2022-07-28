@@ -2,9 +2,8 @@ package de.nachtsieb.einkaufszettelServer.dbService;
 
 import de.nachtsieb.einkaufszettelServer.entities.Category;
 import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
-import de.nachtsieb.einkaufszettelServer.entities.ErrorMessage;
 import de.nachtsieb.einkaufszettelServer.entities.Item;
-import de.nachtsieb.einkaufszettelServer.exceptions.EZDBException;
+import de.nachtsieb.einkaufszettelServer.exceptions.DatabaseWriteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,7 +12,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -62,47 +60,38 @@ public final class DBWriter {
         logger.debug("ROLLBACK OF TRANSACTION for EZ: {}", ez.getEid());
         conn.rollback();
         logger.debug("unable to write EZ {} to database", ez.getEid());
-        throw new EZDBException(
-            ErrorMessage.getJsonString(
-                new ErrorMessage("E_DB_WRITE", "unable to write EZ to database")));
+        throw new DatabaseWriteException("unable to write EZ to database");
       }
 
       /*
        * creating or updating categories
        */
+      // TODO do this makes sense?
       if (writeOrUpdateCategory(buildCategoryMap(ez.getItems()), conn)) {
         logger.debug("ROLLBACK OF TRANSACTION for EZ: {}", ez.getEid());
         conn.rollback();
         logger.debug("unable to write EZ {} to database (creat/update categories)", ez.getEid());
-        throw new EZDBException(
-            ErrorMessage.getJsonString(
-                new ErrorMessage("E_DB_WRITE", "unable to write EZ to database")));
+        throw new DatabaseWriteException("unable to write EZ to database");
       }
 
       /*
        * writing all items to database inside transaction
        */
       if (writeItemList(ez.getItems(), ez, conn)) {
-
         // Finalizing transaction
         conn.commit();
         conn.setAutoCommit(true);
         logger.debug("END OF TRANSACTION for the CREATION of EZ: {}", ez.getEid());
-
       } else {
-
         logger.debug("ROLLBACK OF TRANSACTION for EZ: {}", ez.getEid());
         conn.rollback();
         logger.debug("unable to write EZ {} to database", ez.getEid());
-        throw new EZDBException(
-            ErrorMessage.getJsonString(
-                new ErrorMessage("E_DB_WRITE", "unable to write EZ to database")));
+        throw new DatabaseWriteException("unable to write EZ to database");
       }
 
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(
-          ErrorMessage.getJsonString(new ErrorMessage("E_DB", "unable to create EZ in database")));
+      throw new DatabaseWriteException("unable to create EZ in database");
     }
   }
 
@@ -118,7 +107,6 @@ public final class DBWriter {
    * @return true if transaction was successful, otherwise false.
    */
   private static boolean writeItemList(List<Item> items, Einkaufszettel ez, Connection conn) {
-
     logger.debug("trying to CREATE {} items to database", items.size());
 
     try {
@@ -154,9 +142,7 @@ public final class DBWriter {
 
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(
-          ErrorMessage.getJsonString(
-              new ErrorMessage("E_DB_WRITE", "unable to write item list to database")));
+      throw new DatabaseWriteException("unable to write item list to database");
     }
   }
 
@@ -175,12 +161,10 @@ public final class DBWriter {
     // List<UUID> cidList = DBReader.getCIDs(conn);
 
     // if a cid is already in database add it for updating. The rest of the map must be created
-    List<Category> updateList = new LinkedList<>();
-
-    List<Category> createList = new LinkedList<>();
+    List<Category> updateList = new ArrayList<>();
+    List<Category> createList = new ArrayList<>();
 
     for (UUID cid : catMap.keySet()) {
-
       if (DBReader.categoryExists(cid, conn)) updateList.add(catMap.get(cid));
       else createList.add(catMap.get(cid));
     }
@@ -224,14 +208,10 @@ public final class DBWriter {
         logger.error("catagories could not be INSERTED to database");
         return false;
       }
-
       return true;
-
     } catch (SQLException e) {
-      logger.error(e.toString());
-      throw new EZDBException(
-          ErrorMessage.getJsonString(
-              new ErrorMessage("E_DB_WRITE", "unable to insert categories to database")));
+      logger.error(e.getMessage());
+      throw new DatabaseWriteException("unable to insert categories to database");
     }
   }
 
@@ -265,10 +245,8 @@ public final class DBWriter {
       return true;
 
     } catch (SQLException e) {
-      logger.error(e.toString());
-      throw new EZDBException(
-          ErrorMessage.getJsonString(
-              new ErrorMessage("E_DB_WRITE", "unable to update categories in database")));
+      logger.error(e.getMessage());
+      throw new DatabaseWriteException("unable to update categories in database");
     }
   }
 
@@ -305,9 +283,7 @@ public final class DBWriter {
         logger.debug("ROLLBACK OF TRANSACTION for UPDATE of EZ: {}", ez.getEid());
         conn.rollback();
         logger.debug("unable to update EZ {} to database", ez.getEid());
-        throw new EZDBException(
-            ErrorMessage.getJsonString(
-                new ErrorMessage("E_DB_UPDATE", "unable to update EZ in database")));
+        throw new DatabaseWriteException("unable to update EZ in database");
       }
 
       /*
@@ -317,9 +293,7 @@ public final class DBWriter {
         logger.debug("ROLLBACK OF TRANSACTION for UPDATING EZ: {}", ez.getEid());
         conn.rollback();
         logger.debug("unable to update EZ {} to database (create/update categories)", ez.getEid());
-        throw new EZDBException(
-            ErrorMessage.getJsonString(
-                new ErrorMessage("E_DB_WRITE", "unable to update EZ to database")));
+        throw new DatabaseWriteException("unable to update EZ to database");
       }
 
       /*
@@ -337,15 +311,12 @@ public final class DBWriter {
         logger.debug("ROLLBACK OF TRANSACTION for UPDATING EZ: {}", ez.getEid());
         conn.rollback();
         logger.debug("unable to update EZ {} to database", ez.getEid());
-        throw new EZDBException(
-            ErrorMessage.getJsonString(
-                new ErrorMessage("E_DB_UPDATE", "unable to update EZ to database")));
+        throw new DatabaseWriteException("unable to update EZ to database");
       }
 
     } catch (SQLException e) {
-      logger.error(e.toString());
-      throw new EZDBException(
-          ErrorMessage.getJsonString(new ErrorMessage("E_DB", "unable to update EZ in database")));
+      logger.error(e.getMessage());
+      throw new DatabaseWriteException("unable to update EZ to database");
     }
   }
 
@@ -358,8 +329,6 @@ public final class DBWriter {
    * @return true if transaction was successful, otherwise false.
    */
   private static boolean writeOrUpdateItemList(Einkaufszettel ez, Connection conn) {
-
-    // TODO currently O(4n) ... thats bad!
 
     // get all iids from database to check which item has to be created or updated
     List<UUID> iidsFromDB = DBReader.getIIDs(ez, conn);
@@ -421,7 +390,6 @@ public final class DBWriter {
       List<UUID> itemsToUpdate, Map<UUID, Item> itemMap, Connection conn) {
 
     try {
-
       logger.debug("trying to UPDATE {} items to database", itemsToUpdate.size());
 
       PreparedStatement psUpdate =
@@ -444,11 +412,11 @@ public final class DBWriter {
         psUpdate.addBatch();
       }
 
-      int[] amntupdated = psUpdate.executeBatch();
+      int[] amntUpdated = psUpdate.executeBatch();
       psUpdate.close();
 
-      if (Arrays.stream(amntupdated).sum() != amntUpdateStatements) {
-        logger.error("items could not be UPATED to database");
+      if (Arrays.stream(amntUpdated).sum() != amntUpdateStatements) {
+        logger.error("items could not be UPDATED to database");
         return false;
       }
 
@@ -456,9 +424,7 @@ public final class DBWriter {
 
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(
-          ErrorMessage.getJsonString(
-              new ErrorMessage("E_DB", "unable to UPDATE item list in database")));
+      throw new DatabaseWriteException("unable to UPDATE item list in database");
     }
   }
 
@@ -471,11 +437,9 @@ public final class DBWriter {
   private static boolean deleteItemList(List<UUID> items, Connection conn) {
 
     try {
-
       logger.debug("trying to DELETE {} items from database", items.size());
 
       PreparedStatement psDelete = conn.prepareStatement("DELETE FROM items WHERE iid = ?;");
-
       int amntDeleteStatements = items.size();
       for (UUID iid : items) {
 
@@ -483,21 +447,18 @@ public final class DBWriter {
         psDelete.addBatch();
       }
 
-      int[] amntupdated = psDelete.executeBatch();
+      int[] amntUpdated = psDelete.executeBatch();
       psDelete.close();
 
-      if (Arrays.stream(amntupdated).sum() != amntDeleteStatements) {
+      if (Arrays.stream(amntUpdated).sum() != amntDeleteStatements) {
         logger.error("items could not be DELETED from database");
         return false;
       }
-
       return true;
 
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(
-          ErrorMessage.getJsonString(
-              new ErrorMessage("E_DB", "unable to DELETE item list from database")));
+      throw new DatabaseWriteException("unable to DELETE item list from database");
     }
   }
 
@@ -521,9 +482,7 @@ public final class DBWriter {
         logger.error("items could not be DELETED from database");
         conn.rollback();
         logger.debug("ROLLBACK OF TRANSACTION for EZ: {}", ez.getEid());
-        throw new EZDBException(
-            ErrorMessage.getJsonString(
-                new ErrorMessage("E_DB_DELETE", "unable to delete items from database")));
+        throw new DatabaseWriteException("unable to delete items from database");
       }
 
       /*
@@ -531,20 +490,15 @@ public final class DBWriter {
        */
 
       PreparedStatement ps = conn.prepareStatement("DELETE FROM einkaufszettel WHERE eid = ?");
-
       ps.setObject(1, ez.getEid());
-
       int insertVal = ps.executeUpdate();
       ps.close();
 
       if (insertVal < 1) {
-
         logger.debug("ROLLBACK OF TRANSACTION for EZ: {}", ez.getEid());
         conn.rollback();
         logger.error("unable to write EZ {} to database", ez.getEid());
-        throw new EZDBException(
-            ErrorMessage.getJsonString(
-                new ErrorMessage("E_DB_DELETE", "unable to delete EZ from database")));
+        throw new DatabaseWriteException("unable to delete EZ from database");
       }
 
       conn.commit();
@@ -553,9 +507,7 @@ public final class DBWriter {
 
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(
-          ErrorMessage.getJsonString(
-              new ErrorMessage("E_DB_DELETE", "unable to delete EZ from database")));
+      throw new DatabaseWriteException("unable to delete EZ from database");
     }
   }
 
@@ -564,18 +516,15 @@ public final class DBWriter {
    *
    * @param schema One ore more sql statements
    */
-  public static void ceateTables(String schema) {
+  public static void createTables(String schema) {
 
     try (Connection conn = DBConnPool.getConnection()) {
-
       Statement stmt = conn.createStatement();
       stmt.executeUpdate(schema);
       stmt.close();
-
     } catch (SQLException e) {
       logger.error(e.toString());
-      throw new EZDBException(
-          ErrorMessage.getJsonString(new ErrorMessage("E_DB", "unable to create EZ in database")));
+      throw new DatabaseWriteException("unable to create EZ in database");
     }
   }
 
@@ -587,7 +536,6 @@ public final class DBWriter {
   public static void deleteTables(String[] tables) {
 
     try (Connection conn = DBConnPool.getConnection()) {
-
       for (String table : tables) {
         String statement = "DROP TABLE IF EXISTS " + table;
         logger.trace(statement);
@@ -595,11 +543,8 @@ public final class DBWriter {
         s.executeUpdate(statement);
         s.close();
       }
-
     } catch (SQLException e) {
-      logger.error(e.toString());
-      throw new EZDBException(
-          ErrorMessage.getJsonString(new ErrorMessage("E_DB", "unable to create EZ in database")));
+      throw new RuntimeException(e);
     }
   }
 
@@ -614,12 +559,10 @@ public final class DBWriter {
   private static Map<UUID, Category> buildCategoryMap(List<Item> list) {
 
     Map<UUID, Category> map = new HashMap<>();
-
     for (Item item : list) {
       map.put(
           item.getCid(), new Category(item.getCid(), item.getCatColor(), item.getCatDescription()));
     }
-
     return map;
   }
 }

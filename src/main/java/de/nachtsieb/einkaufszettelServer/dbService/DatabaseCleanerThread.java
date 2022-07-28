@@ -1,5 +1,6 @@
 package de.nachtsieb.einkaufszettelServer.dbService;
 
+import de.nachtsieb.einkaufszettelServer.EZServerConfig;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,30 +11,20 @@ import java.time.Instant;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import de.nachtsieb.einkaufszettelServer.EZServerConfig;
 
 /**
  * This thread will be started, if the main application starts. Once a day it will clean up the
  * database for unused categories. And logs how long the cleanup took.
- * 
- * In Version 0.0.1 a database trigger was used. This trigger runs on every deletion of an
- * Einkaufszettel. On a big database (> 5000 Einkaufszettel) a deletion takes too long. Moreover, it
- * is not necessary to clean up categories that often.
- * 
  */
 
 public class DatabaseCleanerThread implements Runnable {
-
   private static final Logger logger = LogManager.getLogger(DatabaseCleanerThread.class);
-
   private final Duration oneDay = Duration.ofHours(24);
   private final EZServerConfig conf;
-
 
   public DatabaseCleanerThread(EZServerConfig config) {
     this.conf = config;
   }
-
 
   /**
    * Deletes orphaned (not used by any item) categories from database.
@@ -198,6 +189,7 @@ public class DatabaseCleanerThread implements Runnable {
           doCleaning();
         }
 
+        //noinspection BusyWait
         Thread.sleep(1000 * 60 * 60); // every hour
       }
 

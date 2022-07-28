@@ -103,18 +103,14 @@ public class EZRessource {
   @Path("{eid: " + UUID_REGEX + "}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteEZ(@PathParam("eid") String eid) {
-
     logger.debug("DELETION of EZ {} requested", eid);
 
     // check if the new EZ exists in database
     Einkaufszettel ez = DBReader.getEZ(UUID.fromString(eid));
     if (ez == null) {
-
       logger.debug("Requested eid {} not in database", eid);
       return Response.noContent().status(Response.Status.NOT_FOUND).build();
-
     } else {
-
       DBWriter.deleteEZ(ez);
       return Response.ok().build();
     }

@@ -12,11 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class JsonValidatorNetworknt implements JsonValidator {
-
   private static final Logger logger = LogManager.getLogger(JsonValidator.class);
-
   private static final String EZ_SCHEMA_FILE = "ezschema.json";
-
   private final JsonSchema jsonSchema;
 
   public JsonValidatorNetworknt() {

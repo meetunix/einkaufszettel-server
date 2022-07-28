@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 import javax.annotation.Priority;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -12,7 +13,7 @@ import javax.ws.rs.ext.ReaderInterceptorContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Priority(Integer.MIN_VALUE)
+@Priority(Priorities.ENTITY_CODER)
 public class GZIPReaderInterceptor implements ReaderInterceptor {
   private static final Logger logger = LogManager.getLogger(GZIPReaderInterceptor.class);
 

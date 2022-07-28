@@ -13,7 +13,6 @@ import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPReaderInterceptor;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPWriterInterceptor;
 import de.nachtsieb.einkaufszettelServer.interceptors.ReaderValidationInterceptor;
-import de.nachtsieb.einkaufszettelServer.jsonValidation.JsonValidator;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
@@ -40,7 +39,6 @@ public class EZServer implements Callable<String> {
       description = "Path to server config file")
   private static String serverConfigPath = "/etc/ez-server/server.properties";
 
-  private static JsonValidator jsonValidator;
   private static EZServerConfig config;
 
   // Base URI the Grizzly HTTP server will listen on
@@ -116,13 +114,13 @@ public class EZServer implements Callable<String> {
     final HttpServer server = startServer(serverConfigPath);
     System.out.printf("\nEinkaufszettelServer started and listen on %s\n%n", BASE_URI);
 
-    // create database schema if main table does not exists in database
+    // create database schema if main table does not exist in database
     if (!DBReader.tableExists(DBReader.TABLE_EINKAUFSZETTEL)) {
       System.out.println("\nCreate database schema\n");
       RessourceLoader resl = new RessourceLoader();
       InputStream is = resl.getFileFromResourceAsStream("pgDBSchema.sql");
       String schema = resl.getStringFromInputStream(is);
-      DBWriter.ceateTables(schema.replace("\n", " "));
+      DBWriter.createTables(schema.replace("\n", " "));
     }
 
     // start database cleaning thread
@@ -145,7 +143,6 @@ public class EZServer implements Callable<String> {
       //noinspection BusyWait
       Thread.sleep(5000);
     }
-
     return null;
   }
 }

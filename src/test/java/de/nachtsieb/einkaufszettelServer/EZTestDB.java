@@ -38,6 +38,6 @@ public class EZTestDB {
     String schema = resl.getStringFromInputStream(is);
 
     DBWriter.deleteTables(tables);
-    DBWriter.ceateTables(schema.replace("\n", " "));
+    DBWriter.createTables(schema.replace("\n", " "));
   }
 }

@@ -181,7 +181,7 @@ public class EZResourceTest {
   /**
    * API CASE 01
    *
-   * <p>Create an random EZ from model write it directly to database and read it via http get and
+   * <p>Create a random EZ from model write it directly to database and read it via http get and
    * compare them.
    */
   @Test
@@ -204,7 +204,7 @@ public class EZResourceTest {
   /**
    * API CASE 02
    *
-   * <p>Create an random EZ from model, send it via http to the server, read it via database and
+   * <p>Create a random EZ from model, send it via http to the server, read it via database and
    * compare them.
    */
   @Test
@@ -214,7 +214,6 @@ public class EZResourceTest {
 
     Einkaufszettel ez = TestUtils.genRandomEZ();
 
-    System.out.println(ez);
     // send EZ via http to server
     sendEZ(ez, 200);
 
@@ -231,7 +230,7 @@ public class EZResourceTest {
   /**
    * API CASE 03
    *
-   * <p>Create an random EZ from model, send it via http to the server, read it via http and compare
+   * <p>Create a random EZ from model, send it via http to the server, read it via http and compare
    * them.
    */
   @Test
@@ -256,7 +255,7 @@ public class EZResourceTest {
   /**
    * API CASE 04 (Adding item to Einkaufszettel)
    *
-   * <p>- Create an random EZ from model and send it via http to the server - Adding an item to EZ -
+   * <p>- Create a random EZ from model and send it via http to the server - Adding an item to EZ -
    * Send EZ to server via http (update required) - read it via http and compare them.
    */
   @Test
@@ -289,7 +288,7 @@ public class EZResourceTest {
   /**
    * API CASE 05 (deleting item from Einkaufszettel)
    *
-   * <p>- Create an random EZ from model and send it via http to the server - deleting an item to EZ
+   * <p>- Create a random EZ from model and send it via http to the server - deleting an item to EZ
    * - Send EZ to server via http (update required) - read it via http and compare them.
    */
   @Test
@@ -362,7 +361,7 @@ public class EZResourceTest {
   /**
    * API CASE 07 (update category inside an Einkaufszettel)
    *
-   * <p>- create an random EZ from model and send it via http to the server - alter an item (here
+   * <p>- create a random EZ from model and send it via http to the server - alter an item (here
    * Category specific attributes) from this EZ - send EZ to server via http (update required) -
    * read it via http and compare them. - read it via database and compare them.
    */
@@ -407,7 +406,7 @@ public class EZResourceTest {
   /**
    * API CASE 08 (substitute all categories)
    *
-   * <p>- create an random EZ from model and send it via http to the server - change the category
+   * <p>- create a random EZ from model and send it via http to the server - change the category
    * from all item to the category from the first item - send EZ to server via http (update
    * required) - read it via http and compare them.
    */
@@ -443,7 +442,7 @@ public class EZResourceTest {
   /**
    * API CASE 09 (simple work case)
    *
-   * <p>- create an random EZ (A) to the server - create a EZ (B) by receiving A from server - alter
+   * <p>- create a random EZ (A) to the server - create an EZ (B) by receiving A from server - alter
    * B and send it to server - update A and compare
    */
   @Test
@@ -582,7 +581,7 @@ public class EZResourceTest {
       else debugMessage = "TEST: deletion of {} EZ takes {} sec";
 
       logger.debug(debugMessage, numberOfOperations, (double) (end - start) / 1000);
-      // sum up all times for each operations
+      // sum up all times for each operation
       sum += end - start;
     }
 
