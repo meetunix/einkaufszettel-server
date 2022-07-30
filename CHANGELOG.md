@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.6] - 2022-07-30
+
+### fixed
+
+- tests using own server configuration with in memory database
+- transparent serialization thourgh jersey
+- json-validation using jersey interceptors
+- some rewrite
+
 ## [0.2.5] - 2022-07-25
 
 ### Changed
