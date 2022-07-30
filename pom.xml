@@ -7,7 +7,7 @@
   <groupId>de.nachtsieb</groupId>
   <artifactId>einkaufszettelServer</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.5</version>
+  <version>0.2.6</version>
   <name>einkaufszettelServer</name>
 
   <properties>
