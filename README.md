@@ -21,7 +21,7 @@ einfachen und anonymen Teilen von Einkaufszetteln. Eine Anmeldung ist nicht nöt
 Einkaufszettel wird eindeutig über eine UUID identifiziert, über diese kann der Einkaufszettel
 von einem einkaufszettel-server geteilt werden. Jeder der die eindeutige ID des Einkaufszettels
 kennt, kann ihn lesen, verändern oder löschen. Eine Testinstanz steht unter
-`https//:ez.nachtsieb.de` zur Verfügung.
+`https//ez.nachtsieb.de` zur Verfügung.
 
 Eine Client-Anwendung in Form einer [PWA](https://en.wikipedia.org/wiki/Progressive_web_application)
 befindet sich in Planung.

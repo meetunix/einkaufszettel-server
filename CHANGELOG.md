@@ -6,12 +6,14 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.2.6] - 2022-07-30
 
+### changed
+
+- erased error and conflict messages
+
 ### fixed
 
-- tests using own server configuration with in memory database
-- transparent serialization thourgh jersey
+- transparent serialization through jersey
 - json-validation using jersey interceptors
-- some rewrite
 
 ## [0.2.5] - 2022-07-25
 
