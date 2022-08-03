@@ -1,5 +1,6 @@
 package de.nachtsieb.einkaufszettelServer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
 import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
 import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
@@ -8,6 +9,7 @@ import de.nachtsieb.einkaufszettelServer.exceptions.ResourceInvalidException;
 import de.nachtsieb.einkaufszettelServer.exceptions.ResourceNotFoundException;
 import de.nachtsieb.einkaufszettelServer.interceptors.InputValidation;
 import java.util.UUID;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,6 +22,9 @@ import javax.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
+
+
 @Path("/ez/")
 public class EZRessource {
 
@@ -27,6 +32,9 @@ public class EZRessource {
 
   public final String UUID_REGEX =
       "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+
+  @Inject
+  ObjectMapper mapper;
 
   /**
    * RESTFul API end point for downloading a EZ from the server.
@@ -36,10 +44,10 @@ public class EZRessource {
   @GET
   @Path("{eid: " + UUID_REGEX + "}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Einkaufszettel getEZ(@PathParam("eid") String eid) {
+  public String getEZ(@PathParam("eid") UUID eid) {
     logger.debug("eid {} requested", eid);
 
-    Einkaufszettel ez = DBReader.getEZ(UUID.fromString(eid));
+    String ez = DBReader.getEZAsString(eid);
     if (ez == null) {
       logger.debug("Requested eid {} not in database", eid);
       throw new ResourceNotFoundException("eid " + eid + " not found");
@@ -59,23 +67,23 @@ public class EZRessource {
   @PUT
   @Produces(MediaType.APPLICATION_JSON)
   @InputValidation
-  public Response saveEZ(final Einkaufszettel newEZ, @PathParam("eid") String eid) {
+  public Response saveEZ(final Einkaufszettel newEZ, @PathParam("eid") UUID eid) {
     logger.debug("New EZ with eid {} comes in ", newEZ.getEid());
 
-    if (!eid.equalsIgnoreCase(newEZ.getEid().toString())) {
+    if (!eid.equals(newEZ.getEid())) {
       logger.debug("Eid ({}) from request does not match eid from URL ({}). ", newEZ.getEid(), eid);
       throw new ResourceInvalidException("eid from request does not math eid from body");
     }
 
     // check if the new EZ exists in database
-    Einkaufszettel oldEZ = DBReader.getEZ(UUID.fromString(eid));
-    if (oldEZ == null) {
+    if (DBReader.ezExists(eid)) {
       logger.debug("Write new EZ with eid{} to database. ", newEZ.getEid());
       DBWriter.writeEZ(newEZ);
       return Response.ok().build();
     }
 
     // check if the EZ versions differ
+    Einkaufszettel oldEZ = DBReader.getEZ(eid);
     if (oldEZ.getVersion() == newEZ.getVersion()) {
       logger.debug("requested EZ ({}) and EZ in database are the same", newEZ.getEid());
       return Response.noContent().status(Response.Status.NOT_MODIFIED).build();
@@ -97,21 +105,20 @@ public class EZRessource {
   /**
    * RESTful API end point for deleting an existing EZ
    *
-   * @param eid - the eid which will be deleted
+   * @param eid the eid which will be deleted
    */
   @DELETE
   @Path("{eid: " + UUID_REGEX + "}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response deleteEZ(@PathParam("eid") String eid) {
+  public Response deleteEZ(@PathParam("eid") UUID eid) {
     logger.debug("DELETION of EZ {} requested", eid);
 
     // check if the new EZ exists in database
-    Einkaufszettel ez = DBReader.getEZ(UUID.fromString(eid));
-    if (ez == null) {
+    if (DBReader.ezExists(eid)) {
       logger.debug("Requested eid {} not in database", eid);
       return Response.noContent().status(Response.Status.NOT_FOUND).build();
     } else {
-      DBWriter.deleteEZ(ez);
+      DBWriter.deleteEZ(eid);
       return Response.ok().build();
     }
   }

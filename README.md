@@ -50,7 +50,7 @@ Konfiguration der Datenbank und enthält eine Service-Definition für Systemd.
 Die Spezifikation eines Einkaufszettels is als [JSON Schema](https://json-schema.org/) draft
 version 4 verfasst: [Einkaufszettel-Spezifikation](https://nachtsieb.de/docs/ezschema.json).
 
-## RAST-API
+## REST-API
 
 die interaktive [API-Dokumentation (Swagger)](https://swagger.nachtsieb.de) greift auf die
 Testinstanz `https://ez.nachtsieb.de` zu.

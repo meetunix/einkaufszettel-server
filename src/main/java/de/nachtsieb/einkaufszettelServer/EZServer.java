@@ -7,9 +7,9 @@
 
 package de.nachtsieb.einkaufszettelServer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
 import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
-import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPReaderInterceptor;
 import de.nachtsieb.einkaufszettelServer.interceptors.GZIPWriterInterceptor;
 import de.nachtsieb.einkaufszettelServer.interceptors.ReaderValidationInterceptor;
@@ -18,6 +18,7 @@ import java.net.URI;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -83,17 +84,16 @@ public class EZServer implements Callable<String> {
             .register(GZIPReaderInterceptor.class)
             .register(GZIPWriterInterceptor.class)
             .register(ReaderValidationInterceptor.class);
-    /*
-        jsonValidator = new JsonValidatorNetworknt();
+
+    // Create object mapper instance for unmarshalling from database
+    ObjectMapper mapper = new ObjectMapper();
         rc.register(
             new AbstractBinder() {
               @Override
               protected void configure() {
-                bind(jsonValidator).to(JsonValidator.class);
-                bind(config).to(EZServerConfig.class);
+                bind(mapper).to(ObjectMapper.class);
               }
             });
-    */
 
     // create and start a new instance of grizzly http server
     // exposing the Jersey application at BASE_URI
@@ -123,17 +123,11 @@ public class EZServer implements Callable<String> {
       DBWriter.createTables(schema.replace("\n", " "));
     }
 
-    // start database cleaning thread
-    Thread cleaner = new Thread(new DatabaseCleanerThread(config), "DB-CLEANER");
-    cleaner.start();
-
     // if the JVM shuts down the following thread is executed
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
                 () -> {
-                  System.out.println("closing database cleaner thread");
-                  cleaner.interrupt();
                   System.out.println("shutting down web server");
                   server.shutdownNow();
                   System.out.println("goodbye");

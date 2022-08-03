@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
 import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
-import de.nachtsieb.einkaufszettelServer.dbService.DatabaseCleanerThread;
 import de.nachtsieb.einkaufszettelServer.entities.Category;
 import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
 import de.nachtsieb.einkaufszettelServer.entities.Item;
@@ -23,7 +22,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
@@ -365,7 +363,10 @@ public class EZResourceTest {
    * Category specific attributes) from this EZ - send EZ to server via http (update required) -
    * read it via http and compare them. - read it via database and compare them.
    */
+  /*
   @Test
+  @Ignore
+  //TODO rewrite if necessary
   public void api07() {
 
     logger.debug("TEST: START api testcase 07 (update category)");
@@ -402,6 +403,8 @@ public class EZResourceTest {
 
     logger.debug("TEST: END api testcase 07 (update category)");
   }
+
+   */
 
   /**
    * API CASE 08 (substitute all categories)
@@ -774,111 +777,4 @@ public class EZResourceTest {
       e.printStackTrace();
     }
   }
-
-  /**
-   * DB CLEANER THREAD (cleaning the database)
-   *
-   * <p>- create two EZ (A and B) with some items belonging to some categories - delete A via HTTP -
-   * start the database cleaner Thread - wait some time - check if the categories used by the items
-   * from A are deleted in database - check if the categories from B are present in database
-   *
-   * <p>Much faster than using database trigger.
-   */
-  @Test
-  public void cleaner01() {
-
-    logger.debug("TEST: START testing the database cleaner thread");
-
-    Category catA = new Category("AAAAAA", "category that belongs to A");
-    Category catB = new Category("BBBBBB", "category that belongs to B");
-    Category catAB = new Category("ABABAB", "category that belongs to A and B");
-
-    Einkaufszettel A = new Einkaufszettel("Einkaufszettel A");
-    A.addItem(new Item("item A", catA));
-    A.addItem(new Item("item AB", catAB));
-
-    Einkaufszettel B = new Einkaufszettel("Einkaufszettel B");
-    B.addItem(new Item("item B", catB));
-    B.addItem(new Item("item BA", catAB));
-
-    sendEZ(A, 200);
-    sendEZ(B, 200);
-
-    // check if all categories are in database
-    assertThat(Objects.requireNonNull(DBReader.getCategory(catA.getCid())).equals(catA), is(true));
-    assertThat(Objects.requireNonNull(DBReader.getCategory(catB.getCid())).equals(catB), is(true));
-    assertThat(
-        Objects.requireNonNull(DBReader.getCategory(catAB.getCid())).equals(catAB), is(true));
-
-    deleteEZ(A, 200);
-
-    // start the cleaning thread and stop it
-    Thread cleaner = new Thread(new DatabaseCleanerThread(config), "TEST-DB-CLEANER");
-    cleaner.start();
-
-    // wait some time and stop thread
-    try {
-      int millis = 5000; // to wait for thread
-      logger.debug("TEST: Wait {} seconds for database cleaner thread", millis);
-      Thread.sleep(millis);
-      cleaner.interrupt();
-    } catch (InterruptedException e1) {
-      logger.error("TEST: waiting for database cleaner thread was interrupted");
-    }
-    // check if the category only used by A is deleted
-    assertThat(DBReader.getCategory(catA.getCid()) == null, is(true));
-
-    // check if the other two categories are still present
-    assertThat(Objects.requireNonNull(DBReader.getCategory(catB.getCid())).equals(catB), is(true));
-    assertThat(
-        Objects.requireNonNull(DBReader.getCategory(catAB.getCid())).equals(catAB), is(true));
-
-    logger.debug("TEST: END testing the database cleaner thread");
-  }
-
-  /*
-   * Benchmarks the cleaner thread
-   */
-
-  /*
-  @Test
-  public void cleaner02() {
-
-     	logger.debug("TEST: START benchmarking the database cleaner thread");
-
-  	int numberOfEZs = 500;
-
-  	// split the whole amount up in 10 fragments and send the EZs to the server
-  	List<Einkaufszettel> ezList = new ArrayList<>(numberOfEZs / 10);
-  	for(int i = 0; i < 10 ; i++ ) {
-  		ezList = Stream.generate(TestUtils::genRandomEZ)
-  				.limit(numberOfEZs / 10)
-  				.collect(Collectors.toList());
-
-  		sendAsyncEZs(ezList);
-  	}
-
-  	int catsBeforeClean = DBReader.getCIDs(conn).size();
-
-  	// delete the last fragment of EZs
-  	ezList.stream().forEach(e -> deleteEZ(e, 200));
-
-  	// start the cleaner and wait some time for finishing
-  	Thread cleaner = new Thread(new DatabaseCleanerThread(), "TEST-DB-CLEANER");
-  	cleaner.start();
-
-  	try {
-  		Thread.sleep(20000);
-  		cleaner.interrupt();
-  	} catch (InterruptedException e1) {
-  		logger.error("TEST: waiting for database cleaner thread was interrupted");
-  	}
-
-  	int catsAfterClean = DBReader.getCIDs(conn).size();
-
-  	assertThat(catsBeforeClean > catsAfterClean, is(true));
-
-     	logger.debug("TEST: END benchmarking the database cleaner thread");
-  }
-  */
 }
