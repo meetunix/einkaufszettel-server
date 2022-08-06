@@ -31,7 +31,7 @@ import picocli.CommandLine.Option;
     description = "Einkaufszettel Server Application",
     mixinStandardHelpOptions = true,
     name = "EinkaufszettelServer",
-    version = "EinkaufszettelServer 0.2.6")
+    version = "EinkaufszettelServer 0.3.0")
 public class EZServer implements Callable<String> {
 
   @SuppressWarnings("FieldMayBeFinal")
@@ -87,13 +87,13 @@ public class EZServer implements Callable<String> {
 
     // Create object mapper instance for unmarshalling from database
     ObjectMapper mapper = new ObjectMapper();
-        rc.register(
-            new AbstractBinder() {
-              @Override
-              protected void configure() {
-                bind(mapper).to(ObjectMapper.class);
-              }
-            });
+    rc.register(
+        new AbstractBinder() {
+          @Override
+          protected void configure() {
+            bind(mapper).to(ObjectMapper.class);
+          }
+        });
 
     // create and start a new instance of grizzly http server
     // exposing the Jersey application at BASE_URI

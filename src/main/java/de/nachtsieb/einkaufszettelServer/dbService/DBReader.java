@@ -25,22 +25,21 @@ public class DBReader {
   public static boolean ezExists(UUID eid) {
     try (Connection conn = DBConnPool.getConnection()) {
 
-      Map<String, Object> result = runner.query(conn,"SELECT eid FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
+      Map<String, Object> result = runner.query(conn,
+          "SELECT eid FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
       return result.get("eid") != null;
 
     } catch (SQLException e) {
-      //TODO
+      logger.error("Can not check existence of EZ {}", eid);
       throw new RuntimeException(e);
     }
   }
 
   public static Einkaufszettel getEZ(UUID eid) {
     try {
-
-      return mapper.readValue(getEZAsString(eid), Einkaufszettel.class)
-
+      return mapper.readValue(getEZAsString(eid), Einkaufszettel.class);
     } catch (JsonProcessingException e) {
-      //TODO
+      logger.error("Can not deserialize EZ {} from database", eid);
       throw new RuntimeException(e);
     }
   }
@@ -49,23 +48,26 @@ public class DBReader {
   public static String getEZAsString(UUID eid) {
     try (Connection conn = DBConnPool.getConnection()) {
 
-      Map<String, Object> result = runner.query(conn,"SELECT eid, data FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
+      Map<String, Object> result = runner.query(conn,
+          "SELECT eid, data FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
       return result.get("data") != null ? (String) result.get("data") : null;
 
     } catch (SQLException e) {
-      //TODO
+      logger.error("Can not read EZ {} from database", eid);
       throw new RuntimeException(e);
     }
   }
 
   public static boolean tableExists(String table) {
-    try (Connection conn = DBConnPool.getConnection() {
+    try (Connection conn = DBConnPool.getConnection()) {
 
-      DatabaseMetaData dbmeta = conn.getMetaData();
-      ResultSet metaRes = dbmeta.getTables(null, null, table, new String[] {"TABLE"});
+      DatabaseMetaData dbMeta = conn.getMetaData();
+      ResultSet metaRes = dbMeta.getTables(null, null, table, new String[]{"TABLE"});
 
       while (metaRes.next()) {
-        if (metaRes.getString("TABLE_NAME").equalsIgnoreCase(table)) return true;
+        if (metaRes.getString("TABLE_NAME").equalsIgnoreCase(table)) {
+          return true;
+        }
       }
       metaRes.close();
     } catch (Exception e) {

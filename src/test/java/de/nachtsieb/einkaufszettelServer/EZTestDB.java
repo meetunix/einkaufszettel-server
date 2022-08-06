@@ -12,7 +12,7 @@ public class EZTestDB {
 
   private static final Logger logger = LogManager.getLogger(EZTestDB.class);
 
-  private static final String[] tables = {"items", "category", "einkaufszettel", "ez_cleanup"};
+  private static final String[] tables = {"einkaufszettel"};
 
   public static Connection getConnection() {
 
@@ -34,7 +34,7 @@ public class EZTestDB {
   public static void resetDatabase() {
 
     RessourceLoader resl = new RessourceLoader();
-    InputStream is = resl.getFileFromResourceAsStream("pgDBSchema.sql");
+    InputStream is = resl.getFileFromResourceAsStream("sql-json-schema.sql");
     String schema = resl.getStringFromInputStream(is);
 
     DBWriter.deleteTables(tables);
