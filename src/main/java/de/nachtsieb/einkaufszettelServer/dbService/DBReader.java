@@ -24,13 +24,14 @@ public class DBReader {
 
   public static boolean ezExists(UUID eid) {
     try (Connection conn = DBConnPool.getConnection()) {
-
+      logger.debug("Check if ez {} exists in database", eid);
       Map<String, Object> result = runner.query(conn,
           "SELECT eid FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
-      return result.get("eid") != null;
+      logger.debug("ResultMap: {}", result);
+      return result != null;
 
     } catch (SQLException e) {
-      logger.error("Can not check existence of EZ {}", eid);
+      logger.debug("Can not check existence of EZ {}", eid);
       throw new RuntimeException(e);
     }
   }
@@ -50,7 +51,8 @@ public class DBReader {
 
       Map<String, Object> result = runner.query(conn,
           "SELECT eid, data FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
-      return result.get("data") != null ? (String) result.get("data") : null;
+      // H2 returns JSON values
+      return result != null ? new String((byte[]) result.get("data")) : null;
 
     } catch (SQLException e) {
       logger.error("Can not read EZ {} from database", eid);

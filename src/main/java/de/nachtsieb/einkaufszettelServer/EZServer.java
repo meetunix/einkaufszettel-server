@@ -118,7 +118,7 @@ public class EZServer implements Callable<String> {
     if (!DBReader.tableExists(DBReader.TABLE_EINKAUFSZETTEL)) {
       System.out.println("\nCreate database schema\n");
       RessourceLoader resl = new RessourceLoader();
-      InputStream is = resl.getFileFromResourceAsStream("pgDBSchema.sql");
+      InputStream is = resl.getFileFromResourceAsStream("sql-json-schema.sql");
       String schema = resl.getStringFromInputStream(is);
       DBWriter.createTables(schema.replace("\n", " "));
     }

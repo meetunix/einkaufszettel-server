@@ -1,10 +1,9 @@
 create table if not exists einkaufszettel (
     eid             uuid        NOT NULL,
-    created         timestamp   NOT NULL,   /* 1999-01-08 04:05:06 [-8:00| PST] */
+    created         timestamp   NOT NULL,
     modified        timestamp   NOT NULL,
     version         integer     NOT NULL,
-    data            json       NOT NULL,
-    primary key(eid)
+    data            json       NOT NULL
 );
 
 create table if not exists ez_cleanup (

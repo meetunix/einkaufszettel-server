@@ -30,10 +30,12 @@ public class DBWriter {
   public static void writeEZ(Einkaufszettel ez) {
     try (Connection conn = DBConnPool.getConnection()) {
       String json = getJsonValue(ez);
-      runner.update(conn, "INSERT INTO einkaufszettel VALUES (?,?,?,?,?)", ez.getEid(),
+      runner.update(conn, "INSERT INTO einkaufszettel VALUES (?,?,?,?,? FORMAT JSON)",
+          ez.getEid().toString(),
           new Timestamp(ez.getCreated()), new Timestamp(ez.getModified()), ez.getVersion(), json);
     } catch (SQLException e) {
       logger.error("Unable to write new Einkaufszettel {} to database ", ez.getEid());
+      e.printStackTrace();
       throw new RuntimeException(e);
     }
   }

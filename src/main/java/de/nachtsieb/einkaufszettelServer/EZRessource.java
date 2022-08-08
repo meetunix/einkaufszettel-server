@@ -23,8 +23,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-
-
 @Path("/ez/")
 public class EZRessource {
 
@@ -59,8 +57,8 @@ public class EZRessource {
    * RESTFul API end point for creating new EZ instances on the server.
    *
    * @param newEZ the Einkaufszettel inside the body
-   * @param eid - the eid under which the Einkaufszettel will be created must match the eid inside
-   *     the Einkaufszettel
+   * @param eid   - the eid under which the Einkaufszettel will be created must match the eid inside
+   *              the Einkaufszettel
    */
   @Path("{eid: " + UUID_REGEX + "}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -76,7 +74,7 @@ public class EZRessource {
     }
 
     // check if the new EZ exists in database
-    if (DBReader.ezExists(eid)) {
+    if (!DBReader.ezExists(eid)) {
       logger.debug("Write new EZ with eid{} to database. ", newEZ.getEid());
       DBWriter.writeEZ(newEZ);
       return Response.ok().build();
