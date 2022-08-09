@@ -51,7 +51,7 @@ public class DBReader {
 
       Map<String, Object> result = runner.query(conn,
           "SELECT eid, data FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
-      // H2 returns JSON values
+      // H2 returns JSON values as byte arrays
       return result != null ? new String((byte[]) result.get("data")) : null;
 
     } catch (SQLException e) {

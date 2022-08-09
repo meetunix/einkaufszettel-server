@@ -49,7 +49,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/** Main test cases for testing the RESTful API endpoints. */
+/**
+ * Main test cases for testing the RESTful API endpoints.
+ */
 public class EZResourceTest {
 
   private static Logger logger;
@@ -445,8 +447,8 @@ public class EZResourceTest {
   /**
    * API CASE 09 (simple work case)
    *
-   * <p>- create a random EZ (A) to the server - create an EZ (B) by receiving A from server - alter
-   * B and send it to server - update A and compare
+   * <p>- create a random EZ (A) to the server - create an EZ (B) by receiving A from server -
+   * alter B and send it to server - update A and compare
    */
   @Test
   public void api09() {
@@ -477,7 +479,9 @@ public class EZResourceTest {
     logger.debug("TEST: END api testcase 09 (simple work case)");
   }
 
-  /** API CASE 20 (Benchmark sync and async writes) */
+  /**
+   * API CASE 20 (Benchmark sync and async writes)
+   */
   @Test
   public void api20() {
 
@@ -516,7 +520,9 @@ public class EZResourceTest {
     logger.debug("TEST: END asyncIO testcase 20");
   }
 
-  /** API CASE 21 (Benchmark: async CRUD operations) */
+  /**
+   * API CASE 21 (Benchmark: async CRUD operations)
+   */
   @Test
   public void api21() {
 
@@ -578,10 +584,15 @@ public class EZResourceTest {
       end = System.currentTimeMillis();
 
       String debugMessage;
-      if (crudOp == create) debugMessage = "TEST: creation of {} EZ takes {} sec";
-      else if (crudOp == update) debugMessage = "TEST: updating of {} EZ takes {} sec";
-      else if (crudOp == read) debugMessage = "TEST: reading of {} EZ takes {} sec";
-      else debugMessage = "TEST: deletion of {} EZ takes {} sec";
+      if (crudOp == create) {
+        debugMessage = "TEST: creation of {} EZ takes {} sec";
+      } else if (crudOp == update) {
+        debugMessage = "TEST: updating of {} EZ takes {} sec";
+      } else if (crudOp == read) {
+        debugMessage = "TEST: reading of {} EZ takes {} sec";
+      } else {
+        debugMessage = "TEST: deletion of {} EZ takes {} sec";
+      }
 
       logger.debug(debugMessage, numberOfOperations, (double) (end - start) / 1000);
       // sum up all times for each operation
@@ -608,6 +619,7 @@ public class EZResourceTest {
 
   // the interface the lamdbas use
   interface CrudOperation {
+
     Einkaufszettel operate(Einkaufszettel a, int b);
   }
 

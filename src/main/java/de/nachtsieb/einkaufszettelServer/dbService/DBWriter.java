@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 public class DBWriter {
 
   private static final Logger logger = LogManager.getLogger(DBWriter.class);
-
   private static final ObjectMapper mapper = new ObjectMapper();
   private static final QueryRunner runner = new QueryRunner();
 
@@ -31,8 +30,8 @@ public class DBWriter {
     try (Connection conn = DBConnPool.getConnection()) {
       String json = getJsonValue(ez);
       runner.update(conn, "INSERT INTO einkaufszettel VALUES (?,?,?,?,? FORMAT JSON)",
-          ez.getEid().toString(),
-          new Timestamp(ez.getCreated()), new Timestamp(ez.getModified()), ez.getVersion(), json);
+          ez.getEid().toString(), new Timestamp(ez.getCreated()), new Timestamp(ez.getModified()),
+          ez.getVersion(), json);
     } catch (SQLException e) {
       logger.error("Unable to write new Einkaufszettel {} to database ", ez.getEid());
       e.printStackTrace();
@@ -43,9 +42,15 @@ public class DBWriter {
   public static void updateEZ(Einkaufszettel ez) {
     try (Connection conn = DBConnPool.getConnection()) {
       String json = getJsonValue(ez);
+      // updating JSON value via H2 with SQL UPDATE does not work, therefore a delete operation
+      // followed by a write operation inside a single transaction is performed.
+      conn.setAutoCommit(false);
       runner.update(conn,
-          "UPDATE einkaufszettel SET modified = ?, version = ?, data = ? WHERE eid = ?",
-          new Timestamp(ez.getModified()), ez.getVersion(), json);
+          "DELETE FROM einkaufszettel WHERE eid = ? ; "
+              + "INSERT INTO einkaufszettel VALUES (?,?,?,?,? FORMAT JSON)",
+          ez.getEid(), ez.getEid(), new Timestamp(ez.getCreated()), new Timestamp(ez.getModified()),
+          ez.getVersion(), json);
+      conn.commit();
     } catch (SQLException e) {
       logger.error("Unable to update new Einkaufszettel {} on database ", ez.getEid());
       throw new RuntimeException(e);
