@@ -51,6 +51,7 @@ public class DBWriter {
           ez.getEid(), ez.getEid(), new Timestamp(ez.getCreated()), new Timestamp(ez.getModified()),
           ez.getVersion(), json);
       conn.commit();
+      conn.setAutoCommit(true);
     } catch (SQLException e) {
       logger.error("Unable to update new Einkaufszettel {} on database ", ez.getEid());
       throw new RuntimeException(e);
