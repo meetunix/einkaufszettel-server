@@ -51,11 +51,13 @@ paths:
         '304':
           description: EZ versions are the same
         '400':
-          description: Bad Request - invalid EZ was sent
+          description: Invalid EZ was sent
         '404':
           description: There is no EZ with this eid
         '409':
-          description: Conflict - There is already a newer Version on the server
+          description: Conflict - There is already a newer EZ version on the server
+        '413':
+          description: EZ to large
         default:
           description: unexpected error (500)
 
