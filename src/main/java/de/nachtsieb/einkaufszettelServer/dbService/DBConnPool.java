@@ -11,19 +11,13 @@ public class DBConnPool {
   private static final HikariDataSource ds;
 
   static {
-    if (System.getProperty("jdbcURL").contains("h2")) {
-      config.setDriverClassName("org.h2.Driver");
-      config.setJdbcUrl(System.getProperty("jdbcURL"));
-      config.setUsername(System.getProperty("databaseUsername"));
-      config.setPassword(System.getProperty("databasePassword"));
-    } else {
-      config.setJdbcUrl(System.getProperty("jdbcURL"));
-      config.setUsername(System.getProperty("databaseUsername"));
-      config.setPassword(System.getProperty("databasePassword"));
-      config.addDataSourceProperty("cachePrepStmts", "true");
-      config.addDataSourceProperty("prepStmtCacheSize", "250");
-      config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-    }
+    config.setDriverClassName("org.h2.Driver");
+    config.setJdbcUrl(System.getProperty("jdbcURL"));
+    config.setUsername(System.getProperty("databaseUsername"));
+    config.setPassword(System.getProperty("databasePassword"));
+    config.addDataSourceProperty("cachePrepStmts", "true");
+    config.addDataSourceProperty("prepStmtCacheSize", "250");
+    config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
     ds = new HikariDataSource(config);
   }
 

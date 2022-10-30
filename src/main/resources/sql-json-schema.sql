@@ -3,11 +3,7 @@ create table if not exists einkaufszettel (
     created         timestamp   NOT NULL,
     modified        timestamp   NOT NULL,
     version         integer     NOT NULL,
-    data            json       NOT NULL
-);
-
-create table if not exists ez_cleanup (
-    category_cleanup_time   timestamp   NOT NULL
+    data            json        NOT NULL
 );
 
 create table if not exists ez_schema_version (

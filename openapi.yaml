@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: Einkaufzettel API
-  description: First Version of the RESTFul API for the EZ-Service
-  version: 0.0.1
+  description: RESTFul API for the einkaufszetel-server
+  version: 0.1.0
   license:
     name: Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
@@ -30,10 +30,6 @@ paths:
           description: There is no EZ with this eid
         default:
           description: unexpected error (500)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/error-message"
     put:
       summary: Create or update an Einkaufszettel
       description: some description
@@ -56,28 +52,16 @@ paths:
           description: EZ versions are the same
         '400':
           description: Bad Request - invalid EZ was sent
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/error-message"
         '404':
           description: There is no EZ with this eid
         '409':
           description: Conflict - There is already a newer Version on the server
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/conflict-message"
         default:
           description: unexpected error (500)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/error-message"
-                
+
     delete:
       summary: Delete an existing EZ
-      description: The EZ with the eid will be deletet from the server
+      description: The EZ with the eid will be deleted from the server
       parameters: 
         - name : eid
           in: path
@@ -91,35 +75,3 @@ paths:
           description: There is no EZ with this eid
         default:
           description: unexpected error (500)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/error-message"
-
-components:
-  schemas:
-    error-message:
-      type: object
-      required:
-        - code
-        - message
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-    conflict-message:
-      type: object
-      required:
-        - message
-        - local_version
-        - server_version
-      properties:
-        message:
-          type: string
-        local_version:
-          type: integer
-          format: int32
-        server_version:
-          type: integer
-          format: int32

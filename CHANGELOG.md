@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2022-10-30
+
+### changed
+
+- H2 is the only supported database, postgresql no longer supported
+- log4j to 2.19.0, json-validator to 1.0.73 and H" to 2.1.214
+
 ## [0.2.6] - 2022-07-30
 
 ### changed
