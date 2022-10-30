@@ -25,8 +25,8 @@ public class DBReader {
   public static boolean ezExists(UUID eid) {
     try (Connection conn = DBConnPool.getConnection()) {
       logger.debug("Check if ez {} exists in database", eid);
-      Map<String, Object> result = runner.query(conn,
-          "SELECT eid FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
+      Map<String, Object> result =
+          runner.query(conn, "SELECT eid FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
       logger.debug("ResultMap: {}", result);
       return result != null;
 
@@ -45,12 +45,12 @@ public class DBReader {
     }
   }
 
-
   public static String getEZAsString(UUID eid) {
     try (Connection conn = DBConnPool.getConnection()) {
 
-      Map<String, Object> result = runner.query(conn,
-          "SELECT eid, data FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
+      Map<String, Object> result =
+          runner.query(
+              conn, "SELECT eid, data FROM einkaufszettel WHERE eid = ?", mapResultHandler, eid);
       // H2 returns JSON values as byte arrays
       return result != null ? new String((byte[]) result.get("data")) : null;
 
@@ -64,7 +64,7 @@ public class DBReader {
     try (Connection conn = DBConnPool.getConnection()) {
 
       DatabaseMetaData dbMeta = conn.getMetaData();
-      ResultSet metaRes = dbMeta.getTables(null, null, table, new String[]{"TABLE"});
+      ResultSet metaRes = dbMeta.getTables(null, null, table, new String[] {"TABLE"});
 
       while (metaRes.next()) {
         if (metaRes.getString("TABLE_NAME").equalsIgnoreCase(table)) {
@@ -74,6 +74,7 @@ public class DBReader {
       metaRes.close();
     } catch (Exception e) {
       logger.error("Unable to fetch meta data from database");
+      throw new RuntimeException(e);
     }
     return false;
   }

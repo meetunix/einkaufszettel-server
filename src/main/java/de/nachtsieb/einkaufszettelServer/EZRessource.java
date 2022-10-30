@@ -1,6 +1,5 @@
 package de.nachtsieb.einkaufszettelServer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.nachtsieb.einkaufszettelServer.dbService.DBReader;
 import de.nachtsieb.einkaufszettelServer.dbService.DBWriter;
 import de.nachtsieb.einkaufszettelServer.entities.Einkaufszettel;
@@ -9,7 +8,6 @@ import de.nachtsieb.einkaufszettelServer.exceptions.ResourceInvalidException;
 import de.nachtsieb.einkaufszettelServer.exceptions.ResourceNotFoundException;
 import de.nachtsieb.einkaufszettelServer.interceptors.InputValidation;
 import java.util.UUID;
-import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -22,7 +20,6 @@ import javax.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 @Path("/ez/")
 public class EZRessource {
 
@@ -31,11 +28,8 @@ public class EZRessource {
   public final String UUID_REGEX =
       "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
-  @Inject
-  ObjectMapper mapper;
-
   /**
-   * RESTFul API end point for downloading a EZ from the server.
+   * RESTFul API end point for downloading an EZ from the server.
    *
    * @param eid - the requested eid
    */
@@ -57,8 +51,8 @@ public class EZRessource {
    * RESTFul API end point for creating new EZ instances on the server.
    *
    * @param newEZ the Einkaufszettel inside the body
-   * @param eid   - the eid under which the Einkaufszettel will be created must match the eid inside
-   *              the Einkaufszettel
+   * @param eid - the eid under which the Einkaufszettel will be created must match the eid inside
+   *     the Einkaufszettel
    */
   @Path("{eid: " + UUID_REGEX + "}")
   @Consumes(MediaType.APPLICATION_JSON)
