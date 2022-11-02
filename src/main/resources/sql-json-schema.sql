@@ -6,7 +6,7 @@ create table if not exists einkaufszettel (
     data            json        NOT NULL
 );
 
-CREATE INDEX idx_eid ON einkaufszettel(eid);
+create index if not exists idx_eid ON einkaufszettel(eid);
 
 create table if not exists ez_schema_version (
     update_time     timestamp   NOT NULL,

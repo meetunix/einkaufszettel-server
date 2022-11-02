@@ -16,8 +16,8 @@ public class DBConnPool {
     config.setUsername(System.getProperty("databaseUsername"));
     config.setPassword(System.getProperty("databasePassword"));
     config.addDataSourceProperty("cachePrepStmts", "true");
-    config.addDataSourceProperty("prepStmtCacheSize", "250");
-    config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+    config.addDataSourceProperty("prepStmtCacheSize", "128");
+    config.addDataSourceProperty("prepStmtCacheSqlLimit", "512");
     ds = new HikariDataSource(config);
   }
 
@@ -26,14 +26,4 @@ public class DBConnPool {
   public static Connection getConnection() throws SQLException {
     return ds.getConnection();
   }
-
-  /*
-   * private static HikariConfig config = new HikariConfig( "/etc/ez-server/db.properties"); private
-   * static HikariDataSource ds;
-   *
-   * static { ds = new HikariDataSource(config); }
-   *
-   * public static Connection getConnection() throws SQLException { return ds.getConnection(); }
-   */
-
 }

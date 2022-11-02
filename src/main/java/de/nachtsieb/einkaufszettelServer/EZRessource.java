@@ -25,7 +25,7 @@ public class EZRessource {
 
   private static final Logger logger = LogManager.getLogger(EZRessource.class);
 
-  public final String UUID_REGEX =
+  public static final String UUID_REGEX =
       "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
   /**
