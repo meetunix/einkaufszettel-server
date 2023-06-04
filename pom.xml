@@ -149,6 +149,23 @@
               <goal>java</goal>
             </goals>
           </execution>
+          <!-- docker: remove docker image for current version in clean phase  -->
+          <execution>
+            <id>docker-clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>docker</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>rmi</argument>
+                <argument>meetunix/ezserver:${project.version}</argument>
+                <argument>meetunix/ezserver:latest</argument>
+              </arguments>
+            </configuration>
+          </execution>
           <!-- docker: build configuration using the local Dockerfile -->
           <execution>
             <id>docker-build</id>
@@ -191,7 +208,7 @@
           <!-- docker: deploy docker image on docker-hub -->
           <execution>
             <id>docker-login</id>
-            <phase>install</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -211,7 +228,7 @@
           <!-- docker: push docker image to docker-hub: version tag -->
           <execution>
             <id>docker-push-version</id>
-            <phase>install</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -227,7 +244,7 @@
           <!-- docker: push docker image to docker-hub: latest tag -->
           <execution>
             <id>docker-push-latest</id>
-            <phase>install</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -236,23 +253,6 @@
               <workingDirectory>${project.basedir}</workingDirectory>
               <arguments>
                 <argument>push</argument>
-                <argument>meetunix/ezserver:latest</argument>
-              </arguments>
-            </configuration>
-          </execution>
-          <!-- docker: remove docker image for current version in clean phase  -->
-          <execution>
-            <id>docker-clean</id>
-            <phase>install</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>docker</executable>
-              <workingDirectory>${project.basedir}</workingDirectory>
-              <arguments>
-                <argument>rmi</argument>
-                <argument>meetunix/ezserver:${project.version}</argument>
                 <argument>meetunix/ezserver:latest</argument>
               </arguments>
             </configuration>
