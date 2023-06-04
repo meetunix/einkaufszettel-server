@@ -19,7 +19,7 @@ public class ResourceNotFoundException extends WebApplicationException {
    */
   public ResourceNotFoundException(String message) {
     super(
-        Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+        Response.status(Status.NOT_FOUND)
             .entity(message)
             .type(MediaType.TEXT_PLAIN)
             .build());

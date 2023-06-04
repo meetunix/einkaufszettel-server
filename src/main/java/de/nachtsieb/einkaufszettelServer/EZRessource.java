@@ -42,7 +42,7 @@ public class EZRessource {
     String ez = DBReader.getEZAsString(eid);
     if (ez == null) {
       logger.debug("Requested eid {} not in database", eid);
-      throw new ResourceNotFoundException("eid " + eid + " not found");
+      throw new ResourceNotFoundException(eid + " not found on server");
     }
     return ez;
   }
@@ -95,7 +95,7 @@ public class EZRessource {
   }
 
   /**
-   * RESTful API end point for deleting an existing EZ
+   * RESTFul API end point for deleting an existing EZ
    *
    * @param eid the eid which will be deleted
    */
