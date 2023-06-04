@@ -13,7 +13,7 @@ public class ResourceInvalidException extends WebApplicationException {
   }
 
   /**
-   * Create a HTTP 400 (Bad Request) exception.
+   * Create an HTTP 400 (Bad Request) exception.
    *
    * @param message the String that is the entity of the 400 response.
    */

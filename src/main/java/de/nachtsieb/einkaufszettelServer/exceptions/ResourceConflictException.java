@@ -13,7 +13,7 @@ public class ResourceConflictException extends WebApplicationException {
   }
 
   /**
-   * Create a HTTP 409 (Conflict) exception.
+   * Create an HTTP 409 (Conflict) exception.
    *
    * @param message the String that is the entity of the 409 response.
    */

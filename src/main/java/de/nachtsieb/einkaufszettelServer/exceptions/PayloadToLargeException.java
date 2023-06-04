@@ -13,7 +13,7 @@ public class PayloadToLargeException extends WebApplicationException {
   }
 
   /**
-   * Create a HTTP 413 (Payload to large) exception.
+   * Create an HTTP 413 (Payload to large) exception.
    *
    * @param message the String that is the entity of the 413 response.
    */

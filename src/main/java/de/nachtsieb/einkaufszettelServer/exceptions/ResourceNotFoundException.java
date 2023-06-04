@@ -13,7 +13,7 @@ public class ResourceNotFoundException extends WebApplicationException {
   }
 
   /**
-   * Create a HTTP 404 (Not Found) exception.
+   * Create an HTTP 404 (Not Found) exception.
    *
    * @param message the String that is the entity of the 404 response.
    */
