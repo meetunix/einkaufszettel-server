@@ -31,7 +31,7 @@ import picocli.CommandLine.Option;
     description = "Einkaufszettel Server Application",
     mixinStandardHelpOptions = true,
     name = "EinkaufszettelServer",
-    version = "EinkaufszettelServer 0.3.1")
+    version = "EinkaufszettelServer 0.4.0")
 public class EZServer implements Callable<String> {
 
   @SuppressWarnings("FieldMayBeFinal")

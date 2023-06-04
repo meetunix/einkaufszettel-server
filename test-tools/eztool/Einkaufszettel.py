@@ -7,15 +7,13 @@ from datetime import datetime
 
 
 class Category:
-    def __init__(self, cid, description, color):
-        self.cid = cid
+    def __init__(self, description, color):
         self.descr = description
         self.color = color
 
     @staticmethod
     def random():
         return Category(
-            str(uuid.uuid4()),
             "description " + str(random.randint(100, 999)),
             "A0B8FF",
         )
@@ -30,7 +28,6 @@ class Item:
         self.amount = amount
         self.unit = unit
         # category
-        self.cid = category.cid
         self.catDescription = category.descr
         self.catColor = category.color
 
