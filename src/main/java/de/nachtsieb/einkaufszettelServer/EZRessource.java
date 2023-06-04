@@ -106,7 +106,7 @@ public class EZRessource {
     logger.debug("DELETION of EZ {} requested", eid);
 
     // check if the new EZ exists in database
-    if (DBReader.ezExists(eid)) {
+    if (!DBReader.ezExists(eid)) {
       logger.debug("Requested eid {} not in database", eid);
       return Response.noContent().status(Response.Status.NOT_FOUND).build();
     } else {
