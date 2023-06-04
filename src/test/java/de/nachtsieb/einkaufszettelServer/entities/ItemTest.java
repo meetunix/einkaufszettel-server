@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import de.nachtsieb.einkaufszettelServer.exceptions.EZException;
-import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +21,6 @@ public class ItemTest {
   // checks the item.equals() method
   @Test
   public void itemEqualityCID() {
-    it02.setCid(UUID.randomUUID());
     assertThat(it01.equals(it02), is(false));
   }
 

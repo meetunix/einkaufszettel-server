@@ -22,7 +22,6 @@ public class Item {
   private String unit;
 
   // category the item belongs to
-  private UUID cid;
   private String catDescription;
   private String catColor;
 
@@ -81,7 +80,6 @@ public class Item {
   public void setCategoryValues(Category cat) {
     this.catColor = cat.getColor();
     this.catDescription = cat.getDescription();
-    this.cid = cat.getCid();
   }
 
   public UUID getIid() {
@@ -157,19 +155,12 @@ public class Item {
   public void setOrdinal(int ordinal) throws EZException {
 
     if (ordinal > Einkaufszettel.MAX_ITEMS || ordinal < 1) {
-      throw new EZException("oridnal is out of range");
+      throw new EZException("ordinal is out of range");
     } else {
       this.ordinal = ordinal;
     }
   }
 
-  public UUID getCid() {
-    return cid;
-  }
-
-  public void setCid(UUID defaultCid) {
-    this.cid = defaultCid;
-  }
 
   public String getCatDescription() {
 
@@ -211,7 +202,6 @@ public class Item {
         && this.itemName.equals(item.getItemName())
         && this.ordinal == item.getOrdinal()
         && this.amount == item.getAmount()
-        && this.cid.compareTo(item.getCid()) == 0
         && Math.abs(this.size - item.getSize()) < epsilon
         && this.unit.equals(item.getUnit())
         && this.catColor.equalsIgnoreCase(item.catColor)
@@ -230,7 +220,6 @@ public class Item {
         + String.format("%-10s %20d\n", "amount:", amount)
         + String.format("%-10s %20f\n", "size:", size)
         + String.format("%-10s %20s\n", "unit:", unit)
-        + String.format("%-10s %20s\n", "Cat-ID:", cid)
         + String.format("%-10s %20s\n", "Cat-Descr:", catDescription)
         + String.format("%-10s %20s\n", "Cat-Color:", catColor)
         + fence

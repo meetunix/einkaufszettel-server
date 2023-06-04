@@ -32,10 +32,10 @@ public class ValidationTest {
 	// tests if  Object -> json1 -> Object -> json2 : json1 == json2  
 	@Test
 	public void dataBindingTest()
-			throws EZException, JsonMappingException, JsonProcessingException {
+			throws EZException, JsonProcessingException {
 	
-		Category catMilk = new Category(UUID.randomUUID(), "FF00FF", "Milchprodukt");
-		Category catSpirit = new Category(UUID.randomUUID(), "E600FF", "Spirituosen");
+		Category catMilk = new Category("FF00FF", "Milchprodukt");
+		Category catSpirit = new Category( "E600FF", "Spirituosen");
 		Item cheese = new Item(UUID.randomUUID(), "Emmentaler", 1 , 1, 200f , "g",catMilk);
 		Item alc = new Item(UUID.randomUUID(), "Feiner Alter", 1 , 1, 0.7f , "l", catSpirit);
 		

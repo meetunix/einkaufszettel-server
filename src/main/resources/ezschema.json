@@ -3,7 +3,7 @@
     "title": "Einkaufszettel",
     "description": "JSON representation of a Einkaufszettel",
     "type": "object",
-    "required": ["eid", "created", "modified", "name", "version","items"],
+    "required": ["eid", "created", "modified", "name", "version", "items"],
     "additionalProperties": false,
     "properties": {
         "eid" : {   "type": "string",
@@ -29,9 +29,8 @@
                         "items": {
                             "type": "object",
                             "additionalProperties": false,
-                            "required": ["iid", "itemName", "ordinal", "amount", "size", "unit", "cid", "catDescription", "catColor"],
+                            "required": ["iid", "itemName", "ordinal", "amount", "size", "unit", "catDescription", "catColor"],
                                 "properties": {
-
                                     "iid" :             {   "type":     "string",
                                                             "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
                                     },
@@ -40,7 +39,7 @@
                                     },
                                     "ordinal" :         {   "type":     "integer",
                                                             "minimum":  1,
-                                                            "maximum":  128
+                                                            "maximum":  256
                                     },
                                     "amount" :          {   "type":     "integer",
                                                             "minimum":  1,
@@ -51,10 +50,7 @@
                                                             "maximum":  32768
                                     },
                                     "unit" :            {   "type":     "string",
-                                                            "pattern":  "^.{1,12}$"
-                                    },
-                                    "cid" :             {   "type":     "string",
-                                                            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                                                            "pattern":  "^.{1,16}$"
                                     },
                                     "catDescription" :  {   "type":     "string",
                                                             "pattern":   "^.{2,64}$"

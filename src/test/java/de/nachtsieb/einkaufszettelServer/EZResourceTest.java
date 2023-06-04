@@ -49,9 +49,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * Main test cases for testing the RESTful API endpoints.
- */
+/** Main test cases for testing the RESTful API endpoints. */
 public class EZResourceTest {
 
   private static Logger logger;
@@ -418,7 +416,7 @@ public class EZResourceTest {
   @Test
   public void api08() {
 
-    logger.debug("TEST: START api testcase 08 (substitue all categories)");
+    logger.debug("TEST: START api testcase 08 (substitute all categories)");
 
     Einkaufszettel ez = TestUtils.genRandomEZ();
 
@@ -427,10 +425,7 @@ public class EZResourceTest {
 
     // substitute all categories
     Category cat =
-        new Category(
-            ez.getItems().get(1).getCid(),
-            ez.getItems().get(1).getCatColor(),
-            ez.getItems().get(1).getCatDescription());
+        new Category(ez.getItems().get(1).getCatColor(), ez.getItems().get(1).getCatDescription());
 
     ez.getItems().forEach(i -> i.setCategoryValues(cat));
 
@@ -447,8 +442,8 @@ public class EZResourceTest {
   /**
    * API CASE 09 (simple work case)
    *
-   * <p>- create a random EZ (A) to the server - create an EZ (B) by receiving A from server -
-   * alter B and send it to server - update A and compare
+   * <p>- create a random EZ (A) to the server - create an EZ (B) by receiving A from server - alter
+   * B and send it to server - update A and compare
    */
   @Test
   public void api09() {
@@ -479,9 +474,7 @@ public class EZResourceTest {
     logger.debug("TEST: END api testcase 09 (simple work case)");
   }
 
-  /**
-   * API CASE 20 (Benchmark sync and async writes)
-   */
+  /** API CASE 20 (Benchmark sync and async writes) */
   @Test
   public void api20() {
 
@@ -520,9 +513,7 @@ public class EZResourceTest {
     logger.debug("TEST: END asyncIO testcase 20");
   }
 
-  /**
-   * API CASE 21 (Benchmark: async CRUD operations)
-   */
+  /** API CASE 21 (Benchmark: async CRUD operations) */
   @Test
   public void api21() {
 
