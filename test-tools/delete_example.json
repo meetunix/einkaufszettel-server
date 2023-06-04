@@ -11,7 +11,6 @@
     "amount" : 1,
     "size" : 0.7,
     "unit" : "l",
-    "cid" : "c129edbd-10ee-4b30-8ccf-5db331aafff9",
     "catDescription" : "Spirituosen",
     "catColor" : "E600FF"
   }, {
@@ -21,7 +20,6 @@
     "amount" : 1,
     "size" : 200.0,
     "unit" : "g",
-    "cid" : "25d161be-ad50-4f65-b35f-63cc7ffa6447",
     "catDescription" : "Milchprodukt",
     "catColor" : "FF00FF"
   }, {
@@ -31,7 +29,6 @@
     "amount" : 100,
     "size" : 1.5,
     "unit" : "liter",
-    "cid" : "c1a8d546-bff4-4481-8883-47018d72139a",
     "catDescription" : "Alkohol",
     "catColor" : "989898"
   } ]
