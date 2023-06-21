@@ -1,0 +1,59 @@
+{
+ "eid": "fe6cc8c7-a948-42df-be7f-5c761fbdf78e",
+ "created": 1687379479000,
+ "modified": 1687379479000,
+ "name": "ez-tool EZ 1736",
+ "version": 1,
+ "items": [
+  {
+   "iid": "ffe393fa-e7e4-4499-861a-ab32e36c33d6",
+   "itemName": "some Item 8318",
+   "ordinal": 4,
+   "size": 154.61,
+   "amount": 5,
+   "unit": "Kg",
+   "catDescription": "description 327",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "493d4132-8e81-4e62-ac21-0e97e5a69555",
+   "itemName": "some Item 5799",
+   "ordinal": 2,
+   "size": 62.14,
+   "amount": 2,
+   "unit": "Kg",
+   "catDescription": "description 279",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "6e629f90-bc46-491a-8313-e7a04dd6abfe",
+   "itemName": "some Item 1651",
+   "ordinal": 6,
+   "size": 155.2,
+   "amount": 4,
+   "unit": "Kg",
+   "catDescription": "description 279",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "3b91d83a-ff31-40a1-848c-f796798773c1",
+   "itemName": "some Item 1591",
+   "ordinal": 9,
+   "size": 85.1,
+   "amount": 3,
+   "unit": "Kg",
+   "catDescription": "description 820",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "8e6580a9-9a51-4148-9d30-0b916fcb1f29",
+   "itemName": "some Item 8225",
+   "ordinal": 1,
+   "size": 174.23,
+   "amount": 8,
+   "unit": "Kg",
+   "catDescription": "description 327",
+   "catColor": "A0B8FF"
+  }
+ ]
+}

@@ -1,0 +1,329 @@
+{
+ "eid": "aeb6c57f-49a1-4b46-88ee-ca45c0053bbc",
+ "created": 1687379479000,
+ "modified": 1687379479000,
+ "name": "ez-tool EZ 8796",
+ "version": 1,
+ "items": [
+  {
+   "iid": "c429efc9-4e9a-4cfb-bef5-e021278be857",
+   "itemName": "some Item 4226",
+   "ordinal": 7,
+   "size": 130.09,
+   "amount": 4,
+   "unit": "Kg",
+   "catDescription": "description 293",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "1546dfc9-2576-441d-9e93-59977b060a9e",
+   "itemName": "some Item 6118",
+   "ordinal": 3,
+   "size": 28.5,
+   "amount": 6,
+   "unit": "Kg",
+   "catDescription": "description 519",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "aa598419-ac5a-4488-a03f-8c123e19e366",
+   "itemName": "some Item 4919",
+   "ordinal": 9,
+   "size": 129.36,
+   "amount": 6,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "507bed84-5a33-4151-8488-f2a5d4ea3be8",
+   "itemName": "some Item 7825",
+   "ordinal": 3,
+   "size": 140.67,
+   "amount": 1,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "a15bdb14-f018-42c0-ad33-12e44bb7b8f8",
+   "itemName": "some Item 7179",
+   "ordinal": 3,
+   "size": 185.02,
+   "amount": 9,
+   "unit": "Kg",
+   "catDescription": "description 519",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "1f482604-0e15-4d3d-832a-d840b7f0f082",
+   "itemName": "some Item 6145",
+   "ordinal": 8,
+   "size": 154.23,
+   "amount": 9,
+   "unit": "Kg",
+   "catDescription": "description 293",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "419bfebf-24e5-46ab-8a7e-5325af2781b7",
+   "itemName": "some Item 4271",
+   "ordinal": 3,
+   "size": 10.52,
+   "amount": 6,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "6754e643-8a1b-4aab-91e2-258ff4ef2f52",
+   "itemName": "some Item 1165",
+   "ordinal": 1,
+   "size": 157.6,
+   "amount": 10,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "b4b1c299-d2ca-464d-86f2-11f95bad32db",
+   "itemName": "some Item 4022",
+   "ordinal": 7,
+   "size": 26.57,
+   "amount": 5,
+   "unit": "Kg",
+   "catDescription": "description 293",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "f2344ebb-9818-4fd9-bcba-826e9d9f46f2",
+   "itemName": "some Item 5679",
+   "ordinal": 3,
+   "size": 39.95,
+   "amount": 6,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "6440cc24-f03d-4761-84a0-1cbeb0eb129a",
+   "itemName": "some Item 8753",
+   "ordinal": 4,
+   "size": 161.47,
+   "amount": 4,
+   "unit": "Kg",
+   "catDescription": "description 519",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "12571bcb-7c00-4c4d-a0ce-3a64be9eb6cf",
+   "itemName": "some Item 3033",
+   "ordinal": 10,
+   "size": 152.73,
+   "amount": 9,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "268ef175-02c4-480d-b36a-0c3be4b94247",
+   "itemName": "some Item 1590",
+   "ordinal": 3,
+   "size": 154.06,
+   "amount": 3,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "727e758c-0d1b-471d-94ff-0718ec35cf2e",
+   "itemName": "some Item 9117",
+   "ordinal": 7,
+   "size": 153.64,
+   "amount": 2,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "7c5c992c-e9a0-43a8-9c70-55d8528e17ca",
+   "itemName": "some Item 4537",
+   "ordinal": 10,
+   "size": 30.59,
+   "amount": 8,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "e46724f4-e943-44cc-881f-7e4511e3b6c4",
+   "itemName": "some Item 8727",
+   "ordinal": 10,
+   "size": 23.9,
+   "amount": 1,
+   "unit": "Kg",
+   "catDescription": "description 293",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "f74cac91-302b-4483-9ec1-367d6f1e9d5c",
+   "itemName": "some Item 2144",
+   "ordinal": 1,
+   "size": 8.77,
+   "amount": 7,
+   "unit": "Kg",
+   "catDescription": "description 293",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "4a972784-2ef8-479e-9ae2-8bb06dfe3cb5",
+   "itemName": "some Item 4434",
+   "ordinal": 2,
+   "size": 27.65,
+   "amount": 8,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "e95232f0-f3ac-4da5-b48f-63c7ce4448e7",
+   "itemName": "some Item 1576",
+   "ordinal": 10,
+   "size": 18.48,
+   "amount": 4,
+   "unit": "Kg",
+   "catDescription": "description 293",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "2db47393-1477-4604-b957-4b91cebff75e",
+   "itemName": "some Item 6277",
+   "ordinal": 4,
+   "size": 124.49,
+   "amount": 3,
+   "unit": "Kg",
+   "catDescription": "description 519",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "ea23abfe-f4f6-4920-b17e-dcb14e9922f3",
+   "itemName": "some Item 9172",
+   "ordinal": 9,
+   "size": 109.31,
+   "amount": 7,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "2fc11878-f0a1-4ce1-811c-d705a421f391",
+   "itemName": "some Item 3901",
+   "ordinal": 3,
+   "size": 154.52,
+   "amount": 1,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "454d9f58-b764-48c0-b6de-18429585dc84",
+   "itemName": "some Item 5916",
+   "ordinal": 3,
+   "size": 52.64,
+   "amount": 7,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "8174bc48-8f9a-441d-b8b4-c84ab78a7a99",
+   "itemName": "some Item 9721",
+   "ordinal": 2,
+   "size": 66.28,
+   "amount": 9,
+   "unit": "Kg",
+   "catDescription": "description 293",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "f6c8dfba-6fb7-4ffb-8112-fac877f11c07",
+   "itemName": "some Item 6628",
+   "ordinal": 7,
+   "size": 68.78,
+   "amount": 7,
+   "unit": "Kg",
+   "catDescription": "description 519",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "698b7d59-8126-4484-9cb2-a51665215b6d",
+   "itemName": "some Item 6684",
+   "ordinal": 1,
+   "size": 71.81,
+   "amount": 7,
+   "unit": "Kg",
+   "catDescription": "description 519",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "c1c3a9a9-254c-469e-a0b8-8abd9c1d9bfe",
+   "itemName": "some Item 2033",
+   "ordinal": 3,
+   "size": 180.35,
+   "amount": 5,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "f8a442fb-030c-4bd2-b564-f02f822eccd1",
+   "itemName": "some Item 8792",
+   "ordinal": 8,
+   "size": 60.08,
+   "amount": 2,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "9ae4dda9-dd7c-456b-a705-cdc4c7c0fb42",
+   "itemName": "some Item 1714",
+   "ordinal": 7,
+   "size": 1.09,
+   "amount": 10,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "c48f77db-5d44-4365-a5d1-87bf9719bff6",
+   "itemName": "some Item 1192",
+   "ordinal": 10,
+   "size": 57.24,
+   "amount": 8,
+   "unit": "Kg",
+   "catDescription": "description 519",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "720a78fc-6a8d-42d5-8043-5379bbb5b4ad",
+   "itemName": "some Item 4134",
+   "ordinal": 2,
+   "size": 89.14,
+   "amount": 8,
+   "unit": "Kg",
+   "catDescription": "description 734",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "0ed743eb-2183-49cf-8b46-4b2e130cec51",
+   "itemName": "some Item 2068",
+   "ordinal": 6,
+   "size": 61.62,
+   "amount": 6,
+   "unit": "Kg",
+   "catDescription": "description 519",
+   "catColor": "A0B8FF"
+  }
+ ]
+}

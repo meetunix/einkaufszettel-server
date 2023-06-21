@@ -1,0 +1,39 @@
+{
+ "eid": "053a00c4-42f8-4632-8dd4-40179a66ea0a",
+ "created": 1687379479000,
+ "modified": 1687379479000,
+ "name": "ez-tool EZ 1842",
+ "version": 1,
+ "items": [
+  {
+   "iid": "f87566e5-e735-437d-9d28-50b98dbd101e",
+   "itemName": "some Item 2542",
+   "ordinal": 3,
+   "size": 99.11,
+   "amount": 9,
+   "unit": "Kg",
+   "catDescription": "description 963",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "b3afc185-2a71-4b13-b61f-44dc4a654cb0",
+   "itemName": "some Item 5645",
+   "ordinal": 6,
+   "size": 5.82,
+   "amount": 6,
+   "unit": "Kg",
+   "catDescription": "description 664",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "a3d897d7-8ee5-40f8-a3d6-71c6f1fd063f",
+   "itemName": "some Item 3653",
+   "ordinal": 9,
+   "size": 182.4,
+   "amount": 3,
+   "unit": "Kg",
+   "catDescription": "description 664",
+   "catColor": "A0B8FF"
+  }
+ ]
+}

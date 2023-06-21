@@ -1,0 +1,29 @@
+{
+ "eid": "18aede70-a704-449d-a23f-ece30998ab34",
+ "created": 1687379479000,
+ "modified": 1687379479000,
+ "name": "ez-tool EZ 7874",
+ "version": 1,
+ "items": [
+  {
+   "iid": "6617dfbe-8010-4cbd-8c1b-740e86e27e01",
+   "itemName": "some Item 6418",
+   "ordinal": 6,
+   "size": 123.37,
+   "amount": 10,
+   "unit": "Kg",
+   "catDescription": "description 433",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "b5f8e32c-5cb1-490d-b526-646d55e75fe7",
+   "itemName": "some Item 4829",
+   "ordinal": 7,
+   "size": 28.38,
+   "amount": 3,
+   "unit": "Kg",
+   "catDescription": "description 433",
+   "catColor": "A0B8FF"
+  }
+ ]
+}

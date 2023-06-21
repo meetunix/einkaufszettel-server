@@ -1,44 +1,49 @@
 {
-  "eid" : "76f2c9e4-ea57-4df6-bdbf-cc7a5301df80",
-  "created" : 1691694647793,
-  "modified" : 1791694647793,
-  "name" : "Mein Einkaufszettel",
-  "version" : 8,
-  "items" : [ {
-    "iid" : "0d2426e7-69fc-44cd-8347-474594730a6d",
-    "itemName" : "Feiner Alter",
-    "ordinal" : 1,
-    "amount" : 1,
-    "size" : 0.7,
-    "unit" : "l",
-    "catDescription" : "Spirituosen",
-    "catColor" : "E600FF"
-  }, {
-    "iid" : "852b8bfd-cfe0-4cec-b353-564049c3558e",
-    "itemName" : "Emmentaler",
-    "ordinal" : 1,
-    "amount" : 1,
-    "size" : 200.0,
-    "unit" : "g",
-    "catDescription" : "Milchprodukt",
-    "catColor" : "FF00FF"
-  }, {
-    "iid" : "d6df2a92-5061-4efa-a28b-b849bf6e0ac9",
-    "itemName" : "Russian Standard",
-    "ordinal" : 2,
-    "amount" : 100,
-    "size" : 1.5,
-    "unit" : "liter",
-    "catDescription" : "Alkohol",
-    "catColor" : "989898"
-  }, {
-    "iid" : "0e5373b5-87f4-4672-aad1-f2f6d33009f4",
-    "itemName" : "Finllnadia",
-    "ordinal" : 2,
-    "amount" : 100,
-    "size" : 1.5,
-    "unit" : "liter",
-    "catDescription" : "Alkohol",
-    "catColor" : "989898"
-  } ]
+  "eid": "76f2c9e4-ea57-4df6-bdbf-cc7a5301df80",
+  "created": 1691694647793,
+  "modified": 1791694647793,
+  "name": "Mein Einkaufszettel",
+  "version": 8,
+  "items": [
+    {
+      "iid": "0d2426e7-69fc-44cd-8347-474594730a6d",
+      "itemName": "Feiner Alter",
+      "ordinal": 1,
+      "amount": 1,
+      "size": 0.7,
+      "unit": "l",
+      "catDescription": "Spirituosen",
+      "catColor": "E600FF"
+    },
+    {
+      "iid": "852b8bfd-cfe0-4cec-b353-564049c3558e",
+      "itemName": "Emmentaler",
+      "ordinal": 1,
+      "amount": 1,
+      "size": 200.0,
+      "unit": "g",
+      "catDescription": "Milchprodukt",
+      "catColor": "FF00FF"
+    },
+    {
+      "iid": "d6df2a92-5061-4efa-a28b-b849bf6e0ac9",
+      "itemName": "Russian Standard",
+      "ordinal": 2,
+      "amount": 100,
+      "size": 1.5,
+      "unit": "liter",
+      "catDescription": "Alkohol",
+      "catColor": "989898"
+    },
+    {
+      "iid": "0e5373b5-87f4-4672-aad1-f2f6d33009f4",
+      "itemName": "Finlandia",
+      "ordinal": 2,
+      "amount": 100,
+      "size": 1.5,
+      "unit": "liter",
+      "catDescription": "Alkohol",
+      "catColor": "989898"
+    }
+  ]
 }

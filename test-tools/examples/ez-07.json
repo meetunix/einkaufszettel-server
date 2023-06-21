@@ -1,0 +1,89 @@
+{
+ "eid": "d4b70003-2050-4fc1-8c9a-000529806dad",
+ "created": 1687379479000,
+ "modified": 1687379479000,
+ "name": "ez-tool EZ 1413",
+ "version": 1,
+ "items": [
+  {
+   "iid": "934ffe69-351b-4c4d-9cd8-e5675af70a84",
+   "itemName": "some Item 6042",
+   "ordinal": 10,
+   "size": 197.8,
+   "amount": 2,
+   "unit": "Kg",
+   "catDescription": "description 708",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "56176fc9-19ee-4c93-ab68-c26925c17451",
+   "itemName": "some Item 5494",
+   "ordinal": 3,
+   "size": 123.02,
+   "amount": 10,
+   "unit": "Kg",
+   "catDescription": "description 456",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "99f7070a-370a-4e58-be49-0eb4cb76d50c",
+   "itemName": "some Item 5227",
+   "ordinal": 8,
+   "size": 65.78,
+   "amount": 9,
+   "unit": "Kg",
+   "catDescription": "description 708",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "22586380-934a-4ec6-ad96-8d1be7ad8521",
+   "itemName": "some Item 4465",
+   "ordinal": 9,
+   "size": 35.44,
+   "amount": 6,
+   "unit": "Kg",
+   "catDescription": "description 456",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "891dce2f-d3de-4f59-b61c-a114dec87759",
+   "itemName": "some Item 1904",
+   "ordinal": 8,
+   "size": 71.33,
+   "amount": 10,
+   "unit": "Kg",
+   "catDescription": "description 708",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "d5515b8c-042a-4ca6-9367-a8b06e2446a4",
+   "itemName": "some Item 7725",
+   "ordinal": 1,
+   "size": 190.25,
+   "amount": 5,
+   "unit": "Kg",
+   "catDescription": "description 746",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "41fb1a23-f250-40dc-bc44-fc5b525dd2de",
+   "itemName": "some Item 8515",
+   "ordinal": 1,
+   "size": 177.71,
+   "amount": 3,
+   "unit": "Kg",
+   "catDescription": "description 708",
+   "catColor": "A0B8FF"
+  },
+  {
+   "iid": "6a1583c9-c772-47ff-92fc-f69784d9b6ab",
+   "itemName": "some Item 4555",
+   "ordinal": 5,
+   "size": 135.35,
+   "amount": 10,
+   "unit": "Kg",
+   "catDescription": "description 746",
+   "catColor": "A0B8FF"
+  }
+ ]
+}

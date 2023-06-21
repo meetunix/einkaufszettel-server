@@ -35,7 +35,7 @@ class Item:
     def random(category):
         return Item(
             str(uuid.uuid4()),
-            "some Item",
+            f"some Item {random.randint(1000,9999)}",
             random.randint(1, 10),
             round(random.uniform(1, 200), 2),
             random.randint(1, 10),
