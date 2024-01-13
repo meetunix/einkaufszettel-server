@@ -23,26 +23,21 @@ von einem einkaufszettel-server geteilt werden. Jeder der die eindeutige ID des 
 kennt, kann ihn lesen, verändern oder löschen. Eine Testinstanz steht unter
 `https//ez.nachtsieb.de` zur Verfügung.
 
-Eine Client-Anwendung in Form einer [PWA](https://en.wikipedia.org/wiki/Progressive_web_application)
-befindet sich in Planung.
+Ein Desktop-Client befindet sich in Entwicklung.
 
 ## Installation
 
-Für ein einfaches Deployment stehen [Docker-Compose-Files](deployment/) bereit. Es existiert
-ein deployment, das eine PostgreSQL-Datenbank (*docker-compose-postgresql.yml*), sowie ein
-Deployment das eine eingebettete H2-Datenbank verwendet (*docker-compose-h2.yml*).
-Beide Datenbanksysteme speichern ihre Datenbanken persistent in
-Docker-Volumes.
+Für ein einfaches Deployment steht ein [Docker-Compose-Files](deployment/) bereit.
 
 ```
-docker-compose -f deployment/docker-compose-h2.yml up
+docker-compose up -d
 ```
 
-Der einkaufszettel-server steht im Anschluss unter URL `http://127.0.0.1:18080/r0` zur Verfügung.
+Der einkaufszettel-server-API steht im Anschluss unter URL `http://127.0.0.1:18080/r0` zur Verfügung.
 
 Möchte man die Applikation hingegen ohne Container betreiben, benötigt man mindestens Version 11
 des Java Runtime Environments. Eine Anleitung um einkaufszettel-server ohne Docker zu betreiben
-befindet sich [hier](doc/configuration_de.md). Dieser Anleitung befasst sich auch mit der
+befindet sich [hier](doc/configuration_de.md). Die Anleitung befasst sich auch mit der
 Konfiguration der Datenbank und enthält eine Service-Definition für Systemd.
 
 ## Einkaufszettel (Spezifikation)
@@ -70,8 +65,3 @@ Die Dokumentation der einkaufszettel API steht als [OpenAPIv3-Spezifikation](ope
 * [Jackson](https://github.com/FasterXML/jackson)
 * [JDBC-Postgres](https://jdbc.postgresql.org/)
 * [H2](https://h2database.com/html/main.html)
-
-## Geplante Features
-
-* Speicherung der Einkaufszettel als JSONB (postgres) and JSON (H2)
-* Persistente Speicherung von Einkaufszettel-Versionen
