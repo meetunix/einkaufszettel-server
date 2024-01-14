@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1] - 2024-01-13
+
+- put response contains new or changed EZ
+
 ## [0.4.0] - 2024-01-12
 
 ### changed

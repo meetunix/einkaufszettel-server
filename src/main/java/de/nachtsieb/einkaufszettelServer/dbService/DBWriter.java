@@ -34,7 +34,6 @@ public class DBWriter {
           ez.getVersion(), json);
     } catch (SQLException e) {
       logger.error("Unable to write new Einkaufszettel {} to database ", ez.getEid());
-      e.printStackTrace();
       throw new RuntimeException(e);
     }
   }

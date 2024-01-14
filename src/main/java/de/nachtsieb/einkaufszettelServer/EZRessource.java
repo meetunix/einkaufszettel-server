@@ -71,7 +71,7 @@ public class EZRessource {
     if (!DBReader.ezExists(eid)) {
       logger.debug("Write new EZ with eid{} to database. ", newEZ.getEid());
       DBWriter.writeEZ(newEZ);
-      return Response.ok().build();
+      return Response.ok().entity(newEZ).build();
     }
 
     // check if the EZ versions differ
@@ -90,7 +90,8 @@ public class EZRessource {
     } else {
       logger.debug("Going to UPDATE the EZ with eid: {}", newEZ.getEid());
       DBWriter.updateEZ(newEZ);
-      return Response.ok().build();
+      Einkaufszettel changedEZ = DBReader.getEZ(newEZ.getEid());
+      return Response.ok().entity(changedEZ).build();
     }
   }
 
